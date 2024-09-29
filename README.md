@@ -32,8 +32,10 @@ Instruction d'utilisateion à venir
 
 ## Auteurs et remerciments
 
-- xxxx et xxx chargé de la collection des vols
-- xxx et xxx chargé de la collection des réservations
-- Nicholson Rainville Jacques et xxx chargé de la collection des clients
+- Rami Kassan et Saqib Rahman chargé de la collection des vols
+- Cristina Sanchez Candanedo et Lestat Lestat Louis-Seize chargé de la collection des réservations
+- Nicholson Rainville Jacques et Teddy Cabrel Ekeu chargé de la collection des clients
 
 ## Licence
+
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](./LICENSE) pour plus de détails.
