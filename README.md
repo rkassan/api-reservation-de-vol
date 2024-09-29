@@ -34,7 +34,7 @@ Instruction d'utilisateion à venir
 
 - Rami Kassan et Saqib Rahman chargé de la collection des vols
 - Cristina Sanchez Candanedo et Lestat Lestat Louis-Seize chargé de la collection des réservations
-- Nicholson Rainville Jacques et Teddy Cabrel Ekeu chargé de la collection des clients
+- Nicholson Rainville Jacques et Teddy Cabrel Ekeu Mbouatchi chargé de la collection des clients
 
 ## Licence
 
