@@ -1,11 +1,11 @@
 package dti.crosemont.reservationvol.Entites
 
-class Client(
+data class Client(
     val id : Int,
-    val nom : String,
-    val prénom : String,
-    val adresse : String,
+    var nom : String,
+    var prénom : String,
+    var adresse : String,
     val numéroPasseprt : String,
-    val email : String?,
-    val numéroTéléphone : String?,
+    var email : String?,
+    var numéroTéléphone : String?,
 )
