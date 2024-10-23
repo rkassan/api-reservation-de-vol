@@ -1,0 +1,54 @@
+CREATE DATABASE service_reservation;
+USE service_reservation;
+
+/*CREATION TABLE CLIENTS */
+
+-- a faire
+
+
+
+
+/*CREATION TABLE AVIONS */
+CREATE TABLE avions (
+    type VARCHAR(255) PRIMARY KEY NOT NULL,
+    nb_siège_économique INT NOT NULL,
+    nb_siège_affaires INT NOT NULL,
+    nb_siège_première INT NOT NULL
+);
+
+/*CREATIONS VOLS */
+
+-- a faire
+
+
+
+
+
+/*CREATION TABLE RESERVATIONS*/
+CREATE TABLE réservations (
+    numéro_réservation VARCHAR(255) NOT NULL PRIMARY KEY,
+    numéro_vol VARCHAR(255) NOT NULL,  
+    classe ENUM('économique', 'business', 'première') NOT NULL,
+    siège_selectionné VARCHAR(255),
+    bagages INT,
+    FOREIGN KEY (numéro_vol) REFERENCES vols(numéro_vol)
+);
+
+/*CREATION TABLE RESERVATIONS_cLIENTS*/
+CREATE TABLE réservations_clients (
+    clients_id INT NOT NULL,
+    clients_numéro_réservation VARCHAR(255),
+    PRIMARY KEY (clients_id, clients_numéro_réservation),
+    FOREIGN KEY (clients_id) REFERENCES clients(id),
+    FOREIGN KEY (clients_numéro_réservation) REFERENCES réservations(numéro_réservation)
+);
+
+/*CREATION TABLE SIEGES_OCCUPES*/
+CREATE TABLE sièges_occupés (
+    numéro_siège VARCHAR(255) NOT NULL,
+    numéro_vol VARCHAR(255) NOT NULL,
+    classe ENUM('économique', 'business', 'première') NOT NULL,
+    statut_siege ENUM('réservé', 'occupé', 'disponible') NOT NULL,
+    PRIMARY KEY (numéro_siège, numéro_vol),
+    FOREIGN KEY (numéro_vol) REFERENCES vols(numéro_vol)
+);
