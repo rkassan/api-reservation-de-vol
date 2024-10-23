@@ -23,26 +23,6 @@ CREATE TABLE avions (
 
 
 
-/*CREATIONS VOL STATUS */
-
-CREATE TABLE vol_status (
-    status_numero_vol VARCHAR(255) NOT NULL,
-    status ENUM('depart', 'en attente', 'en route', 'arrivé') NOT NULL,
-    heure TIMESTAMP NOT NULL,
-    PRIMARY KEY (status_numero_vol,status,heure),
-    FOREIGN KEY (status_numero_vol) REFERENCES vols(numéro_vol)
-);
-
-/*CREATIONS PRIX PAR CLASSE*/
-
-CREATE TABLE prix_par_classe (
-    id INT NOT NULL PRIMARY KEY,
-    prix_économique DOUBLE NOT NULL,
-    prix_affaire DOUBLE NOT NULL,
-    prix_première DOUBLE NOT NULL,
-    prix_numéro_vol VARCHAR(255) NOT NULL,
-    FOREIGN KEY (prix_numéro_vol) REFERENCES vols(numéro_vol)
-);
 
 /*CREATION TABLE RESERVATIONS*/
 CREATE TABLE réservations (
