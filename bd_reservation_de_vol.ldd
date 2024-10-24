@@ -18,8 +18,6 @@ CREATE TABLE avions (
 
 /*CREATIONS VOLS */
 
--- a faire
-
 /*CREATIONS VOL STATUS */
 
 CREATE TABLE vol_status (
@@ -41,9 +39,8 @@ CREATE TABLE prix_par_classe (
     FOREIGN KEY (prix_numéro_vol) REFERENCES vols(numéro_vol)
 );
 
-
-
 /*CREATIONS TABLE VOLS*/
+
 CREATE TABLE vols (
     numéro_vol VARCHAR(255) PRIMARY KEY NOT NULL,
     aéroport_debut CHAR(4) NOT NULL,
