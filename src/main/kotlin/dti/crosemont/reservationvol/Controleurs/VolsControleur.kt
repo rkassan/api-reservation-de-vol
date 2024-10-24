@@ -44,7 +44,6 @@ class VolsControleur{
     @DeleteMapping("/{numeroVol}")
     fun supprimeVol(@PathVariable numeroVol: String): ResponseEntity<Vol> {
         return  ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
-
     }
 }
 
