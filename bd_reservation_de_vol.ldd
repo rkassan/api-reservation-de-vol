@@ -43,6 +43,19 @@ CREATE TABLE prix_par_classe (
 
 
 
+/*CREATIONS TABLE VOLS*/
+CREATE TABLE vols (
+    numéro_vol VARCHAR(255) PRIMARY KEY NOT NULL,
+    aéroport_debut CHAR(4) NOT NULL,
+    aéroport_fin CHAR(4) NOT NULL,
+    date_départ DATETIME NOT NULL,
+    date_arrivée DATETIME NOT NULL,
+    avion_type VARCHAR(255) NOT NULL,
+    poids_max_bag INT NOT NULL,
+    durée TIME NOT NULL,
+    FOREIGN KEY (aéroport_debut, aéroport_fin) REFERENCES aéroports(code),
+    FOREIGN KEY (avion_type) REFERENCES avions(type),
+);
 
 
 /*CREATION TABLE RESERVATIONS*/
