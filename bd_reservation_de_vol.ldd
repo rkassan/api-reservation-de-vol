@@ -45,8 +45,9 @@ CREATE TABLE vols (
     avion_type VARCHAR(255) NOT NULL,
     poids_max_bag INT NOT NULL,
     durée TIME NOT NULL,
-    FOREIGN KEY (aéroport_debut, aéroport_fin) REFERENCES aéroports(code),
-    FOREIGN KEY (avion_type) REFERENCES avions(type),
+    FOREIGN KEY (aéroport_debut) REFERENCES aéroports(code),
+    FOREIGN KEY (aéroport_fin) REFERENCES aéroports(code),
+    FOREIGN KEY (avion_type) REFERENCES avions(type)
 ); 
 
 /*CREATIONS VOL STATUS */
