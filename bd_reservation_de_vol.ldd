@@ -2,11 +2,30 @@ CREATE DATABASE service_reservation;
 USE service_reservation;
 
 /*CREATION TABLE CLIENTS */
+CREATE TABLE clients(
+    id INT PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL,
+    prénom VARCHAR(255) NOT NULL,
+    numéro_passeport VARCHAR(255) NOT NULL,
+    email VARCHAR(255),
+    numéro_téléphone VARCHAR(255),
+);
 
--- a faire
+/*CREATION TABLE VILLES*/
+CREATE TABLE villes(
+    id INT PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL,
+    pays CHAR(4) NOT NULL,
+    url_photo VARCHAR(255)
+);
 
-
-
+/*CREATION TABLE AEROPORTS*/
+CREATE TABLE aéroports(
+    code CHAR(4) NOT NULL PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL,
+    ville_id INT NOT NULL,
+    FOREIGN KEY (ville_id ) REFERENCES villes(id)
+);
 
 /*CREATION TABLE AVIONS */
 CREATE TABLE avions (
