@@ -7,6 +7,7 @@ CREATE TABLE clients(
     nom VARCHAR(255) NOT NULL,
     prénom VARCHAR(255) NOT NULL,
     numéro_passeport VARCHAR(255) NOT NULL,
+    addresse VARCHAR(255) NOT NULL,
     email VARCHAR(255),
     numéro_téléphone VARCHAR(255)
 );
