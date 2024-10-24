@@ -17,7 +17,6 @@ import java.time.LocalDateTime
 @RestController
 @RequestMapping("/vols")
 class VolsControleur{
-    private val vols = mutableListOf<Vol>()
   
     @GetMapping
     fun obtenirToutLesVols(): ResponseEntity<List<Vol>> = ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
