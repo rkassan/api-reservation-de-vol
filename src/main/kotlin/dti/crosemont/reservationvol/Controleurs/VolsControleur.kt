@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
 import dti.crosemont.reservationvol.Entites.Vol
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/vols")
@@ -22,8 +23,14 @@ class VolsControleur{
     fun obtenirToutLesVols(): ResponseEntity<List<Vol>> = ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
 
     @GetMapping("/{numéro_vol}")
-    fun obtenirVolParNumero(@PathVariable numeroVol: String) = volsService.obtenirVolParNumero(numeroVol)
-    return if vol!=null else ResponseEntity(HttpStatus.NOT_FOUND)  //retourne description vol 
+    fun obtenirVolParNumero(@PathVariable numeroVol: String) : ResponseEntity<Vol>{
+        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+    }
+
+    @GetMapping("/")
+    fun obtenirVolParParam(@RequestParam dateDebut: LocalDateTime, @RequestParam aeroportDebut: String, @RequestParam aeroportFin: String) : ResponseEntity<List<Vol>>{
+        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+    }
 
     @PostMapping
     fun ajoutervol(@RequestBody vol: Vol): ResponseEntity<Vol> {
@@ -32,7 +39,7 @@ class VolsControleur{
     }
 
     @PutMapping("/{numeroVol}")
-fun modifierVol(@PathVariable numeroVol: String, @RequestBody modifieVol: Vol): ResponseEntity<Vol> {
+    fun modifierVol(@PathVariable numeroVol: String, @RequestBody modifieVol: Vol): ResponseEntity<Vol> {
     val volamodifier = vols.find { it.numeroVol == numeroVol }
     return if (volamodifier != null) {
         val index = vols.indexOf(volamodifier)
@@ -43,7 +50,7 @@ fun modifierVol(@PathVariable numeroVol: String, @RequestBody modifieVol: Vol): 
     }
 }
 
-@DeleteMapping("/{numeroVol}")
+    @DeleteMapping("/{numeroVol}")
     fun supprimeVol(@PathVariable numeroVol: String): ResponseEntity<Void> {
         val volsupprime = vols.find { it.numeroVol == numeroVol }
         return if (volsupprime  != null) {
@@ -53,6 +60,8 @@ fun modifierVol(@PathVariable numeroVol: String, @RequestBody modifieVol: Vol): 
             ResponseEntity(HttpStatus.NOT_FOUND)
         }
     }
+
+
 }
 
 
