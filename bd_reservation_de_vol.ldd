@@ -78,7 +78,7 @@ CREATE TABLE prix_par_classe (
 CREATE TABLE réservations (
     numéro_réservation VARCHAR(255) NOT NULL PRIMARY KEY,
     numéro_vol VARCHAR(255) NOT NULL,  
-    classe ENUM('économique', 'business', 'première') NOT NULL,
+    classe ENUM('économique', 'affaires', 'première') NOT NULL,
     siège_selectionné VARCHAR(255),
     bagages INT,
     FOREIGN KEY (numéro_vol) REFERENCES vols(numéro_vol)
@@ -97,7 +97,7 @@ CREATE TABLE réservations_clients (
 CREATE TABLE sièges_occupés (
     numéro_siège VARCHAR(255) NOT NULL,
     numéro_vol VARCHAR(255) NOT NULL,
-    classe ENUM('économique', 'business', 'première') NOT NULL,
+    classe ENUM('économique', 'affaires', 'première') NOT NULL,
     statut_siege ENUM('réservé', 'occupé', 'disponible') NOT NULL,
     PRIMARY KEY (numéro_siège, numéro_vol),
     FOREIGN KEY (numéro_vol) REFERENCES vols(numéro_vol)
