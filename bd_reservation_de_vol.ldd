@@ -2,11 +2,30 @@ CREATE DATABASE service_reservation;
 USE service_reservation;
 
 /*CREATION TABLE CLIENTS */
+CREATE TABLE clients(
+    id INT PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL,
+    prénom VARCHAR(255) NOT NULL,
+    numéro_passeport VARCHAR(255) NOT NULL,
+    email VARCHAR(255),
+    numéro_téléphone VARCHAR(255),
+);
 
--- a faire
+/*CREATION TABLE VILLES*/
+CREATE TABLE villes(
+    id INT PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL,
+    pays CHAR(4) NOT NULL,
+    url_photo VARCHAR(255)
+);
 
-
-
+/*CREATION TABLE AEROPORTS*/
+CREATE TABLE aéroports(
+    code CHAR(4) NOT NULL PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL,
+    ville_id INT NOT NULL,
+    FOREIGN KEY (ville_id ) REFERENCES villes(id)
+);
 
 /*CREATION TABLE AVIONS */
 CREATE TABLE avions (
@@ -16,19 +35,9 @@ CREATE TABLE avions (
     nb_siège_première INT NOT NULL
 );
 
-/*CREATIONS TABLE VOLS*/
-CREATE TABLE vols (
-    numéro_vol VARCHAR(255) PRIMARY KEY NOT NULL,
-    aéroport_debut CHAR(4) NOT NULL,
-    aéroport_fin CHAR(4) NOT NULL,
-    date_départ DATETIME NOT NULL,
-    date_arrivée DATETIME NOT NULL,
-    avion_type VARCHAR(255) NOT NULL,
-    poids_max_bag INT NOT NULL,
-    durée TIME NOT NULL,
-    FOREIGN KEY (aéroport_debut, aéroport_fin) REFERENCES aéroports(code),
-    FOREIGN KEY (avion_type) REFERENCES avions(type),
-);
+/*CREATIONS VOLS */
+
+-- a faire
 
 /*CREATIONS VOL STATUS */
 
@@ -51,6 +60,21 @@ CREATE TABLE prix_par_classe (
     FOREIGN KEY (prix_numéro_vol) REFERENCES vols(numéro_vol)
 );
 
+
+
+/*CREATIONS TABLE VOLS*/
+CREATE TABLE vols (
+    numéro_vol VARCHAR(255) PRIMARY KEY NOT NULL,
+    aéroport_debut CHAR(4) NOT NULL,
+    aéroport_fin CHAR(4) NOT NULL,
+    date_départ DATETIME NOT NULL,
+    date_arrivée DATETIME NOT NULL,
+    avion_type VARCHAR(255) NOT NULL,
+    poids_max_bag INT NOT NULL,
+    durée TIME NOT NULL,
+    FOREIGN KEY (aéroport_debut, aéroport_fin) REFERENCES aéroports(code),
+    FOREIGN KEY (avion_type) REFERENCES avions(type),
+);
 
 
 /*CREATION TABLE RESERVATIONS*/
