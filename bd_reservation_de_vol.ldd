@@ -8,7 +8,7 @@ CREATE TABLE clients(
     prénom VARCHAR(255) NOT NULL,
     numéro_passeport VARCHAR(255) NOT NULL,
     email VARCHAR(255),
-    numéro_téléphone VARCHAR(255),
+    numéro_téléphone VARCHAR(255)
 );
 
 /*CREATION TABLE VILLES*/
