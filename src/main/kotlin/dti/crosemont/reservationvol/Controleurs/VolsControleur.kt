@@ -24,35 +24,21 @@ class VolsControleur{
     @GetMapping("/{numéro_vol}")
     fun obtenirVolParNumero(@PathVariable numeroVol: String) = volsService.obtenirVolParNumero(numeroVol)
     return if vol!=null else ResponseEntity(HttpStatus.NOT_FOUND)  //retourne description vol 
+    
 
     @PostMapping
     fun ajoutervol(@RequestBody vol: Vol): ResponseEntity<Vol> {
-        vols.add(vol)
-        return ResponseEntity.status(HttpStatus.CREATED).body(vol)
+       return  ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
     }
 
     @PutMapping("/{numeroVol}")
 fun modifierVol(@PathVariable numeroVol: String, @RequestBody modifieVol: Vol): ResponseEntity<Vol> {
-    val volamodifier = vols.find { it.numeroVol == numeroVol }
-    return if (volamodifier != null) {
-        val index = vols.indexOf(volamodifier)
-        vols[index] = modifieVol
-        ResponseEntity.ok(modifieVol)
-    } else {
-        ResponseEntity(HttpStatus.NOT_FOUND)
-    }
+    return  ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
 }
 
 @DeleteMapping("/{numeroVol}")
-    fun supprimeVol(@PathVariable numeroVol: String): ResponseEntity<Void> {
-        val volsupprime = vols.find { it.numeroVol == numeroVol }
-        return if (volsupprime  != null) {
-            vols.remove(volsupprime )
-            ResponseEntity.noContent().build()
-        } else {
-            ResponseEntity(HttpStatus.NOT_FOUND)
-        }
-    }
+    fun supprimeVol(@PathVariable numeroVol: String): ResponseEntity<Vol> {
+        return  ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
 }
 
 
