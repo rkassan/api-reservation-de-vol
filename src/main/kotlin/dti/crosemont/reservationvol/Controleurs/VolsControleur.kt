@@ -1,4 +1,4 @@
-package dti.crosemont.reservationvol
+package dti.crosemont.reservationvol.Controleurs
 
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
@@ -42,7 +42,7 @@ class VolsControleur{
     }
 
     @DeleteMapping("/{numeroVol}")
-    fun supprimeVol(@PathVariable numeroVol: String): ResponseEntity<Vol> {
+    fun supprimeVol(@PathVariable numeroVol: String): ResponseEntity<HttpStatus>{
         return  ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
     }
 }
