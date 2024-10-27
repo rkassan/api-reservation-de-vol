@@ -26,7 +26,7 @@ class VolsControleur{
         return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
     }
 
-    @GetMapping("/")
+    @GetMapping(params = ["dateDebut", "aeroportDebut", "aeroportFin"])
     fun obtenirVolParParam(@RequestParam dateDebut: LocalDateTime, @RequestParam aeroportDebut: String, @RequestParam aeroportFin: String) : ResponseEntity<List<Vol>>{
         return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
     }
