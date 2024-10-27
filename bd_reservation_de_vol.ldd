@@ -28,12 +28,26 @@ CREATE TABLE aéroports(
     FOREIGN KEY (ville_id ) REFERENCES villes(id)
 );
 
-/*CREATION TABLE AVIONS */
+/* CREATION TABLE AVIONS */
 CREATE TABLE avions (
-    type VARCHAR(255) PRIMARY KEY NOT NULL,
-    nb_siège_économique INT NOT NULL,
-    nb_siège_affaires INT NOT NULL,
-    nb_siège_première INT NOT NULL
+    id INT PRIMARY KEY NOT NULL,
+    type VARCHAR(255) NOT NULL
+);
+
+/* CREATION TABLE SIÈGES */
+CREATE TABLE sièges (
+    numéro_siège VARCHAR(255) PRIMARY KEY NOT NULL,
+    classe ENUM('économique', 'business', 'première') NOT NULL
+);
+
+/* CREATION TABLE AVIONS_SIÈGES */
+CREATE TABLE avions_sièges (
+    avion_id INT NOT NULL,
+    siège_id VARCHAR(255) NOT NULL,
+    statut_siege ENUM('réservé', 'occupé', 'disponible') NOT NULL,
+    PRIMARY KEY (avion_id, siège_id),
+    FOREIGN KEY (avion_id) REFERENCES avions(id),
+    FOREIGN KEY (siège_id) REFERENCES sièges(numéro_siège)
 );
 
 /*CREATIONS TABLE VOLS*/
@@ -74,17 +88,17 @@ CREATE TABLE prix_par_classe (
 
 
 
-/*CREATION TABLE RESERVATIONS*/
+/* CREATION TABLE RÉSERVATIONS */
 CREATE TABLE réservations (
     numéro_réservation VARCHAR(255) NOT NULL PRIMARY KEY,
-    numéro_vol VARCHAR(255) NOT NULL,  
-    classe ENUM('économique', 'affaires', 'première') NOT NULL,
+    numéro_vol VARCHAR(255) NOT NULL,
+    classe SET('économique', 'business', 'première') NOT NULL,
     siège_selectionné VARCHAR(255),
     bagages INT,
     FOREIGN KEY (numéro_vol) REFERENCES vols(numéro_vol)
 );
 
-/*CREATION TABLE RESERVATIONS_cLIENTS*/
+/* CREATION TABLE RÉSERVATIONS_CLIENTS */
 CREATE TABLE réservations_clients (
     clients_id INT NOT NULL,
     clients_numéro_réservation VARCHAR(255),
@@ -93,12 +107,11 @@ CREATE TABLE réservations_clients (
     FOREIGN KEY (clients_numéro_réservation) REFERENCES réservations(numéro_réservation)
 );
 
-/*CREATION TABLE SIEGES_OCCUPES*/
-CREATE TABLE sièges_occupés (
-    numéro_siège VARCHAR(255) NOT NULL,
-    numéro_vol VARCHAR(255) NOT NULL,
-    classe ENUM('économique', 'affaires', 'première') NOT NULL,
-    statut_siege ENUM('réservé', 'occupé', 'disponible') NOT NULL,
-    PRIMARY KEY (numéro_siège, numéro_vol),
-    FOREIGN KEY (numéro_vol) REFERENCES vols(numéro_vol)
+/* CREATION TABLE RÉSERVATIONS_SIÈGES */
+CREATE TABLE réservations_sièges (
+    reservation_numéro VARCHAR(255) NOT NULL,
+    siège_id VARCHAR(255) NOT NULL,
+    PRIMARY KEY (reservation_numéro, siège_id),
+    FOREIGN KEY (reservation_numéro) REFERENCES réservations(numéro_réservation),
+    FOREIGN KEY (siège_id) REFERENCES sièges(numéro_siège)
 );
