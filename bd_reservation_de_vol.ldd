@@ -57,22 +57,22 @@ CREATE TABLE vols (
     aéroport_fin CHAR(4) NOT NULL,
     date_départ DATETIME NOT NULL,
     date_arrivée DATETIME NOT NULL,
-    avion_type VARCHAR(255) NOT NULL,
+    avion_id VARCHAR(255) NOT NULL,
     poids_max_bag INT NOT NULL,
     durée TIME NOT NULL,
     FOREIGN KEY (aéroport_debut) REFERENCES aéroports(code),
     FOREIGN KEY (aéroport_fin) REFERENCES aéroports(code),
-    FOREIGN KEY (avion_type) REFERENCES avions(type)
+    FOREIGN KEY (avion_id) REFERENCES avions(id)
 ); 
 
-/*CREATIONS VOL STATUS */
+/*CREATIONS VOL STATUT */
 
-CREATE TABLE vol_status (
-    status_numero_vol VARCHAR(255) NOT NULL,
+CREATE TABLE vol_statut (
+    numero_vol VARCHAR(255) NOT NULL,
     status ENUM('depart', 'en attente', 'en route', 'arrivé') NOT NULL,
     heure TIMESTAMP NOT NULL,
-    PRIMARY KEY (status_numero_vol,status,heure),
-    FOREIGN KEY (status_numero_vol) REFERENCES vols(numéro_vol)
+    PRIMARY KEY (numero_vol,heure),
+    FOREIGN KEY (numero_vol) REFERENCES vols(numéro_vol)
 );
 
 /*CREATIONS PRIX PAR CLASSE*/
@@ -82,8 +82,8 @@ CREATE TABLE prix_par_classe (
     prix_économique DOUBLE NOT NULL,
     prix_affaire DOUBLE NOT NULL,
     prix_première DOUBLE NOT NULL,
-    prix_numéro_vol VARCHAR(255) NOT NULL,
-    FOREIGN KEY (prix_numéro_vol) REFERENCES vols(numéro_vol)
+    numéro_vol VARCHAR(255) NOT NULL,
+    FOREIGN KEY (numéro_vol) REFERENCES vols(numéro_vol)
 );
 
 
