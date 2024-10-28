@@ -57,7 +57,7 @@ CREATE TABLE vols (
     aéroport_fin CHAR(4) NOT NULL,
     date_départ DATETIME NOT NULL,
     date_arrivée DATETIME NOT NULL,
-    avion_id VARCHAR(255) NOT NULL,
+    avion_id INT NOT NULL,
     poids_max_bag INT NOT NULL,
     durée TIME NOT NULL,
     FOREIGN KEY (aéroport_debut) REFERENCES aéroports(code),
