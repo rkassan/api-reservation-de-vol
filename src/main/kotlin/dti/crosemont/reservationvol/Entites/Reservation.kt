@@ -1,7 +1,7 @@
 package dti.crosemont.reservationvol.Entites
 
 data class Reservation (
-    val numéroRéservation: String,,
+    val numéroRéservation: String,
     val numeroVol: String: String,
     val clients: List<Client>,
     val sièges: List<Siège>,
