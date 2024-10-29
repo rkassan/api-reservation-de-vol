@@ -65,13 +65,13 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                 réponse.getDouble("prix_par_classe.prix_première")
 
                         val volStatuts = bd.query(
-                                "SELECT * FROM vol_statut WHERE numero_vol = ?;", 
+                                "SELECT * FROM vol_statut WHERE numéro_vol = ?;", 
                                         réponse.getString("numéro_vol")
-                                ) { réponseStatus, _ ->
+                                ) { réponseStatut, _ ->
                                         VolStatut(
-                                                réponseStatus.getString("vol_statut.numero_vol"),
-                                                réponseStatus.getString("vol_statut.status"),
-                                                réponseStatus.getTimestamp("vol_statut.heure").toLocalDateTime().toLocalTime()
+                                                réponseStatut.getString("vol_statut.numéro_vol"),
+                                                réponseStatut.getString("vol_statut.statut"),
+                                                réponseStatut.getTimestamp("vol_statut.heure").toLocalDateTime().toLocalTime()
                                         )
                                 }
                                 
