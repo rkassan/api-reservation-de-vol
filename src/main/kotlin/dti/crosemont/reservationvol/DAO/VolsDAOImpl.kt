@@ -54,7 +54,14 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                         ville_fin,
                                         ville_fin.pays
                                 )
-                        var avion = Avion(réponse.getString("avions.type"), 0, 0, 0)
+                        var avion = Avion(
+                                réponse.getInt("avions.id"), 
+                                réponse.getString("avions.type"),
+                                emptyList<Siège>(), 
+                                réponse.getString("numéro_vol") 
+                        )
+
+                        
 
                         var prix_par_classe = hashMapOf<String, Double>()
                         prix_par_classe["économique"] =
