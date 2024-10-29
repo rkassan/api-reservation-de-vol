@@ -11,9 +11,8 @@ data class Vol(
         val dateArrivee: LocalDateTime,
         val avion: Avion,
         val prixParClasse: Map<String, Double>,
-        val poidsMaxBag: Float,
-        val statusVol: List<String>,
-        val duree: LocalTime,
-        val typeClass: String,
-        val siegeOccupé: MutableList<String>
+        val poidsMaxBag: Int,
+        val statutVol: List<String>,
+        val duree: LocalTime
+        
 )
