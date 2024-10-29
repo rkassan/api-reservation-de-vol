@@ -25,6 +25,7 @@ CREATE TABLE aéroports(
     code CHAR(4) NOT NULL PRIMARY KEY,
     nom VARCHAR(255) NOT NULL,
     ville_id INT NOT NULL,
+    addresse VARCHAR(255) not null,
     FOREIGN KEY (ville_id ) REFERENCES villes(id)
 );
 
@@ -59,7 +60,7 @@ CREATE TABLE vols (
     date_arrivée DATETIME NOT NULL,
     avion_id INT NOT NULL,
     poids_max_bag INT NOT NULL,
-    durée TIME NOT NULL,
+    durée INT NOT NULL,
     FOREIGN KEY (aéroport_debut) REFERENCES aéroports(code),
     FOREIGN KEY (aéroport_fin) REFERENCES aéroports(code),
     FOREIGN KEY (avion_id) REFERENCES avions(id)
@@ -68,11 +69,11 @@ CREATE TABLE vols (
 /*CREATIONS VOL STATUT */
 
 CREATE TABLE vol_statut (
-    numero_vol VARCHAR(255) NOT NULL,
+    numéro_vol VARCHAR(255) NOT NULL,
     status ENUM('depart', 'en attente', 'en route', 'arrivé') NOT NULL,
     heure TIMESTAMP NOT NULL,
-    PRIMARY KEY (numero_vol,heure),
-    FOREIGN KEY (numero_vol) REFERENCES vols(numéro_vol)
+    PRIMARY KEY (numéro_vol,heure),
+    FOREIGN KEY (numéro_vol) REFERENCES vols(numéro_vol)
 );
 
 /*CREATIONS PRIX PAR CLASSE*/
