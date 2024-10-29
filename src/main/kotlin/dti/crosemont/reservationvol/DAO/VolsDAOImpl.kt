@@ -4,9 +4,14 @@ import dti.crosemont.reservationvol.Entites.Aeroport
 import dti.crosemont.reservationvol.Entites.Avion
 import dti.crosemont.reservationvol.Entites.Ville
 import dti.crosemont.reservationvol.Entites.Vol
+import dti.crosemont.reservationvol.Entites.VolStatut
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.query
 import org.springframework.stereotype.Repository
+
+import kotlin.time.toDuration
+import kotlin.time.DurationUnit
+
 
 @Repository
 class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
@@ -59,6 +64,17 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         prix_par_classe["première"] =
                                 réponse.getDouble("prix_par_classe.prix_première")
 
+                        val volStatuts = bd.query(
+                                "SELECT * FROM vol_statut WHERE numero_vol = ?;", 
+                                        réponse.getString("numéro_vol")
+                                ) { réponseStatus, _ ->
+                                        VolStatut(
+                                                réponseStatus.getString("vol_statut.numero_vol"),
+                                                réponseStatus.getString("vol_statut.status"),
+                                                réponseStatus.getTimestamp("vol_statut.heure").toLocalDateTime().toLocalTime()
+                                        )
+                                }
+                                
                         Vol(
                                 réponse.getString("numéro_vol"),
                                 aéroport_debut,
@@ -68,8 +84,8 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                 avion,
                                 prix_par_classe,
                                 réponse.getInt("poids_max_bag"),
-                                listOf("en attente"),
-                                réponse.getTimestamp("durée").toLocalDateTime().toLocalTime()
+                                volStatuts,
+                                réponse.getInt("durée").toDuration(DurationUnit.NANOSECONDS)
                         )
                 }
 }

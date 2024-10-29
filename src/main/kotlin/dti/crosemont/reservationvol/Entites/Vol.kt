@@ -2,6 +2,7 @@ package dti.crosemont.reservationvol.Entites
 
 import java.time.LocalDateTime
 import java.time.LocalTime
+import kotlin.time.Duration
 
 data class Vol(
         val numeroVol: String,
@@ -12,7 +13,7 @@ data class Vol(
         val avion: Avion,
         val prixParClasse: Map<String, Double>,
         val poidsMaxBag: Int,
-        val statutVol: List<String>,
-        val duree: LocalTime
+        val statutVol: List<VolStatut>,
+        val durée: Duration
         
 )
