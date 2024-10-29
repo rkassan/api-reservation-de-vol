@@ -1,5 +1,6 @@
 package dti.crosemont.reservationvol.Controleurs
 
+
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import dti.crosemont.reservationvol.Entites.Vol
+import dti.crosemont.reservationvol.Entites.Reservation
 import java.time.LocalDateTime
 
 @RestController
