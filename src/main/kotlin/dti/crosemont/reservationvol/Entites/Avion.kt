@@ -3,6 +3,6 @@ package dti.crosemont.reservationvol.Entites
 data class Avion (
     val id: Int,
     val type: String,
-    val sièges: List<Siège>,
-    val vol: Vol  
+    val sièges: List<Siege>,
+    val numeroVol: String  
 )
