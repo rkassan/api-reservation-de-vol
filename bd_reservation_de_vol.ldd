@@ -68,11 +68,11 @@ CREATE TABLE vols (
 /*CREATIONS VOL STATUT */
 
 CREATE TABLE vol_statut (
-    numero_vol VARCHAR(255) NOT NULL,
-    status ENUM('depart', 'en attente', 'en route', 'arrivé') NOT NULL,
+    numéro_vol VARCHAR(255) NOT NULL,
+    statut ENUM('depart', 'en attente', 'en route', 'arrivé') NOT NULL,
     heure TIMESTAMP NOT NULL,
-    PRIMARY KEY (numero_vol,heure),
-    FOREIGN KEY (numero_vol) REFERENCES vols(numéro_vol)
+    PRIMARY KEY (numéro_vol,heure),
+    FOREIGN KEY (numéro_vol) REFERENCES vols(numéro_vol)
 );
 
 /*CREATIONS PRIX PAR CLASSE*/
