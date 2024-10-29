@@ -12,21 +12,22 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
 import dti.crosemont.reservationvol.Entites.Vol
+import dti.crosemont.reservationvol.VolsDAOImpl
 import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/vols")
-class VolsControleur{
+class VolsControleur(private val dao : VolsDAOImpl){
   
     @GetMapping
-    fun obtenirToutLesVols(): ResponseEntity<List<Vol>> = ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+    fun obtenirToutLesVols(): ResponseEntity<List<Vol>> = ResponseEntity(dao.chercherTous(), HttpStatus.OK)
 
     @GetMapping("/{numéro_vol}")
     fun obtenirVolParNumero(@PathVariable numeroVol: String) : ResponseEntity<Vol>{
         return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
     }
 
-    @GetMapping("/")
+    @GetMapping(params = ["dateDebut", "aeroportDebut", "aeroportFin"])
     fun obtenirVolParParam(@RequestParam dateDebut: LocalDateTime, @RequestParam aeroportDebut: String, @RequestParam aeroportFin: String) : ResponseEntity<List<Vol>>{
         return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
     }
