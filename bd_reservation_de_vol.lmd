@@ -1,193 +1,230 @@
 USE service_reservation;
 
--- Suppression des données existantes pour éviter les doublons
+-- Suppression des données existantes (dans l'ordre inverse des dépendances)
+DELETE FROM réservations_sièges;
 DELETE FROM réservations_clients;
-DELETE FROM sièges_occupés;
 DELETE FROM réservations;
 DELETE FROM prix_par_classe;
-DELETE FROM vol_status;
+DELETE FROM vol_statut;
 DELETE FROM vols;
+DELETE FROM trajets;
+DELETE FROM avions_sièges;
+DELETE FROM sièges;
 DELETE FROM avions;
 DELETE FROM aéroports;
 DELETE FROM villes;
 DELETE FROM clients;
 
+-- Réinitialisation des auto-incréments
+ALTER TABLE clients AUTO_INCREMENT = 1;
+ALTER TABLE villes AUTO_INCREMENT = 1;
+ALTER TABLE aéroports AUTO_INCREMENT = 1;
+ALTER TABLE avions AUTO_INCREMENT = 1;
+ALTER TABLE sièges AUTO_INCREMENT = 1;
+ALTER TABLE trajets AUTO_INCREMENT = 1;
+ALTER TABLE vols AUTO_INCREMENT = 1;
 
--- Insertion de 15 clients
-INSERT INTO clients (id, nom, prénom, numéro_passeport, addresse, email, numéro_téléphone) VALUES
-(1, 'Lefebvre', 'Jean', 'PA1234567', '123 Rue des Pins, Montréal, QC', 'jean.lefebvre@example.com', '514-555-1234'),
-(2, 'Tremblay', 'Sophie', 'PA2345678', '456 Boulevard St-Laurent, Québec, QC', 'sophie.tremblay@example.com', '418-555-5678'),
-(3, 'Roy', 'Marc', 'PA3456789', '789 Avenue Cartier, Laval, QC', 'marc.roy@example.com', '450-555-8765'),
-(4, 'Gagnon', 'Lucie', 'PA4567890', '101 Rue Principale, Gatineau, QC', 'lucie.gagnon@example.com', '819-555-3456'),
-(5, 'Bouchard', 'David', 'PA5678901', '234 Rue St-Joseph, Trois-Rivières, QC', 'david.bouchard@example.com', '819-555-7890'),
-(6, 'Fortin', 'Anne', 'PA6789012', '567 Rue Sherbrooke, Sherbrooke, QC', 'anne.fortin@example.com', '819-555-2345'),
-(7, 'Morin', 'Pierre', 'PA7890123', '890 Rue Laurier, Longueuil, QC', 'pierre.morin@example.com', '450-555-9876'),
-(8, 'Gauthier', 'Julie', 'PA8901234', '321 Rue Ste-Catherine, Montreal, QC', 'julie.gauthier@example.com', '514-555-7654'),
-(9, 'Simard', 'François', 'PA9012345', '654 Rue Wellington, Québec, QC', 'francois.simard@example.com', '418-555-5432'),
-(10, 'Girard', 'Isabelle', 'PA0123456', '987 Rue de la Montagne, Laval, QC', 'isabelle.girard@example.com', '450-555-2341'),
-(11, 'Pelletier', 'Éric', 'PA1234507', '222 Boulevard Charest, Gatineau, QC', 'eric.pelletier@example.com', '819-555-1111'),
-(12, 'Côté', 'Caroline', 'PA2345671', '111 Boulevard Desjardins, Trois-Rivières, QC', 'caroline.cote@example.com', '819-555-2222'),
-(13, 'Lavoie', 'Robert', 'PA3456709', '444 Rue Queen, Sherbrooke, QC', 'robert.lavoie@example.com', '819-555-3333'),
-(14, 'Bergeron', 'Marie', 'PA4567012', '555 Rue King Ouest, Longueuil, QC', 'marie.bergeron@example.com', '450-555-4444'),
-(15, 'Lapointe', 'Jean-Marc', 'PA5678010', '777 Rue du Marché, Laval, QC', 'jeanmarc.lapointe@example.com', '450-555-5555');
+-- Insertion des clients
+INSERT INTO clients (nom, prénom, numéro_passeport, addresse, email, numéro_téléphone) VALUES
+('Dubois', 'Jean', 'FR123456', '123 rue de Paris, Paris', 'jean.dubois@email.com', '+33123456789'),
+('Martin', 'Sophie', 'FR789012', '456 avenue des Champs-Élysées, Paris', 'sophie.martin@email.com', '+33234567890'),
+('Bernard', 'Pierre', 'FR345678', '789 boulevard Saint-Germain, Paris', 'pierre.bernard@email.com', '+33345678901'),
+('Petit', 'Marie', 'FR901234', '321 rue de Rivoli, Paris', 'marie.petit@email.com', '+33456789012'),
+('Robert', 'Anne', 'FR567890', '654 avenue Montaigne, Paris', 'anne.robert@email.com', '+33567890123'),
+('Lambert', 'Paul', 'FR111222', '789 rue de la Paix, Lyon', 'paul.lambert@email.com', '+33678901234'),
+('Durand', 'Claire', 'FR222333', '456 avenue Jean Jaurès, Marseille', 'claire.durand@email.com', '+33789012345'),
+('Moreau', 'Thomas', 'FR333444', '123 boulevard Victor Hugo, Lille', 'thomas.moreau@email.com', '+33890123456'),
+('Lefebvre', 'Julie', 'FR444555', '987 rue Gambetta, Toulouse', 'julie.lefebvre@email.com', '+33901234567'),
+('Garcia', 'Michel', 'FR555666', '654 avenue de la République, Nice', 'michel.garcia@email.com', '+33012345678'),
+('Tremblay', 'Jacques', 'CA123456', '123 rue Sainte-Catherine, Montréal', 'jacques.tremblay@email.com', '+15141234567'),
+('Roy', 'Marie-Claude', 'CA234567', '456 boulevard René-Lévesque, Montréal', 'mc.roy@email.com', '+15142345678');
 
--- Insertion de 15 villes
-INSERT INTO villes (id, nom, pays, url_photo) VALUES
-(1, 'Montréal', 'CA', 'https://example.com/montreal.jpg'),
-(2, 'Paris', 'FR', 'https://maps.example.com/paris.jpg'),
-(3, 'New York', 'USA', 'https://maps.example.com/newyork.jpg'),
-(4, 'Tokyo', 'JP', 'https://maps.example.com/tokyo.jpg'),
-(5, 'Londres', 'UK', 'https://maps.example.com/london.jpg'),
-(6, 'Berlin', 'DE', 'https://maps.example.com/berlin.jpg'),
-(7, 'Montréal', 'CA', 'https://maps.example.com/montreal.jpg'),
-(8, 'Mexico', 'MX', 'https://maps.example.com/mexico.jpg'),
-(9, 'São Paulo', 'BR', 'https://maps.example.com/saopaulo.jpg'),
-(10, 'Sydney', 'AU', 'https://maps.example.com/sydney.jpg'),
-(11, 'Moscou', 'RU', 'https://maps.example.com/moscow.jpg'),
-(12, 'Le Caire', 'EG', 'https://maps.example.com/cairo.jpg'),
-(13, 'Shanghai', 'CN', 'https://maps.example.com/shanghai.jpg'),
-(14, 'Mumbai', 'IN', 'https://maps.example.com/mumbai.jpg'),
-(15, 'Rome', 'IT', 'https://maps.example.com/rome.jpg');
+-- Insertion des villes
+INSERT INTO villes (nom, pays, url_photo) VALUES
+('Paris', 'FR', 'https://plus.unsplash.com/premium_photo-1661919210043-fd847a58522d?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+('Londres', 'GB', 'https://images.unsplash.com/photo-1526129318478-62ed807ebdf9?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+('New York', 'US', 'https://images.unsplash.com/photo-1516893842880-5d8aada7ac05?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+('Tokyo', 'JP', 'https://images.unsplash.com/photo-1554797589-7241bb691973?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+('Dubai', 'AE', 'https://images.unsplash.com/photo-1518684079-3c830dcef090?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+('Madrid', 'ES', 'https://plus.unsplash.com/premium_photo-1697730214411-90916c40f30d?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+('Rome', 'IT', 'https://plus.unsplash.com/premium_photo-1675975706513-9daba0ec12a8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+('Berlin', 'DE', 'https://images.unsplash.com/photo-1528728329032-2972f65dfb3f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+('Amsterdam', 'NL', 'https://images.unsplash.com/photo-1542139368-847f8e3fbc6b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YW1zdGVyZGFtfGVufDB8fDB8fHww'),
+('Singapore', 'SG', 'https://images.unsplash.com/photo-1508964942454-1a56651d54ac?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+('Montréal', 'CA', 'https://images.unsplash.com/photo-1715191307694-ee4e57b473d6?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
 
--- Insertion d'aéroports pour chaque ville
-INSERT INTO aéroports (code, nom, ville_id) VALUES
-('YUL', 'Aéroport Montréal-Trudeau', 1),
-('CDG', 'Aéroport de Paris-Charles de Gaulle', 2),
-('JFK', 'Aéroport international John F. Kennedy', 3),
-('NRT', 'Aéroport international de Narita', 4),
-('LHR', 'Aéroport d Heathrow', 5),
-('TXL', 'Aéroport de Berlin-Tegel', 6),
-('MEX', 'Aéroport international de Mexico', 8),
-('GRU', 'Aéroport international de São Paulo-Guarulhos', 9),
-('SYD', 'Aéroport de Sydney', 10),
-('SVO', 'Aéroport international de Cheremetievo', 11),
-('CAI', 'Aéroport international du Caire', 12),
-('PVG', 'Aéroport international de Shanghai Pudong', 13),
-('BOM', 'Aéroport international de Chhatrapati Shivaji', 14),
-('FCO', 'Aéroport international Leonardo da Vinci', 15);
+-- Insertion des aéroports
+INSERT INTO aéroports (code, nom, ville_id, addresse) VALUES
+('CDG', 'Charles de Gaulle', 1, 'Route de l''Aéroport, 95700 Roissy-en-France'),
+('ORY', 'Orly', 1, '94390 Orly'),
+('LHR', 'Heathrow', 2, 'Longford TW6, Royaume-Uni'),
+('JFK', 'John F. Kennedy', 3, 'Queens, NY 11430, États-Unis'),
+('NRT', 'Narita', 4, 'Narita, Préfecture de Chiba, Japon'),
+('DXB', 'Dubai International', 5, 'Dubai - Émirats arabes unis'),
+('MAD', 'Adolfo Suárez Madrid–Barajas', 6, 'Av de la Hispanidad, Madrid, Espagne'),
+('FCO', 'Leonardo da Vinci', 7, 'Via dell'' Aeroporto di Fiumicino, Italie'),
+('TXL', 'Berlin Brandenburg', 8, 'Flughafen Str., Schönefeld, Allemagne'),
+('AMS', 'Amsterdam Schiphol', 9, 'Evert van de Beekstraat 202, Pays-Bas'),
+('YUL', 'Pierre-Elliott-Trudeau', 11, '975 Romeo-Vachon Blvd N, Dorval, QC H4Y 1H1, Canada');
 
--- Insertion de 15 avions
-INSERT INTO avions (type, nb_siège_économique, nb_siège_affaires, nb_siège_première) VALUES
-('Boeing 737', 150, 20, 10),
-('Boeing 747', 300, 40, 20),
-('Airbus A320', 180, 25, 15),
-('Airbus A380', 400, 50, 30),
-('Boeing 777', 250, 35, 20),
-('Airbus A330', 260, 30, 15),
-('Boeing 787', 290, 40, 20),
-('Bombardier CRJ-900', 80, 10, 5),
-('Embraer E190', 100, 12, 6),
-('Dash 8-Q400', 80, 8, 4),
-('Boeing 767', 220, 30, 15),
-('Airbus A350', 270, 35, 20),
-('Airbus A340', 300, 40, 25),
-('Boeing 727', 140, 15, 8),
-('Embraer E175', 100, 12, 6);
+-- Insertion des avions
+INSERT INTO avions (type) VALUES
+('Airbus A320'),
+('Boeing 737'),
+('Airbus A380'),
+('Boeing 787'),
+('Airbus A350'),
+('Boeing 777'),
+('Airbus A330'),
+('Boeing 747'),
+('Airbus A321'),
+('Boeing 757');
 
--- Insertion de 15 vols
-INSERT INTO vols (numéro_vol, aéroport_debut, aéroport_fin, date_départ, date_arrivée, avion_type, poids_max_bag, durée) VALUES
-('AC001', 'YUL', 'CDG', '2024-11-01 08:00:00', '2024-11-01 20:00:00', 'Boeing 777', 30, '08:00:00'),
-('AC002', 'YUL', 'JFK', '2024-11-02 09:30:00', '2024-11-02 10:30:00', 'Airbus A320', 20, '01:00:00'),
-('AC003', 'CDG', 'YUL', '2024-11-03 07:00:00', '2024-11-03 09:00:00', 'Boeing 747', 25, '08:00:00'),
-('AC004', 'YUL', 'NRT', '2024-11-04 12:00:00', '2024-11-05 14:00:00', 'Boeing 787', 30, '12:00:00'),
-('AC005', 'YUL', 'SYD', '2024-11-05 13:00:00', '2024-11-06 18:00:00', 'Airbus A380', 25, '21:00:00'),
-('AC006', 'JFK', 'LHR', '2024-11-06 14:00:00', '2024-11-06 02:00:00', 'Boeing 767', 28, '07:00:00'),
-('AC007', 'CDG', 'GRU', '2024-11-07 08:30:00', '2024-11-08 06:00:00', 'Airbus A330', 22, '12:30:00'),
-('AC008', 'NRT', 'PVG', '2024-11-08 10:00:00', '2024-11-08 11:30:00', 'Dash 8-Q400', 15, '01:30:00'),
-('AC009', 'LHR', 'BOM', '2024-11-09 07:30:00', '2024-11-09 21:00:00', 'Embraer E190', 18, '13:30:00'),
-('AC010', 'GRU', 'MEX', '2024-11-10 06:00:00', '2024-11-10 09:00:00', 'Boeing 767', 25, '03:00:00'),
-('AC011', 'YUL', 'CAI', '2024-11-11 09:00:00', '2024-11-11 22:00:00', 'Airbus A350', 30, '13:00:00'),
-('AC012', 'MEX', 'SYD', '2024-11-12 10:00:00', '2024-11-13 16:00:00', 'Boeing 747', 25, '28:00:00'),
-('AC013', 'BOM', 'FCO', '2024-11-13 12:30:00', '2024-11-13 22:30:00', 'Airbus A380', 28, '10:00:00'),
-('AC014', 'SYD', 'LHR', '2024-11-14 15:00:00', '2024-11-15 05:00:00', 'Boeing 737', 20, '14:00:00'),
-('AC015', 'YUL', 'NRT', '2024-11-15 11:00:00', '2024-11-16 15:00:00', 'Airbus A320', 25, '04:00:00');
+-- Insertion des sièges
+INSERT INTO sièges (numéro_siège, classe) VALUES
+('1A', 'première'),
+('1B', 'première'),
+('1C', 'première'),
+('1D', 'première'),
+('2A', 'business'),
+('2B', 'business'),
+('2C', 'business'),
+('2D', 'business'),
+('3A', 'économique'),
+('3B', 'économique'),
+('3C', 'économique'),
+('3D', 'économique'),
+('4A', 'économique'),
+('4B', 'économique'),
+('4C', 'économique');
 
--- Insertion de 15 vol_status
-INSERT INTO vol_status (status_numero_vol, status, heure) VALUES
-('AC001', 'depart', '2024-11-01 08:00:00'),
-('AC002', 'depart', '2024-11-02 09:30:00'),
-('AC003', 'arrivé', '2024-11-03 09:00:00'),
-('AC004', 'en route', '2024-11-04 12:00:00'),
-('AC005', 'en attente', '2024-11-05 13:00:00'),
-('AC006', 'depart', '2024-11-06 14:00:00'),
-('AC007', 'en attente', '2024-11-07 08:30:00'),
-('AC008', 'arrivé', '2024-11-08 11:30:00'),
-('AC009', 'depart', '2024-11-09 07:30:00'),
-('AC010', 'en route', '2024-11-10 06:00:00'),
-('AC011', 'depart', '2024-11-11 09:00:00'),
-('AC012', 'en route', '2024-11-12 10:00:00'),
-('AC013', 'arrivé', '2024-11-13 22:30:00'),
-('AC014', 'depart', '2024-11-14 15:00:00'),
-('AC015', 'en attente', '2024-11-15 11:00:00');
+-- Insertion des relations avions-sièges
+INSERT INTO avions_sièges (avion_id, siège_id, statut_siege) VALUES
+(1, 1, 'disponible'),
+(1, 2, 'disponible'),
+(1, 3, 'disponible'),
+(1, 4, 'disponible'),
+(1, 5, 'disponible'),
+(2, 6, 'disponible'),
+(2, 7, 'disponible'),
+(2, 8, 'disponible'),
+(2, 9, 'disponible'),
+(2, 10, 'disponible'),
+(3, 11, 'disponible'),
+(3, 12, 'disponible'),
+(3, 13, 'disponible'),
+(3, 14, 'disponible'),
+(3, 15, 'disponible');
 
--- Insertion de 15 prix_par_classe 
-INSERT INTO prix_par_classe (id, prix_économique, prix_affaire, prix_première, prix_numéro_vol) VALUES
-(1, 500.00, 1000.00, 1500.00, 'AC001'),
-(2, 450.00, 950.00, 1400.00, 'AC002'),
-(3, 550.00, 1050.00, 1550.00, 'AC003'),
-(4, 600.00, 1100.00, 1600.00, 'AC004'),
-(5, 520.00, 1020.00, 1520.00, 'AC005'),
-(6, 470.00, 970.00, 1470.00, 'AC006'),
-(7, 530.00, 1030.00, 1530.00, 'AC007'),
-(8, 480.00, 980.00, 1480.00, 'AC008'),
-(9, 510.00, 1010.00, 1510.00, 'AC009'),
-(10, 540.00, 1040.00, 1540.00, 'AC010'),
-(11, 550.00, 1050.00, 1550.00, 'AC011'),
-(12, 460.00, 960.00, 1460.00, 'AC012'),
-(13, 530.00, 1030.00, 1530.00, 'AC013'),
-(14, 590.00, 1090.00, 1590.00, 'AC014'),
-(15, 500.00, 1000.00, 1500.00, 'AC015');
+-- Insertion des trajets
+INSERT INTO trajets (numéro_trajet, id_aéroport_debut, id_aéroport_fin) VALUES
+('PAR-LON-001', 1, 3),
+('PAR-NYC-001', 1, 4),
+('LON-PAR-001', 3, 1),
+('NYC-PAR-001', 4, 1),
+('PAR-TYO-001', 1, 5),
+('PAR-DXB-001', 1, 6),
+('LON-NYC-001', 3, 4),
+('NYC-TYO-001', 4, 5),
+('TYO-DXB-001', 5, 6),
+('DXB-PAR-001', 6, 1),
+('PAR-MTL-001', 1, 11),
+('MTL-PAR-001', 11, 1),
+('NYC-MTL-001', 4, 11),
+('MTL-NYC-001', 11, 4);
 
--- Insertion de 15 réservations
-INSERT INTO réservations (numéro_réservation, numéro_vol, classe, siège_selectionné, bagages) VALUES
-('R001', 'AC001', 'économique', '12A', 1),
-('R002', 'AC002', 'affaires', '3B', 2),
-('R003', 'AC003', 'première', '1A', 3),
-('R004', 'AC004', 'économique', '14C', 1),
-('R005', 'AC005', 'affaires', '2D', 2),
-('R006', 'AC006', 'première', '1E', 2),
-('R007', 'AC007', 'économique', '18A', 1),
-('R008', 'AC008', 'affaires', '4C', 2),
-('R009', 'AC009', 'première', '1B', 3),
-('R010', 'AC010', 'économique', '20A', 1),
-('R011', 'AC011', 'affaires', '5D', 2),
-('R012', 'AC012', 'première', '1F', 3),
-('R013', 'AC013', 'économique', '13A', 1),
-('R014', 'AC014', 'affaires', '6A', 2),
-('R015', 'AC015', 'première', '2A', 3);
+-- Insertion des vols
+INSERT INTO vols (date_départ, date_arrivée, avion_id, trajet_id, poids_max_bag, durée) VALUES
+('2024-11-04 10:00:00', '2024-11-04 11:30:00', 1, 1, 23, 90),
+('2024-11-04 14:00:00', '2024-11-04 22:00:00', 2, 2, 23, 480),
+('2024-11-05 09:00:00', '2024-11-05 10:30:00', 3, 3, 23, 90),
+('2024-11-05 11:00:00', '2024-11-05 19:00:00', 4, 4, 23, 480),
+('2024-11-06 23:00:00', '2024-11-07 18:00:00', 5, 5, 23, 720),
+('2024-11-07 08:00:00', '2024-11-07 14:00:00', 6, 6, 23, 360),
+('2024-11-07 15:00:00', '2024-11-07 22:00:00', 7, 7, 23, 420),
+('2024-11-08 10:00:00', '2024-11-09 02:00:00', 8, 8, 23, 960),
+('2024-11-08 14:00:00', '2024-11-09 00:00:00', 9, 9, 23, 600),
+('2024-11-09 09:00:00', '2024-11-09 15:00:00', 10, 10, 23, 360),
+('2024-11-10 08:00:00', '2024-11-10 15:00:00', 1, 11, 23, 420),
+('2024-11-10 17:00:00', '2024-11-11 00:00:00', 2, 12, 23, 420),
+('2024-11-11 09:00:00', '2024-11-11 11:00:00', 3, 13, 23, 120),
+('2024-11-11 14:00:00', '2024-11-11 16:00:00', 4, 14, 23, 120);
 
--- Insertion de 15 réservations_clients
-INSERT INTO réservations_clients (clients_id, clients_numéro_réservation) VALUES
-(1, 'R001'),
-(2, 'R002'),
-(3, 'R003'),
-(4, 'R004'),
-(5, 'R005'),
-(6, 'R006'),
-(7, 'R007'),
-(8, 'R008'),
-(9, 'R009'),
-(10, 'R010'),
-(11, 'R011'),
-(12, 'R012'),
-(13, 'R013'),
-(14, 'R014'),
-(15, 'R015');
+-- Insertion des statuts de vol
+INSERT INTO vol_statut (id_vol, statut, heure) VALUES
+(1, 'en attente', '2024-11-04 09:00:00'),
+(2, 'en attente', '2024-11-04 13:00:00'),
+(3, 'en attente', '2024-11-05 08:00:00'),
+(4, 'en attente', '2024-11-05 10:00:00'),
+(5, 'en attente', '2024-11-06 22:00:00'),
+(6, 'en attente', '2024-11-07 07:00:00'),
+(7, 'en attente', '2024-11-07 14:00:00'),
+(8, 'en attente', '2024-11-08 09:00:00'),
+(9, 'en attente', '2024-11-08 13:00:00'),
+(10, 'en attente', '2024-11-09 08:00:00'),
+(11, 'en attente', '2024-11-10 07:00:00'),
+(12, 'en attente', '2024-11-10 16:00:00'),
+(13, 'en attente', '2024-11-11 08:00:00'),
+(14, 'en attente', '2024-11-11 13:00:00');
 
--- Insertion de 15 sièges_occupés
-INSERT INTO sièges_occupés (numéro_siège, numéro_vol, classe, statut_siege) VALUES
-('12A', 'AC001', 'économique', 'réservé'),
-('3B', 'AC002', 'affaires', 'occupé'),
-('1A', 'AC003', 'première', 'occupé'),
-('14C', 'AC004', 'économique', 'disponible'),
-('2D', 'AC005', 'affaires', 'occupé'),
-('1E', 'AC006', 'première', 'réservé'),
-('18A', 'AC007', 'économique', 'occupé'),
-('4C', 'AC008', 'affaires', 'disponible'),
-('1B', 'AC009', 'première', 'occupé'),
-('20A', 'AC010', 'économique', 'disponible'),
-('5D', 'AC011', 'affaires', 'réservé'),
-('1F', 'AC012', 'première', 'occupé'),
-('13A', 'AC013', 'économique', 'disponible'),
-('6A', 'AC014', 'affaires', 'réservé'),
-('2A', 'AC015', 'première', 'occupé');
+-- Insertion des prix par classe
+INSERT INTO prix_par_classe (id, prix_économique, prix_affaire, prix_première, id_vol) VALUES
+(1, 200.00, 600.00, 1200.00, 1),
+(2, 800.00, 2400.00, 4800.00, 2),
+(3, 200.00, 600.00, 1200.00, 3),
+(4, 800.00, 2400.00, 4800.00, 4),
+(5, 1000.00, 3000.00, 6000.00, 5),
+(6, 400.00, 1200.00, 2400.00, 6),
+(7, 600.00, 1800.00, 3600.00, 7),
+(8, 1200.00, 3600.00, 7200.00, 8),
+(9, 800.00, 2400.00, 4800.00, 9),
+(10, 400.00, 1200.00, 2400.00, 10),
+(11, 600.00, 1800.00, 3600.00, 11),
+(12, 600.00, 1800.00, 3600.00, 12),
+(13, 300.00, 900.00, 1800.00, 13),
+(14, 300.00, 900.00, 1800.00, 14);
+
+-- Insertion des réservations
+INSERT INTO réservations (id, numéro_réservation, id_vol, classe, siège_selectionné, bagages) VALUES
+(1, 'RES001', 1, 'économique', '3A', 1),
+(2, 'RES002', 2, 'business', '2A', 2),
+(3, 'RES003', 3, 'première', '1A', 2),
+(4, 'RES004', 4, 'économique', '3B', 1),
+(5, 'RES005', 5, 'business', '2B', 2),
+(6, 'RES006', 6, 'première', '1C', 2),
+(7, 'RES007', 7, 'économique', '3C', 1),
+(8, 'RES008', 8, 'business', '2C', 2),
+(9, 'RES009', 9, 'première', '1D', 2),
+(10, 'RES010', 10, 'économique', '3D', 1),
+(11, 'RES011', 11, 'économique', '4A', 1),
+(12, 'RES012', 12, 'business', '2D', 2);
+
+-- Insertion des relations réservations-clients
+INSERT INTO réservations_clients (id_clients, id_réservation) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5),
+(6, 6),
+(7, 7),
+(8, 8),
+(9, 9),
+(10, 10),
+(11, 11),
+(12, 12);
+
+-- Insertion des relations réservations-sièges
+INSERT INTO réservations_sièges (id_réservation, id_siège) VALUES
+(1, 9),   
+(2, 5),
+(3, 1),
+(4, 10),
+(5, 6),
+(6, 3),
+(7, 11),
+(8, 7), 
+(9, 4),
+(10, 12), 
+(11, 13), 
+(12, 8); 
