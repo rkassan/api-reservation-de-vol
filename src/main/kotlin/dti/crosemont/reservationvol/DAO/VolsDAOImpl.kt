@@ -1,6 +1,7 @@
 package dti.crosemont.reservationvol
 
 import dti.crosemont.reservationvol.Entites.Aeroport
+import dti.crosemont.reservationvol.Entites.Siege
 import dti.crosemont.reservationvol.Entites.Avion
 import dti.crosemont.reservationvol.Entites.Ville
 import dti.crosemont.reservationvol.Entites.Vol
@@ -19,12 +20,15 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
         override fun chercherTous(): List<Vol> =
                 bd.query(
                         "SELECT * FROM vols " +
-                                "JOIN aéroports AS ap_deb ON vols.aéroport_debut = ap_deb.code " +
-                                "JOIN aéroports AS ap_fin ON vols.aéroport_fin = ap_fin.code " +
+                                "JOIN trajets ON vols.id_trajets = trajets.id"
+                                "JOIN aéroports AS ap_deb ON trajets.id_aéroport_debut = ap_deb.id " +
+                                "JOIN aéroports AS ap_fin ON trajets.id_aéroport_fin = ap_fin.id " +
                                 "JOIN villes AS ville_debut ON ap_deb.ville_id = ville_debut.id " +
                                 "JOIN villes AS ville_fin ON ap_fin.ville_id = ville_fin.id " +
                                 "JOIN avions ON vols.avion_id = avions.id " +
-                                "JOIN prix_par_classe ON vols.numéro_vol = prix_par_classe.numéro_vol "
+                                "JOIN prix_par_classe ON vols.id = prix_par_classe.id_vols " +
+                                "JOIN avions_sièges ON avions_sièges.avions_id = avions.id " +
+                                "JOIN sièges ON sièges.id = avions_sièges.siège_id;"
                 ) { réponse, _ ->
                         var ville_debut =
                                 Ville(
