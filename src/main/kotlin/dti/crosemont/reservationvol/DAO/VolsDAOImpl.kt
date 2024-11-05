@@ -54,10 +54,12 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                         ville_fin,
                                         ville_fin.pays
                                 )
+                        
+
                         var avion = Avion(
                                 réponse.getInt("avions.id"), 
                                 réponse.getString("avions.type"),
-                                emptyList<Siège>(), 
+                                emptyList<Siege>(), 
                                 réponse.getString("numéro_vol") 
                         )
 

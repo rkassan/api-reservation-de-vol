@@ -1,6 +1,6 @@
 package dti.crosemont.reservationvol.Entites
 
-data class Siège(
+data class Siege(
     val numéro: String,             
     val classe: String,            
     val statut: String,             
