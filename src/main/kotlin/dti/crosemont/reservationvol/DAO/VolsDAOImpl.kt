@@ -1,19 +1,16 @@
 package dti.crosemont.reservationvol
 
 import dti.crosemont.reservationvol.Entites.Aeroport
-import dti.crosemont.reservationvol.Entites.Siège
 import dti.crosemont.reservationvol.Entites.Avion
+import dti.crosemont.reservationvol.Entites.Trajet
 import dti.crosemont.reservationvol.Entites.Ville
 import dti.crosemont.reservationvol.Entites.Vol
 import dti.crosemont.reservationvol.Entites.VolStatut
-import dti.crosemont.reservationvol.Entites.Trajet
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.query
 import org.springframework.stereotype.Repository
-
-import kotlin.time.toDuration
-import kotlin.time.DurationUnit
-
 
 @Repository
 class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
@@ -21,15 +18,16 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
         override fun chercherTous(): List<Vol> =
                 bd.query(
                         "SELECT * FROM vols " +
-                                "JOIN trajets ON vols.id_trajets = trajets.id"
+                                "JOIN trajets ON vols.trajet_id = trajets.id " +
                                 "JOIN aéroports AS ap_deb ON trajets.id_aéroport_debut = ap_deb.id " +
                                 "JOIN aéroports AS ap_fin ON trajets.id_aéroport_fin = ap_fin.id " +
                                 "JOIN villes AS ville_debut ON ap_deb.ville_id = ville_debut.id " +
                                 "JOIN villes AS ville_fin ON ap_fin.ville_id = ville_fin.id " +
+                                "JOIN prix_par_classe ON vols.id = prix_par_classe.id_vol " +
                                 "JOIN avions ON vols.avion_id = avions.id " +
-                                "JOIN prix_par_classe ON vols.id = prix_par_classe.id_vols " +
-                                "JOIN avions_sièges ON avions_sièges.avions_id = avions.id " +
-                                "JOIN sièges ON sièges.id = avions_sièges.siège_id;"
+                                //"JOIN avions_sièges ON avions_sièges.avion_id = avions.id " +
+                                //"JOIN sièges ON sièges.id = avions_sièges.siège_id " +
+                                "GROUP BY vols.id;"
                 ) { réponse, _ ->
                         var ville_debut =
                                 Ville(
@@ -51,7 +49,7 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                         réponse.getString("ap_deb.code"),
                                         réponse.getString("ap_deb.nom"),
                                         ville_debut,
-                                        réponse.getString("ap_deb.adresse")
+                                        réponse.getString("ap_deb.addresse")
                                 )
                         var aéroport_fin =
                                 Aeroport(
@@ -59,23 +57,19 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                         réponse.getString("ap_fin.code"),
                                         réponse.getString("ap_fin.nom"),
                                         ville_fin,
-                                        réponse.getString("ap_fin.adresse")
+                                        réponse.getString("ap_fin.addresse")
                                 )
-                        
 
-                        var avion = Avion(
-                                réponse.getInt("avions.id"), 
-                                réponse.getString("avions.type")
-                        )
+                        var avion =
+                                Avion(réponse.getInt("avions.id"), réponse.getString("avions.type"))
 
-                        var trajet = Trajet(
-                                réponse.getInt("trajets.id"),
-                                réponse.getString("trajets.numero_trajet"),
-                                aéroport_debut,
-                                aéroport_fin
-                        )
-
-                        
+                        var trajet =
+                                Trajet(
+                                        réponse.getInt("trajets.id"),
+                                        réponse.getString("trajets.numéro_trajet"),
+                                        aéroport_debut,
+                                        aéroport_fin
+                                )
 
                         var prix_par_classe = hashMapOf<String, Double>()
                         prix_par_classe["économique"] =
@@ -85,17 +79,21 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         prix_par_classe["première"] =
                                 réponse.getDouble("prix_par_classe.prix_première")
 
-                        val volStatuts = bd.query(
-                                "SELECT * FROM vol_statut WHERE id = ?;", 
-                                        réponse.getInt("id")
+                        val volStatuts =
+                                bd.query(
+                                        "SELECT * FROM vol_statut WHERE id_vol = ?;",
+                                        réponse.getInt("id_vol")
                                 ) { réponseStatut, _ ->
                                         VolStatut(
-                                                réponseStatut.getInt("vol_statut.id"),
+                                                réponseStatut.getInt("vol_statut.id_vol"),
                                                 réponseStatut.getString("vol_statut.statut"),
-                                                réponseStatut.getTimestamp("vol_statut.heure").toLocalDateTime().toLocalTime()
+                                                réponseStatut
+                                                        .getTimestamp("vol_statut.heure")
+                                                        .toLocalDateTime()
+                                                        .toLocalTime()
                                         )
                                 }
-                                
+
                         Vol(
                                 réponse.getInt("id"),
                                 réponse.getTimestamp("date_départ").toLocalDateTime(),
