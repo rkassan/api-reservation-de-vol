@@ -1,7 +1,7 @@
 package dti.crosemont.reservationvol
 
 import dti.crosemont.reservationvol.Entites.Aeroport
-import dti.crosemont.reservationvol.Entites.Siege
+import dti.crosemont.reservationvol.Entites.Siège
 import dti.crosemont.reservationvol.Entites.Avion
 import dti.crosemont.reservationvol.Entites.Ville
 import dti.crosemont.reservationvol.Entites.Vol
@@ -86,11 +86,11 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                 réponse.getDouble("prix_par_classe.prix_première")
 
                         val volStatuts = bd.query(
-                                "SELECT * FROM vol_statut WHERE numéro_vol = ?;", 
-                                        réponse.getString("numéro_vol")
+                                "SELECT * FROM vol_statut WHERE id = ?;", 
+                                        réponse.getInt("id")
                                 ) { réponseStatut, _ ->
                                         VolStatut(
-                                                réponseStatut.getString("vol_statut.numéro_vol"),
+                                                réponseStatut.getInt("vol_statut.id"),
                                                 réponseStatut.getString("vol_statut.statut"),
                                                 réponseStatut.getTimestamp("vol_statut.heure").toLocalDateTime().toLocalTime()
                                         )
