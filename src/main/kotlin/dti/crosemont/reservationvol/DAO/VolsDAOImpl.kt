@@ -102,8 +102,8 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                 réponse.getTimestamp("date_arrivée").toLocalDateTime(),
                                 avion,
                                 prix_par_classe,
-                                trajet,
                                 réponse.getInt("poids_max_bag"),
+                                trajet,
                                 volStatuts,
                                 réponse.getInt("durée").toDuration(DurationUnit.NANOSECONDS)
                         )
