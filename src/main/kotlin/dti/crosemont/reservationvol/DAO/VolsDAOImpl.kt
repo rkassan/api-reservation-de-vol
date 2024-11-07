@@ -6,6 +6,7 @@ import dti.crosemont.reservationvol.Entites.Avion
 import dti.crosemont.reservationvol.Entites.Ville
 import dti.crosemont.reservationvol.Entites.Vol
 import dti.crosemont.reservationvol.Entites.VolStatut
+import dti.crosemont.reservationvol.Entites.Trajet
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.query
 import org.springframework.stereotype.Repository
@@ -46,25 +47,32 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                 )
                         var aéroport_debut =
                                 Aeroport(
+                                        réponse.getInt("ap_deb.id"),
                                         réponse.getString("ap_deb.code"),
                                         réponse.getString("ap_deb.nom"),
                                         ville_debut,
-                                        ville_debut.pays
+                                        réponse.getString("ap_deb.adresse")
                                 )
                         var aéroport_fin =
                                 Aeroport(
+                                        réponse.getInt("ap_fin.id"),
                                         réponse.getString("ap_fin.code"),
                                         réponse.getString("ap_fin.nom"),
                                         ville_fin,
-                                        ville_fin.pays
+                                        réponse.getString("ap_fin.adresse")
                                 )
                         
 
                         var avion = Avion(
                                 réponse.getInt("avions.id"), 
-                                réponse.getString("avions.type"),
-                                emptyList<Siege>(), 
-                                réponse.getString("numéro_vol") 
+                                réponse.getString("avions.type")
+                        )
+
+                        var trajet = Trajet(
+                                réponse.getInt("trajets.id"),
+                                réponse.getString("trajets.numero_trajet"),
+                                aéroport_debut,
+                                aéroport_fin
                         )
 
                         
@@ -89,13 +97,12 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                 }
                                 
                         Vol(
-                                réponse.getString("numéro_vol"),
-                                aéroport_debut,
-                                aéroport_fin,
+                                réponse.getInt("id"),
                                 réponse.getTimestamp("date_départ").toLocalDateTime(),
                                 réponse.getTimestamp("date_arrivée").toLocalDateTime(),
                                 avion,
                                 prix_par_classe,
+                                trajet,
                                 réponse.getInt("poids_max_bag"),
                                 volStatuts,
                                 réponse.getInt("durée").toDuration(DurationUnit.NANOSECONDS)
