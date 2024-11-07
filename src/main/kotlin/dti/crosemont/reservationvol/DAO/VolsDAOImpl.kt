@@ -25,9 +25,7 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                 "JOIN villes AS ville_fin ON ap_fin.ville_id = ville_fin.id " +
                                 "JOIN prix_par_classe ON vols.id = prix_par_classe.id_vol " +
                                 "JOIN avions ON vols.avion_id = avions.id " +
-                                //"JOIN avions_sièges ON avions_sièges.avion_id = avions.id " +
-                                //"JOIN sièges ON sièges.id = avions_sièges.siège_id " +
-                                "GROUP BY vols.id;"
+                                "ORDER BY vols.id;"
                 ) { réponse, _ ->
                         var ville_debut =
                                 Ville(
