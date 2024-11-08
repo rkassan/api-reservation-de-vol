@@ -125,6 +125,6 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                 bd.query(QUERY_VOL_PAR_ID, id) { réponse, _ -> mapVol(réponse) }.singleOrNull()
 
         override fun effacer(id: Int) {
-                //bd.update("DELETE FROM vols WHERE id = ?", id)
+                bd.update("DELETE FROM vols WHERE id = ?", id)
         }
 }

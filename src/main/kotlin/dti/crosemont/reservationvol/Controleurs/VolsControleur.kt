@@ -50,8 +50,8 @@ class VolsControleur(private val dao: VolsDAOImpl) {
     }
 
     @DeleteMapping("/{id}")
-    /*fun supprimeVol(@PathVariable id: Int): ResponseEntity<HttpStatus> {
+    fun supprimeVolParId(@PathVariable id: Int): ResponseEntity<HttpStatus> {
         ResponseEntity(dao.effacer(id), HttpStatus.ACCEPTED)
         return ResponseEntity.noContent().build()
-    }*/
+    }
 }
