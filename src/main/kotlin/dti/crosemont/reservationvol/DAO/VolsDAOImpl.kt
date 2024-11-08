@@ -1,12 +1,18 @@
 package dti.crosemont.reservationvol
 
 import dti.crosemont.reservationvol.Entites.Aeroport
+import dti.crosemont.reservationvol.Entites.Siege
 import dti.crosemont.reservationvol.Entites.Avion
 import dti.crosemont.reservationvol.Entites.Ville
 import dti.crosemont.reservationvol.Entites.Vol
+import dti.crosemont.reservationvol.Entites.VolStatut
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.query
 import org.springframework.stereotype.Repository
+
+import kotlin.time.toDuration
+import kotlin.time.DurationUnit
+
 
 @Repository
 class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
@@ -14,12 +20,15 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
         override fun chercherTous(): List<Vol> =
                 bd.query(
                         "SELECT * FROM vols " +
-                                "JOIN aéroports AS ap_deb ON vols.aéroport_debut = ap_deb.code " +
-                                "JOIN aéroports AS ap_fin ON vols.aéroport_fin = ap_fin.code " +
+                                "JOIN trajets ON vols.id_trajets = trajets.id"
+                                "JOIN aéroports AS ap_deb ON trajets.id_aéroport_debut = ap_deb.id " +
+                                "JOIN aéroports AS ap_fin ON trajets.id_aéroport_fin = ap_fin.id " +
                                 "JOIN villes AS ville_debut ON ap_deb.ville_id = ville_debut.id " +
                                 "JOIN villes AS ville_fin ON ap_fin.ville_id = ville_fin.id " +
                                 "JOIN avions ON vols.avion_id = avions.id " +
-                                "JOIN prix_par_classe ON vols.numéro_vol = prix_par_classe.numéro_vol "
+                                "JOIN prix_par_classe ON vols.id = prix_par_classe.id_vols " +
+                                "JOIN avions_sièges ON avions_sièges.avions_id = avions.id " +
+                                "JOIN sièges ON sièges.id = avions_sièges.siège_id;"
                 ) { réponse, _ ->
                         var ville_debut =
                                 Ville(
@@ -49,7 +58,16 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                         ville_fin,
                                         ville_fin.pays
                                 )
-                        var avion = Avion(réponse.getString("avions.type"), 0, 0, 0)
+                        
+
+                        var avion = Avion(
+                                réponse.getInt("avions.id"), 
+                                réponse.getString("avions.type"),
+                                emptyList<Siege>(), 
+                                réponse.getString("numéro_vol") 
+                        )
+
+                        
 
                         var prix_par_classe = hashMapOf<String, Double>()
                         prix_par_classe["économique"] =
@@ -59,6 +77,17 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         prix_par_classe["première"] =
                                 réponse.getDouble("prix_par_classe.prix_première")
 
+                        val volStatuts = bd.query(
+                                "SELECT * FROM vol_statut WHERE numéro_vol = ?;", 
+                                        réponse.getString("numéro_vol")
+                                ) { réponseStatut, _ ->
+                                        VolStatut(
+                                                réponseStatut.getString("vol_statut.numéro_vol"),
+                                                réponseStatut.getString("vol_statut.statut"),
+                                                réponseStatut.getTimestamp("vol_statut.heure").toLocalDateTime().toLocalTime()
+                                        )
+                                }
+                                
                         Vol(
                                 réponse.getString("numéro_vol"),
                                 aéroport_debut,
@@ -68,8 +97,8 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                 avion,
                                 prix_par_classe,
                                 réponse.getInt("poids_max_bag"),
-                                listOf("en attente"),
-                                réponse.getTimestamp("durée").toLocalDateTime().toLocalTime()
+                                volStatuts,
+                                réponse.getInt("durée").toDuration(DurationUnit.NANOSECONDS)
                         )
                 }
 }
