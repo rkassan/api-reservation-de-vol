@@ -14,14 +14,19 @@ import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import dti.crosemont.reservationvol.Entites.Reservation
+import dti.crosemont.reservationvol.ReservationsDAOImpl
 import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/reservations")
-class ReservationControleur {
+class ReservationControleur(private val dao: ReservationsDAOImpl) {
 
     @GetMapping
-    fun obtenirToutesLesReservations(): ResponseEntity<List<Reservation>> = ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+    fun obtenirToutesLesReservations(): ResponseEntity<List<Reservation>> {
+        val reservations = dao.chercherTous()
+        return ResponseEntity(reservations, HttpStatus.OK)
+    }
+
 
     @GetMapping("/{numéroRéservation}")
     fun obtenirReservationParNumero(@PathVariable numéroRéservation: String): ResponseEntity<Reservation> {
