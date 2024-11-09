@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository
 @Repository
 class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
 
-     override fun chercherTous(): List<Reservation> {
+    override fun chercherTous(): List<Reservation> {
         val query = "SELECT * FROM réservations"
         
         return bd.query(query) { rs, _ ->
@@ -21,22 +21,27 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
                 numéroRéservation = rs.getString("numéro_réservation"),
                 idVol = rs.getInt("id_vol"),
                 clients = getClientsForReservation(rs.getInt("id")), 
-                sièges = getSiègesForReservation(rs.getInt("id")),   
+                sièges = getSiègesForReservation(rs.getInt("id")),  
                 classe = rs.getString("classe"),
-                siegeSelectionne = rs.getString("siège_selectionné"), 
-                bagages = rs.getInt("bagages") 
+                siegeSelectionne = rs.getString("siège_selectionné"),
+                bagages = rs.getInt("bagages")
             )
         }
     }
 
     private fun getClientsForReservation(reservationId: Int): List<Client> {
-        val query = "SELECT * FROM clients WHERE reservation_id = ?"
+        val query = """
+            SELECT clients.*
+            FROM clients
+            JOIN réservations_clients ON clients.id = réservations_clients.id_clients
+            WHERE réservations_clients.id_réservation = ?
+        """
         return bd.query(query, arrayOf(reservationId)) { rs, _ ->
             Client(
                 id = rs.getInt("id"),
                 nom = rs.getString("nom"),
                 prénom = rs.getString("prénom"),
-                adresse = rs.getString("adresse"),
+                adresse = rs.getString("addresse"),
                 numéroPasseport = rs.getString("numéro_passeport"),
                 email = rs.getString("email"),
                 numéroTéléphone = rs.getString("numéro_téléphone")
