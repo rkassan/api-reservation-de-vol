@@ -15,16 +15,16 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
     override fun chercherTous(): List<Reservation> {
         val query = "SELECT * FROM réservations"
         
-        return bd.query(query) { rs, _ ->
+        return bd.query(query) { reponse, _ ->
             Reservation(
-                id = rs.getInt("id"),
-                numéroRéservation = rs.getString("numéro_réservation"),
-                idVol = rs.getInt("id_vol"),
-                clients = getClientsForReservation(rs.getInt("id")), 
-                sièges = getSiègesForReservation(rs.getInt("id")),  
-                classe = rs.getString("classe"),
-                siegeSelectionne = rs.getString("siège_selectionné"),
-                bagages = rs.getInt("bagages")
+                id = reponse.getInt("id"),
+                numéroRéservation = reponse.getString("numéro_réservation"),
+                idVol = reponse.getInt("id_vol"),
+                clients = getClientsForReservation(reponse.getInt("id")), 
+                sièges = getSiègesForReservation(reponse.getInt("id")),  
+                classe = reponse.getString("classe"),
+                siegeSelectionne = reponse.getString("siège_selectionné"),
+                bagages = reponse.getInt("bagages")
             )
         }
     }
@@ -36,15 +36,15 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
             JOIN réservations_clients ON clients.id = réservations_clients.id_clients
             WHERE réservations_clients.id_réservation = ?
         """
-        return bd.query(query, arrayOf(reservationId)) { rs, _ ->
+        return bd.query(query, arrayOf(reservationId)) { reponse, _ ->
             Client(
-                id = rs.getInt("id"),
-                nom = rs.getString("nom"),
-                prénom = rs.getString("prénom"),
-                adresse = rs.getString("addresse"),
-                numéroPasseport = rs.getString("numéro_passeport"),
-                email = rs.getString("email"),
-                numéroTéléphone = rs.getString("numéro_téléphone")
+                id = reponse.getInt("id"),
+                nom = reponse.getString("nom"),
+                prénom = reponse.getString("prénom"),
+                adresse = reponse.getString("addresse"),
+                numéroPasseport = reponse.getString("numéro_passeport"),
+                email = reponse.getString("email"),
+                numéroTéléphone = reponse.getString("numéro_téléphone")
             )
         }
     }
@@ -56,12 +56,26 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
             JOIN réservations_sièges ON sièges.id = réservations_sièges.id_siège
             WHERE réservations_sièges.id_réservation = ?
         """
-        return bd.query(query, arrayOf(reservationId)) { rs, _ ->
+        return bd.query(query, arrayOf(reservationId)) { reponse, _ ->
             Siège(
-                id = rs.getInt("id"),
-                numéroSiège = rs.getString("numéro_siège"),
-                classe = rs.getString("classe")
+                id = reponse.getInt("id"),
+                numéroSiège = reponse.getString("numéro_siège"),
+                classe = reponse.getString("classe")
             )
         }
     }
+
+    //ajoute de reservation
+
+fun ajouterReservation(reservation: Reservation): Reservation {
+    val query = """
+        INSERT INTO réservations (numéro_réservation, id_vol, classe, siège_selectionné, bagages)
+        VALUES (?, ?, ?, ?, ?)
+    """
+    bd.update(query, reservation.numéroRéservation, reservation.idVol, reservation.classe, reservation.siegeSelectionne, reservation.bagages)
+
+    return reservation
+}
+
+
 }

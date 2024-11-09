@@ -32,10 +32,17 @@ class ReservationControleur(private val dao: ReservationsDAOImpl) {
     fun obtenirReservationParNumero(@PathVariable numéroRéservation: String): ResponseEntity<Reservation> {
         return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
     }
-
+    
+//Creation de reservation
     @PostMapping
     fun ajouterReservation(@RequestBody reservation: Reservation): ResponseEntity<Reservation> {
-        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+       return try {
+            val ajouteReservation = dao.ajouterReservation(reservation)    
+            ResponseEntity(ajouteReservation, HttpStatus.CREATED)
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 
     @PutMapping("/{numéroRéservation}")
