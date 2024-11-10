@@ -13,19 +13,21 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import dti.crosemont.reservationvol.ReservationsService
 import dti.crosemont.reservationvol.Entites.Reservation
 import dti.crosemont.reservationvol.ReservationsDAOImpl
 import java.time.LocalDateTime
 
+
+
+
 @RestController
 @RequestMapping("/reservations")
-class ReservationControleur(private val dao: ReservationsDAOImpl) {
+class ReservationControleur(val reservationsService: ReservationsService) {
 
     @GetMapping
-    fun obtenirToutesLesReservations(): ResponseEntity<List<Reservation>> {
-        val reservations = dao.chercherTous()
-        return ResponseEntity(reservations, HttpStatus.OK)
-    }
+    fun obtenirToutesLesReservations(): ResponseEntity<List<Reservation>> =
+        ResponseEntity.ok(reservationsService.obtenirToutesLesReservations())
 
 
     @GetMapping("/{numéroRéservation}")
@@ -33,11 +35,11 @@ class ReservationControleur(private val dao: ReservationsDAOImpl) {
         return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
     }
     
-//Creation de reservation
+    //Creation de reservation
     @PostMapping
     fun ajouterReservation(@RequestBody reservation: Reservation): ResponseEntity<Reservation> {
-       return try {
-            val ajouteReservation = dao.ajouterReservation(reservation)    
+        return try {
+            val ajouteReservation = reservationsService.ajouterReservation(reservation)    
             ResponseEntity(ajouteReservation, HttpStatus.CREATED)
         } catch (ex: Exception) {
             ex.printStackTrace()

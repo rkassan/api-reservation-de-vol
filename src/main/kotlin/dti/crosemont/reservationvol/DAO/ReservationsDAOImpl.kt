@@ -65,9 +65,7 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
         }
     }
 
-    //ajoute de reservation
-
-fun ajouterReservation(reservation: Reservation): Reservation {
+    override fun ajouterReservation(reservation: Reservation): Reservation {
     val query = """
         INSERT INTO réservations (numéro_réservation, id_vol, classe, siège_selectionné, bagages)
         VALUES (?, ?, ?, ?, ?)
