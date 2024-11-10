@@ -12,7 +12,7 @@ class ClientDAOImpl( private val bd : JdbcTemplate ) : ClientDAO{
         private const val OBTENIR_CLIENT_PAR_ID : String = "SELECT * FROM clients WHERE id = ?;"
         private const val OBTENIR_CLIENT_PAR_MOT_CLÉ : String = 
             """
-            SELECT * FROM clients WHERE prénom LIKE ?% OR nom LIKE ?%;
+            SELECT * FROM clients WHERE prénom LIKE ? OR nom LIKE ?;
             """
     }
 
@@ -24,7 +24,7 @@ class ClientDAOImpl( private val bd : JdbcTemplate ) : ClientDAO{
             { réponse, _ -> convertirRésultatEnClient(réponse) }.singleOrNull()
     
     override fun chercherParMotCle(motClé: String): List<Client> =
-        bd.query( OBTENIR_CLIENT_PAR_MOT_CLÉ, motClé ) {réponse, _ -> convertirRésultatEnClient(réponse)}
+        bd.query( OBTENIR_CLIENT_PAR_MOT_CLÉ, "$motClé%", "$motClé%" ) {réponse, _ -> convertirRésultatEnClient(réponse)}
 
     override fun effacer( id: Int ) { }
 
@@ -34,7 +34,7 @@ class ClientDAOImpl( private val bd : JdbcTemplate ) : ClientDAO{
             nom = réponse.getString( "nom" ), 
             prénom = réponse.getString( "prénom" ), 
             adresse = réponse.getString( "numéro_passeport" ), 
-            numéroPasseport = réponse.getNString( "adresse" ), 
+            numéroPasseport = réponse.getNString( "addresse" ), 
             email = réponse.getString( "email" ),
             numéroTéléphone = réponse.getString( "numéro_téléphone" )
         )
