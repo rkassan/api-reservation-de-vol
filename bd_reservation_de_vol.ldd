@@ -87,7 +87,7 @@ CREATE TABLE vol_statut (
 
 /*CREATIONS PRIX PAR CLASSE*/
 CREATE TABLE prix_par_classe (
-    id INT NOT NULL PRIMARY KEY,
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     prix_économique DOUBLE NOT NULL,
     prix_affaire DOUBLE NOT NULL,
     prix_première DOUBLE NOT NULL,
@@ -97,7 +97,7 @@ CREATE TABLE prix_par_classe (
 
 /* CREATION TABLE RÉSERVATIONS */
 CREATE TABLE réservations (
-    id INT NOT NULL PRIMARY KEY,
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     numéro_réservation VARCHAR(255) NOT NULL UNIQUE,
     id_vol INT NOT NULL,
     classe SET('économique', 'business', 'première') NOT NULL,
