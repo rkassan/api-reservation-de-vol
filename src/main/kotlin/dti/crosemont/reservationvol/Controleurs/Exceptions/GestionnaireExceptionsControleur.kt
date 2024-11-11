@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.servlet.resource.NoResourceFoundException
 import org.springframework.web.context.request.WebRequest
 import org.springframework.http.HttpStatus
-import dti.crosemont.reservationvol.Controleur.Exceptions.MessageErreur
 import java.time.LocalDateTime
 
 @RestControllerAdvice
