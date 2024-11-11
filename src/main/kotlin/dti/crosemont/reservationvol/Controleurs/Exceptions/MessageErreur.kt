@@ -1,4 +1,4 @@
-package dti.crosemont.brise_glace.Controleur.Exceptions
+package dti.crosemont.reservationvol.Controleurs.Exceptions
 
 import java.time.LocalDateTime
 
