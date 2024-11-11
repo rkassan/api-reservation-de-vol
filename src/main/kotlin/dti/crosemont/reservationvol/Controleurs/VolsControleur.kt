@@ -31,7 +31,7 @@ class VolsControleur(private val volService: VolService) {
     fun obtenirVolParId(@PathVariable id: Int): ResponseEntity<Vol> =
             ResponseEntity(volService.chercherParId(id), HttpStatus.OK)
 
-    @GetMapping("/vols", params = ["dateDebut", "aeroportDebut", "aeroportFin"])
+    @GetMapping( params = ["dateDebut", "aeroportDebut", "aeroportFin"])
             fun obtenirVolParParam(
                 @RequestParam dateDebut: LocalDateTime,
                 @RequestParam aeroportDebut: String,

@@ -51,6 +51,10 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         JOIN trajets ON vols.trajet_id = trajets.id 
                         JOIN aéroports AS ap_deb ON trajets.id_aéroport_debut = ap_deb.id 
                         JOIN aéroports AS ap_fin ON trajets.id_aéroport_fin = ap_fin.id 
+                        JOIN villes AS ville_debut ON ap_deb.ville_id = ville_debut.id 
+                        JOIN villes AS ville_fin ON ap_fin.ville_id = ville_fin.id 
+                        JOIN prix_par_classe ON vols.id = prix_par_classe.id_vol 
+                        JOIN avions ON vols.avion_id = avions.id 
                         WHERE date_départ = ? AND ap_deb.code = ? AND ap_fin.code = ?
                         ORDER BY vols.date_départ;
                     """
@@ -128,7 +132,7 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         réponse.getInt("poids_max_bag"),
                         trajet,
                         volStatuts,
-                        réponse.getInt("durée").toDuration(DurationUnit.NANOSECONDS)
+                        réponse.getInt("durée").toDuration(DurationUnit.MINUTES)
                 )
         }
 
