@@ -2,6 +2,7 @@ package dti.crosemont.reservationvol.Controleurs
 
 import dti.crosemont.reservationvol.Entites.Client
 import dti.crosemont.reservationvol.ClientDAOImpl
+import dti.crosemont.reservationvol.Service.ClientsService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -16,22 +17,22 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/clients")
-class ClientsControleur( private val repos : ClientDAOImpl ) {
+class ClientsControleur( private val service : ClientsService ) {
 
         @GetMapping
         fun obtenirToutLesClients(
                 @RequestParam( name = "motCle", required = false ) motClé : String?
         ): ResponseEntity<List<Client>> {
                 if( !motClé.isNullOrEmpty() ){
-                        return ResponseEntity( repos.chercherParMotCle(motClé), HttpStatus.OK )        
+                        return ResponseEntity.ok( service.obtenirClientsParMotCle(motClé) )
                 }
 
-                return ResponseEntity( repos.chercherTous(), HttpStatus.OK )
+                return ResponseEntity.ok( service.obtenirToutLesClient() )
         }
 
         @GetMapping("/{id}")
         fun obtenirUnClientParId( @PathVariable id: Int ) : ResponseEntity<Client> =
-                ResponseEntity( repos.chercherParId(id), HttpStatus.OK )
+                ResponseEntity.ok( service.obtenirParId( id ) )
 
         @PostMapping
         fun ajouterClient(@RequestBody client: Client): ResponseEntity<Client> =
