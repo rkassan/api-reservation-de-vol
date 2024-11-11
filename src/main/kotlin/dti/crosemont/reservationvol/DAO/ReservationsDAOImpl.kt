@@ -75,5 +75,21 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
     return reservation
 }
 
+//Ajoute de chercherParID
+override fun chercherParId(id: Int): Reservation? {
+    val query = "SELECT * FROM réservations WHERE id = ?"
 
+    return bd.query(query, arrayOf(id)) { reponse, _ ->
+        Reservation(
+            id = reponse.getInt("id"),
+            numéroRéservation = reponse.getString("numéro_réservation"),
+            idVol = reponse.getInt("id_vol"),
+            clients = getClientsForReservation(reponse.getInt("id")), 
+            sièges = getSiègesForReservation(reponse.getInt("id")),  
+            classe = reponse.getString("classe"),
+            siegeSelectionne = reponse.getString("siège_selectionné"),
+            bagages = reponse.getInt("bagages")
+        )
+    }.firstOrNull()
+}
 }

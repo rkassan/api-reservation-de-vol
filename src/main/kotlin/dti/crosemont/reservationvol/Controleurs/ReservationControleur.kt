@@ -30,9 +30,14 @@ class ReservationControleur(val reservationsService: ReservationsService) {
         ResponseEntity.ok(reservationsService.obtenirToutesLesReservations())
 
 
-    @GetMapping("/{numéroRéservation}")
-    fun obtenirReservationParNumero(@PathVariable numéroRéservation: String): ResponseEntity<Reservation> {
-        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+    @GetMapping("/{id}")
+    fun obtenirReservationParId(@PathVariable id: Int): ResponseEntity<Reservation> {
+        val reservation = reservationsService.obtenirReservationParId(id)
+            return if (reservation != null) {
+                ResponseEntity.ok(reservation)
+        }else {
+        ResponseEntity(HttpStatus.NOT_FOUND)
+        }
     }
     
     //Creation de reservation

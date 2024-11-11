@@ -13,5 +13,8 @@ class ReservationsService(private val reservationsDAO: ReservationsDAOImpl) {
     fun ajouterReservation(reservation: Reservation): Reservation {
         return reservationsDAO.ajouterReservation(reservation)
     }
+    fun obtenirReservationParId(id: Int): Reservation? {
+        return reservationsDAO.chercherParId(id)
+    }
 
 }
