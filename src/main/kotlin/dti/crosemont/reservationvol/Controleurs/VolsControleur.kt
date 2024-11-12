@@ -60,7 +60,7 @@ class VolsControleur(private val volService: VolService) {
             @PathVariable numeroVol: String,
             @RequestBody modifieVol: Vol
     ): ResponseEntity<Vol> {
-        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+        return volService.modifierVol(id, modifieVol)
     }
 
     @DeleteMapping("/{id}")

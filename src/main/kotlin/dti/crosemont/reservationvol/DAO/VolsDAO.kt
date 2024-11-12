@@ -16,4 +16,5 @@ interface VolsDAO: DAO<Vol>{
     fun ajouterPrixParClasse(volId: Int, prixParClasse: Map<String, Double>)
     fun trajetExiste(id: Int): Boolean
     fun avionExiste(id: Int): Boolean
+    fun modifierVol(id: Int, modifieVol: Vol): Vol
 }

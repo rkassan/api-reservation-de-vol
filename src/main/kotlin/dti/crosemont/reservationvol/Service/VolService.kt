@@ -35,6 +35,24 @@ class VolService(private val volsDAO: VolsDAO) {
     
         return ResponseEntity(nouveauVol.copy(vol_statut = statutsMisAJour), HttpStatus.CREATED)
     }
+
+    fun modifierVol(id: Int, modifieVol: Vol): ResponseEntity<Vol> {
+        val volExistant = volsDAO.chercherParId(id)
+        if (volExistant == null) {
+            return ResponseEntity(HttpStatus.NOT_FOUND)
+        }
+
+        if (!volsDAO.trajetExiste(modifieVol.trajet.id)) {
+            return ResponseEntity(HttpStatus.NOT_FOUND)
+        }
+        if (!volsDAO.avionExiste(modifieVol.avion.id)) {
+            return ResponseEntity(HttpStatus.NOT_FOUND)
+        }
+
+        val volMisAJour = volsDAO.modifierVol(id, modifieVol)
+        return ResponseEntity(volMisAJour, HttpStatus.OK)
+    }
+
     
    
     
