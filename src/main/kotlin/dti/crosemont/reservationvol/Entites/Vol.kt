@@ -1,7 +1,9 @@
 package dti.crosemont.reservationvol.Entites
 
 import java.time.LocalDateTime
-import kotlin.time.Duration
+import java.time.Duration
+import com.fasterxml.jackson.annotation.JsonProperty
+
 
 data class Vol(
         val id: Int,

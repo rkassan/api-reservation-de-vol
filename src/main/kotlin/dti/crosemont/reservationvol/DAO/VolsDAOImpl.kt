@@ -8,8 +8,10 @@ import dti.crosemont.reservationvol.Entites.Vol
 import dti.crosemont.reservationvol.Entites.VolStatut
 import java.sql.ResultSet
 import java.time.LocalDateTime
+import java.time.temporal.TemporalUnit
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
+import kotlin.time.toJavaDuration
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.query
 import org.springframework.stereotype.Repository
@@ -120,7 +122,6 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                         réponseStatut
                                                 .getTimestamp("vol_statut.heure")
                                                 .toLocalDateTime()
-                                                .toLocalTime()
                                 )
                         }
                 return Vol(
@@ -132,7 +133,7 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         réponse.getInt("poids_max_bag"),
                         trajet,
                         volStatuts,
-                        réponse.getInt("durée").toDuration(DurationUnit.MINUTES)
+                        réponse.getInt("durée").toDuration(DurationUnit.MINUTES).toJavaDuration()
                 )
         }
 
@@ -152,4 +153,45 @@ override fun obtenirVolParParam(dateDebut: LocalDateTime, aeroportDebut: String,
             mapVol(réponse)
         }
     }
+
+    override fun ajouterVol(vol: Vol): Vol {
+        val sql = """
+            INSERT INTO vols (date_départ, date_arrivée, avion_id, trajet_id, poids_max_bag, durée)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """
+        bd.update(sql, vol.dateDepart, vol.dateArrivee, vol.avion.id, vol.trajet.id, vol.poidsMaxBag, vol.duree.toMinutes())
+        
+        val nouvelId = bd.queryForObject("SELECT LAST_INSERT_ID()", Int::class.java) ?: throw Exception("Erreur lors de l'ajout du vol")
+
+       
+        
+        return vol.copy(id = nouvelId)
+    }
+
+    override fun ajouterStatutVol(volId: Int, statut: VolStatut) {
+        val sql = "INSERT INTO vol_statut (id_vol, statut, heure) VALUES (?, ?, ?)"
+        bd.update(sql, volId, statut.statut, statut.heure)
+    }
+
+    override fun ajouterPrixParClasse(volId: Int, prixParClasse: Map<String, Double>) {
+        val sql = "INSERT INTO prix_par_classe (id_vol, prix_économique, prix_affaire, prix_première) VALUES (?, ?, ?, ?)"
+        bd.update(
+            sql,
+            volId,
+            prixParClasse["économique"],
+            prixParClasse["affaire"],
+            prixParClasse["première"]
+        )
+    }
+
+    override fun trajetExiste(id: Int): Boolean {
+        val sql = "SELECT COUNT(*) FROM trajets WHERE id = ?"
+        return bd.queryForObject(sql, arrayOf(id), Int::class.java) ?: 0 > 0
+    }
+
+    override fun avionExiste(id: Int): Boolean {
+        val sql = "SELECT COUNT(*) FROM avions WHERE id = ?"
+        return bd.queryForObject(sql, arrayOf(id), Int::class.java) ?: 0 > 0
+    }
+   
 }

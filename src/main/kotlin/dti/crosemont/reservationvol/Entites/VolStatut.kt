@@ -1,9 +1,11 @@
 package dti.crosemont.reservationvol.Entites
 
-import java.time.LocalTime
+
+import java.time.LocalDateTime
+import com.fasterxml.jackson.annotation.JsonProperty
 
 data class VolStatut(
         val idVol : Int,
-        val Statut : String,
-        val heure : LocalTime
+        val statut : String,
+        val heure : LocalDateTime
 )

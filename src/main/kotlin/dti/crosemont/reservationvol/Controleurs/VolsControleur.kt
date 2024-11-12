@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import dti.crosemont.reservationvol.Service.VolService
+import kotlin.time.Duration
+import kotlin.time.minutes
 
 
 
@@ -48,10 +50,10 @@ class VolsControleur(private val volService: VolService) {
                 }
             }
 
-    @PostMapping
-    fun ajoutervol(@RequestBody vol: Vol): ResponseEntity<Vol> {
-        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
-    }
+            @PostMapping
+            fun ajoutervol(@RequestBody vol: Vol): ResponseEntity<Vol> {
+                return volService.ajouterVol(vol)
+            }
 
     @PutMapping("/{id}")
     fun modifierVol(
