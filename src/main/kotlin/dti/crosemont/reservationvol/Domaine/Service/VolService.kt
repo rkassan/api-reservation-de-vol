@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
 import dti.crosemont.reservationvol.Domaine.Modele.Vol
+import dti.crosemont.reservationvol.Domaine.Modele.`Siège`
 import java.time.LocalDateTime
 
 @Service
@@ -61,4 +62,6 @@ class VolService(private val volsDAO: VolsDAO) {
     fun chercherParId(id: Int): Vol? = volsDAO.chercherParId(id)
 
     fun effacer(id: Int) = volsDAO.effacer(id)
+
+    fun chercherSiegeParVolId(id: Int): List<Siège> = volsDAO.obtenirSiegeParVolId(id)
 }

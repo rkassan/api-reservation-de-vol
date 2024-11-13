@@ -7,6 +7,7 @@ import dti.crosemont.reservationvol.Domaine.Modele.Trajet
 import dti.crosemont.reservationvol.Domaine.Modele.Ville
 import dti.crosemont.reservationvol.Domaine.Modele.Vol
 import dti.crosemont.reservationvol.Domaine.Modele.VolStatut
+import dti.crosemont.reservationvol.Domaine.Modele.`Siège`
 import java.sql.ResultSet
 import java.time.LocalDateTime
 import kotlin.time.DurationUnit
@@ -48,7 +49,8 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         """
 
                 
-                private const val QUERY_VOL_PAR_PARAM = """
+                private const val QUERY_VOL_PAR_PARAM = 
+                        """
                         SELECT * FROM vols
                         JOIN trajets ON vols.trajet_id = trajets.id 
                         JOIN aéroports AS ap_deb ON trajets.id_aéroport_debut = ap_deb.id 
@@ -59,7 +61,16 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         JOIN avions ON vols.avion_id = avions.id 
                         WHERE date_départ = ? AND ap_deb.code = ? AND ap_fin.code = ?
                         ORDER BY vols.date_départ;
-                    """
+                        """
+
+                private const val QUERY_SIEGE_PAR_VOL = """
+                        SELECT * FROM sièges
+                        JOIN avions_sièges ON avions_sièges.siège_id = sièges.id
+                        JOIN avions ON avions_sièges.avion_id = avions.id
+                        JOIN vols ON vols.avion_id = avions.id
+                        WHERE vols.id = ?
+                        ORDER BY vols.id;
+                        """
                  
            
      
@@ -232,6 +243,8 @@ override fun obtenirVolParParam(dateDebut: LocalDateTime, aeroportDebut: String,
     
         return modifieVol.copy(id = id)
     }
-    
-   
+
+    override fun obtenirSiegeParVolId(id : Int): List<Siège> =
+        bd.query(QUERY_SIEGE_PAR_VOL, id) { réponse, _ -> Siège(réponse.getInt("id"), réponse.getString("numéro_siège"), réponse.getString("classe"))
+}
 }
