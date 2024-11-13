@@ -52,7 +52,7 @@ class VolsControleur(private val volService: VolService) {
 
     @PutMapping("/{id}")
     fun modifierVol(
-            @PathVariable numeroVol: String,
+            @PathVariable id: Int,
             @RequestBody modifieVol: Vol
     ): ResponseEntity<Vol> {
         return volService.modifierVol(id, modifieVol)
