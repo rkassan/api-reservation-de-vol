@@ -1,7 +1,6 @@
 package dti.crosemont.reservationvol.Controleurs
 
-import dti.crosemont.reservationvol.Entites.Vol
-import dti.crosemont.reservationvol.VolsDAOImpl
+import dti.crosemont.reservationvol.Domaine.Modele.Vol
 import java.time.LocalDateTime
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,44 +13,54 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import dti.crosemont.reservationvol.Domaine.Service.VolService
+
 
 @RestController
 @RequestMapping("/vols")
-class VolsControleur(private val dao: VolsDAOImpl) {
+class VolsControleur(private val volService: VolService) {
 
     @GetMapping
     fun obtenirToutLesVols(): ResponseEntity<List<Vol>> =
-            ResponseEntity(dao.chercherTous(), HttpStatus.OK)
+            ResponseEntity(volService.chercherTous(), HttpStatus.OK)
 
     @GetMapping("/{id}")
     fun obtenirVolParId(@PathVariable id: Int): ResponseEntity<Vol> =
-            ResponseEntity(dao.chercherParId(id), HttpStatus.OK)
+            ResponseEntity(volService.chercherParId(id), HttpStatus.OK)
 
-    @GetMapping(params = ["dateDebut", "aeroportDebut", "aeroportFin"])
-    fun obtenirVolParParam(
-            @RequestParam dateDebut: LocalDateTime,
-            @RequestParam aeroportDebut: String,
-            @RequestParam aeroportFin: String
-    ): ResponseEntity<List<Vol>> {
-        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
-    }
+    @GetMapping( params = ["dateDebut", "aeroportDebut", "aeroportFin"])
+            fun obtenirVolParParam(
+                @RequestParam dateDebut: LocalDateTime,
+                @RequestParam aeroportDebut: String,
+                @RequestParam aeroportFin: String
+            ): ResponseEntity<List<Vol>> {
+                
+                
+                val vols = volService.obtenirVolParParam(dateDebut, aeroportDebut, aeroportFin)
+        
+                return if (vols.isNotEmpty()) {
+                    ResponseEntity(vols, HttpStatus.OK)
+                } else {
+                    ResponseEntity(HttpStatus.NOT_FOUND)
+                }
+            }
 
-    @PostMapping
-    fun ajoutervol(@RequestBody vol: Vol): ResponseEntity<Vol> {
-        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
-    }
+            @PostMapping
+            fun ajoutervol(@RequestBody vol: Vol): ResponseEntity<Vol> {
+                return volService.ajouterVol(vol)
+            }
 
     @PutMapping("/{id}")
     fun modifierVol(
             @PathVariable numeroVol: String,
             @RequestBody modifieVol: Vol
     ): ResponseEntity<Vol> {
-        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+        return volService.modifierVol(id, modifieVol)
     }
 
     @DeleteMapping("/{id}")
     fun supprimerVolParId(@PathVariable id: Int): ResponseEntity<HttpStatus> {
-        ResponseEntity(dao.effacer(id), HttpStatus.ACCEPTED)
+        ResponseEntity(volService.effacer(id), HttpStatus.ACCEPTED)
         return ResponseEntity.noContent().build()
     }
 }

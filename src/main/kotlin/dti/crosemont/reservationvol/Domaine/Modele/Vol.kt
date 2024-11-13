@@ -1,7 +1,8 @@
-package dti.crosemont.reservationvol.Entites
+package dti.crosemont.reservationvol.Domaine.Modele
 
 import java.time.LocalDateTime
-import kotlin.time.Duration
+import java.time.Duration
+
 
 data class Vol(
         val id: Int,
@@ -14,3 +15,4 @@ data class Vol(
         val vol_statut: List<VolStatut>,
         val duree: Duration
 )
+

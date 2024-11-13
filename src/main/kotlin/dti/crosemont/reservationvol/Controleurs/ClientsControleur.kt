@@ -1,8 +1,7 @@
 package dti.crosemont.reservationvol.Controleurs
 
-import dti.crosemont.reservationvol.Entites.Client
-import dti.crosemont.reservationvol.ClientDAOImpl
-import dti.crosemont.reservationvol.Service.ClientsService
+import dti.crosemont.reservationvol.Domaine.Modele.Client
+import dti.crosemont.reservationvol.Domaine.Service.ClientsService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/clients")
-class ClientsControleur( private val service : ClientsService ) {
+class ClientsControleur( private val service : ClientsService) {
 
         @GetMapping
         fun obtenirToutLesClients(

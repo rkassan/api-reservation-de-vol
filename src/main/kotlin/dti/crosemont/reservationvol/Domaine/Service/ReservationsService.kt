@@ -1,8 +1,8 @@
 package dti.crosemont.reservationvol
 
 import org.springframework.stereotype.Service
-import dti.crosemont.reservationvol.Entites.Reservation
-import dti.crosemont.reservationvol.ReservationsDAOImpl
+import dti.crosemont.reservationvol.Domaine.Modele.Reservation
+import dti.crosemont.reservationvol.AccesAuxDonnees.BD.ReservationsDAOImpl
 
 
 @Service

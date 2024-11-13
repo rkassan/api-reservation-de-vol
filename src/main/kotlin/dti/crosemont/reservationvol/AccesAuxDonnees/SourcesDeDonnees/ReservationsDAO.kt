@@ -1,6 +1,6 @@
-package dti.crosemont.reservationvol
+package dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees
 
-import dti.crosemont.reservationvol.Entites.Reservation
+import dti.crosemont.reservationvol.Domaine.Modele.Reservation
 
 interface ReservationsDAO: DAO<Reservation>{
         //override fun chercherTous() : List<Reservation>
