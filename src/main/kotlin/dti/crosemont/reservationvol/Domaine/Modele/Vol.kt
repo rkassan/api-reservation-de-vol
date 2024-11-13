@@ -1,8 +1,7 @@
-package dti.crosemont.reservationvol.Entites
+package dti.crosemont.reservationvol.Domaine.Modele
 
 import java.time.LocalDateTime
 import java.time.Duration
-import com.fasterxml.jackson.annotation.JsonProperty
 
 
 data class Vol(

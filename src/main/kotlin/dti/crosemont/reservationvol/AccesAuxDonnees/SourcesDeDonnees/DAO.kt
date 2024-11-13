@@ -1,4 +1,4 @@
-package dti.crosemont.reservationvol
+package dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees
 
 interface DAO<T>{
     fun chercherTous(): List<T>

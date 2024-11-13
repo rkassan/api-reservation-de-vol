@@ -1,12 +1,10 @@
-package dti.crosemont.reservationvol
+package dti.crosemont.reservationvol.AccesAuxDonnees.BD
 
-import dti.crosemont.reservationvol.Entites.Reservation
-import dti.crosemont.reservationvol.Entites.Client
-import dti.crosemont.reservationvol.Entites.Siège
-import dti.crosemont.reservationvol.Entites.Vol
+import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.ReservationsDAO
+import dti.crosemont.reservationvol.Domaine.Modele.Reservation
+import dti.crosemont.reservationvol.Domaine.Modele.Client
+import dti.crosemont.reservationvol.Domaine.Modele.Siège
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.jdbc.core.query
-import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Repository
 
 @Repository

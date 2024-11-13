@@ -1,14 +1,14 @@
-package dti.crosemont.reservationvol
+package dti.crosemont.reservationvol.AccesAuxDonnees.BD
 
-import dti.crosemont.reservationvol.Entites.Aeroport
-import dti.crosemont.reservationvol.Entites.Avion
-import dti.crosemont.reservationvol.Entites.Trajet
-import dti.crosemont.reservationvol.Entites.Ville
-import dti.crosemont.reservationvol.Entites.Vol
-import dti.crosemont.reservationvol.Entites.VolStatut
+import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.VolsDAO
+import dti.crosemont.reservationvol.Domaine.Modele.Aeroport
+import dti.crosemont.reservationvol.Domaine.Modele.Avion
+import dti.crosemont.reservationvol.Domaine.Modele.Trajet
+import dti.crosemont.reservationvol.Domaine.Modele.Ville
+import dti.crosemont.reservationvol.Domaine.Modele.Vol
+import dti.crosemont.reservationvol.Domaine.Modele.VolStatut
 import java.sql.ResultSet
 import java.time.LocalDateTime
-import java.time.temporal.TemporalUnit
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 import kotlin.time.toJavaDuration

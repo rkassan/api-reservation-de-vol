@@ -2,26 +2,22 @@ package dti.crosemont.reservationvol
 
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.InjectMocks
 import org.junit.jupiter.api.extension.ExtendWith
 
-import dti.crosemont.reservationvol.Controleurs.Exceptions.GestionnaireExceptionsControleur 
-import dti.crosemont.reservationvol.Entites.Reservation
-import dti.crosemont.reservationvol.Entites.Siège
-import dti.crosemont.reservationvol.Entites.Client
-import dti.crosemont.reservationvol.ReservationsService
-import dti.crosemont.reservationvol.ReservationsDAOImpl
-import org.springframework.boot.test.context.SpringBootTest
+import dti.crosemont.reservationvol.Domaine.Modele.Reservation
+import dti.crosemont.reservationvol.Domaine.Modele.Siège
+import dti.crosemont.reservationvol.Domaine.Modele.Client
+import dti.crosemont.reservationvol.AccesAuxDonnees.BD.ReservationsDAOImpl
 
 @ExtendWith(MockitoExtension::class)
 class ReservationvolApplicationTests {
 
 	@Mock
-    lateinit var mockDAOImpl: ReservationsDAOImpl 
+    lateinit var mockDAOImpl: ReservationsDAOImpl
 
     val client1 = Client(id = 1, nom = "Mark", prénom = "Lee", adresse = "127 Rue", numéroPasseport = "NC1999", email = "dream.lee@example.com", numéroTéléphone = "12738485")
     val siège1 = Siège(id = 1, numéroSiège = "1A", classe = "économique")
@@ -36,7 +32,7 @@ class ReservationvolApplicationTests {
         bagages = 2
     	)
 
-	//Injection du DAO (mock) dans service
+	//Injection du SourcesDeDonnees (mock) dans service
    	@InjectMocks
     	lateinit var reservationsService: ReservationsService 
 		

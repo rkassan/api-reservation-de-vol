@@ -1,10 +1,10 @@
-package dti.crosemont.reservationvol.Service
+package dti.crosemont.reservationvol.Domaine.Service
 
+import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.VolsDAO
 import org.springframework.stereotype.Service
 import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
-import dti.crosemont.reservationvol.VolsDAO
-import dti.crosemont.reservationvol.Entites.Vol
+import dti.crosemont.reservationvol.Domaine.Modele.Vol
 import java.time.LocalDateTime
 
 @Service

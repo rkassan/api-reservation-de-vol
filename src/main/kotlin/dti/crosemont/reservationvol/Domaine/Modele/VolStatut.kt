@@ -1,8 +1,7 @@
-package dti.crosemont.reservationvol.Entites
+package dti.crosemont.reservationvol.Domaine.Modele
 
 
 import java.time.LocalDateTime
-import com.fasterxml.jackson.annotation.JsonProperty
 
 data class VolStatut(
         val idVol : Int,

@@ -1,7 +1,6 @@
 package dti.crosemont.reservationvol.Controleurs
 
-import dti.crosemont.reservationvol.Entites.Vol
-import dti.crosemont.reservationvol.VolsDAOImpl
+import dti.crosemont.reservationvol.Domaine.Modele.Vol
 import java.time.LocalDateTime
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,11 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import dti.crosemont.reservationvol.Service.VolService
-import kotlin.time.Duration
-import kotlin.time.minutes
-
-
+import dti.crosemont.reservationvol.Domaine.Service.VolService
 
 
 @RestController

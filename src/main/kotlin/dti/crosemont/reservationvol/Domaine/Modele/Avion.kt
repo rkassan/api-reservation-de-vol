@@ -1,4 +1,4 @@
-package dti.crosemont.reservationvol.Entites
+package dti.crosemont.reservationvol.Domaine.Modele
 
 data class Avion (
     val id: Int,
