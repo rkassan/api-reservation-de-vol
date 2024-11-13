@@ -48,13 +48,20 @@ class VolService(private val volsDAO: VolsDAO) {
         if (!volsDAO.avionExiste(modifieVol.avion.id)) {
             return ResponseEntity(HttpStatus.NOT_FOUND)
         }
+        val trajetOriginal = volExistant.trajet
+        val avionOriginal = volExistant.avion
+        
+        if (modifieVol.trajet != trajetOriginal.copy(id = modifieVol.trajet.id) || 
+            modifieVol.avion != avionOriginal.copy(id = modifieVol.avion.id)) {
+            return ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
+        if (modifieVol.vol_statut.any { it.idVol != id }) {
+            return ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
 
         val volMisAJour = volsDAO.modifierVol(id, modifieVol)
         return ResponseEntity(volMisAJour, HttpStatus.OK)
     }
-
-    
-   
     
     fun chercherTous(): List<Vol> = volsDAO.chercherTous()
 
