@@ -17,29 +17,38 @@ class ClientDAOImpl( private val bd : JdbcTemplate ) : ClientDAO {
             """
         private const val AJOUTER_CLIENT : String =
                 """
-                INSERT INTO clients (nom, prénom, numéro_passeport, addresse, email, numéro_téléphone)
-                VALUES (?, ?, ?, ?, ?, ?);
+                INSERT INTO clients ( nom, prénom, numéro_passeport, addresse, email, numéro_téléphone )
+                VALUES ( ?, ?, ?, ?, ?, ? );
                 """
         private const val OBTENIR_DERNIER_CLIENT_INSÉRER =
                 """
                     SELECT * FROM clients 
-                    WHERE id = ( SELECT MAX(id) from clients  );            
+                    WHERE id = ( SELECT MAX( id ) from clients  );
+                """
+        private const val MODIFIER_CLIENT : String =
+                """
+                    UPDATE clients 
+                    SET nom = ?, prénom = ?, numéro_passeport = ?, addresse = ?, email = ?, numéro_téléphone = ?
+                    WHERE id = ?;
+                """
+
+        private const val SUPPRIMER_CLIENT : String =
+                """
+                    DELETE FROM clients WHERE id = ?;
                 """
     }
 
     override fun chercherTous(): List<Client> =
-        bd.query( OBTENIR_TOUT_LES_CLIENTS ) {réponse, _ -> convertirRésultatEnClient(réponse)}
+        bd.query( sql =  OBTENIR_TOUT_LES_CLIENTS ) {réponse, _ -> convertirRésultatEnClient(réponse)}
 
     override fun chercherParId(id: Int): Client? =
-        bd.query( OBTENIR_CLIENT_PAR_ID, id )
+        bd.query( sql =  OBTENIR_CLIENT_PAR_ID, id )
             { réponse, _ -> convertirRésultatEnClient(réponse) }.singleOrNull()
     
     override fun chercherParMotCle(motClé: String): List<Client> =
-        bd.query( OBTENIR_CLIENT_PAR_MOT_CLÉ, "$motClé%", "$motClé%" ) { réponse, _ -> convertirRésultatEnClient(réponse)}
+        bd.query( sql =  OBTENIR_CLIENT_PAR_MOT_CLÉ, "$motClé%", "$motClé%" ) { réponse, _ -> convertirRésultatEnClient(réponse)}
 
-    override fun effacer( id: Int ) { }
-
-    override fun ajouter(client : Client) : Client?{
+    override fun ajouter( client : Client ) : Client?{
         var insertedClient : Client? = null
 
         val result = bd.update( AJOUTER_CLIENT,
@@ -51,16 +60,32 @@ class ClientDAOImpl( private val bd : JdbcTemplate ) : ClientDAO {
                 client.numéroTéléphone )
 
         if( result != 0 ){
-            insertedClient = bd.query(OBTENIR_DERNIER_CLIENT_INSÉRER)
+            insertedClient = bd.query( sql = OBTENIR_DERNIER_CLIENT_INSÉRER )
                 { réponse, _ -> convertirRésultatEnClient( réponse ) }.singleOrNull()
         }
 
         return insertedClient
     }
 
-    private fun convertirRésultatEnClient( réponse : ResultSet ) : Client {
+    override fun modifier( client: Client ): Client? {
+        val result = bd.update( MODIFIER_CLIENT,
+                client.nom,
+                client.prénom,
+                client.numéroPasseport,
+                client.adresse,
+                client.email,
+                client.numéroTéléphone,
+                client.id )
+        return if( result != 0 ) client else null
+    }
+
+    override fun effacer( id: Int ) {
+        bd.update( SUPPRIMER_CLIENT, id )
+    }
+
+    private fun convertirRésultatEnClient( réponse : ResultSet) : Client {
         return Client(
-            id = réponse.getInt( "id" ) , 
+            id = réponse.getInt( "id" ) ,
             nom = réponse.getString( "nom" ), 
             prénom = réponse.getString( "prénom" ), 
             adresse = réponse.getString( "addresse" ),

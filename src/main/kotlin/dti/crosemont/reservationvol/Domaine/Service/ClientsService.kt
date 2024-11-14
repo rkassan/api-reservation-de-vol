@@ -16,4 +16,9 @@ class ClientsService( private val dao : ClientDAO) {
 
     fun ajouterClient( client : Client ) : Client =
             dao.ajouter( client ) ?: throw RequêteMalFormuléeException( "L'ajout du client à échouer" )
+
+    fun modifierClient( client : Client ) : Client =
+            dao.modifier( client ) ?: throw RequêteMalFormuléeException( "La modification du client à échouer" )
+
+    fun supprimerUnClient( id : Int ) = dao.effacer( id )
 }
