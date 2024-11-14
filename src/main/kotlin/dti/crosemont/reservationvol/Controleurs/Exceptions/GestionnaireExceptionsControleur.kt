@@ -20,5 +20,4 @@ class GestionnaireExceptionsControleur{
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     fun gérerRequêteMalFormuléeException(exception: RequêteMalFormuléeException, requête: WebRequest): MessageErreur =
             MessageErreur(HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))
-    
 }

@@ -2,6 +2,8 @@ package dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees
 
 import dti.crosemont.reservationvol.Domaine.Modele.Vol
 import dti.crosemont.reservationvol.Domaine.Modele.VolStatut
+import dti.crosemont.reservationvol.Domaine.Modele.`Siège`
+
 
 import java.time.LocalDateTime
 
@@ -16,4 +18,5 @@ interface VolsDAO: DAO<Vol>{
     fun trajetExiste(id: Int): Boolean
     fun avionExiste(id: Int): Boolean
     fun modifierVol(id: Int, modifieVol: Vol): Vol
+    fun obtenirSiegeParVolId(id: Int): List<Siège>
 }
