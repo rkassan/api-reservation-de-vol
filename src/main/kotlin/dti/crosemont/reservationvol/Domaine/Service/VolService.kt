@@ -72,7 +72,7 @@ class VolService(private val volsDAO: VolsDAO) {
         val vol = volsDAO.chercherParId(id)
 
         if(vol == null){
-            throw NoResourceFoundException(HttpMethod.GET, "vols/$id")
+            throw RessourceInexistanteException("Le vol $id n'existe pas.")
         }
         return vol;
     }
@@ -81,7 +81,7 @@ class VolService(private val volsDAO: VolsDAO) {
         val vol = volsDAO.chercherParId(id)
 
         if(vol == null){
-            throw NoResourceFoundException(HttpMethod.GET, "vols/$id")
+            throw RessourceInexistanteException("Le vol $id n'existe pas.")
         }
         volsDAO.effacer(id)
     }
@@ -90,7 +90,7 @@ class VolService(private val volsDAO: VolsDAO) {
         val vol = volsDAO.chercherParId(id)
 
         if(vol == null){
-            throw NoResourceFoundException(HttpMethod.GET, "vols/$id")
+            throw RessourceInexistanteException("Le vol $id n'existe pas.")
         }
         return volsDAO.obtenirSiegeParVolId(id)
     }
