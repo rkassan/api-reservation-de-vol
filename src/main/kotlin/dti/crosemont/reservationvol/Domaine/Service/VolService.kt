@@ -69,7 +69,6 @@ class VolService(private val volsDAO: VolsDAO) {
     fun chercherTous(): List<Vol> = volsDAO.chercherTous()
 
     fun chercherParId(id: Int): Vol? {
-
         val vol = volsDAO.chercherParId(id)
 
         if(vol == null){
