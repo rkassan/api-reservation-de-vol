@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import dti.crosemont.reservationvol.Domaine.Modele.Ville
 import org.springframework.http.ResponseEntity
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
+import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
 import org.springframework.http.HttpStatus 
 
 
@@ -16,7 +17,7 @@ class VillesService(private val villesDAO : VilleDAOImpl) {
     fun obtenirToutesLesVilles(): List<Ville> = villesDAO.chercherTous()
 
     fun obtenirVilleParId(id: Int): Ville? {
-       return villesDAO.chercherParId(id)
+       return villesDAO.chercherParId(id)?: throw RessourceInexistanteException( "La ville n'existe pas" )
     }
 
      fun ajouterVille(ville: Ville): Ville {
