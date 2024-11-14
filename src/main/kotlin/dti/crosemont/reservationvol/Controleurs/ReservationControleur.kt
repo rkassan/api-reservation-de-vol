@@ -60,14 +60,15 @@ class ReservationControleur(val reservationsService: ReservationsService) {
         }
     }
 
-    @PutMapping("/{numéroRéservation}")
-    fun modifierReservation(@PathVariable numéroRéservation: String, @RequestBody modifieReservation: Reservation): ResponseEntity<Reservation> {
-        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+    @PutMapping("/{id}")
+    fun modifierReservation(@PathVariable id: Int, @RequestBody réservation: Reservation): ResponseEntity<Reservation> {
+        
+        return ResponseEntity(reservationsService.modifierRéservation(id, réservation), HttpStatus.OK)
     }
 
-    @DeleteMapping("/{numéroRéservation}")
-    fun supprimerReservation(@PathVariable numéroRéservation: Int): ResponseEntity<HttpStatus> {
-            reservationsService.supprimerRéservation(numéroRéservation)    
+    @DeleteMapping("/{id}")
+    fun supprimerReservation(@PathVariable id: Int): ResponseEntity<HttpStatus> {
+            reservationsService.supprimerRéservation(id)    
             return ResponseEntity(HttpStatus.OK)
     }
 }

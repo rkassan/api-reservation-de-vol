@@ -91,6 +91,29 @@ override fun chercherParId(id: Int): Reservation? {
     }.firstOrNull()
 }
 
+    override fun modifierRéservation( id: Int, réservation: Reservation ): Reservation {
+        bd.update(
+            """
+            UPDATE réservations SET
+            id = ?,
+            numéro_réservation = ?,
+            id_vol = ?,
+            classe = ?,
+            siège_selectionné = ?,
+            bagages = ?
+            WHERE id = ?
+            """,
+            réservation.id,
+            réservation.numéroRéservation,
+            réservation.idVol,
+            réservation.classe,
+            réservation.siegeSelectionne,
+            réservation.bagages,
+            id
+        )
+        return this.chercherParId(id)!!
+    }
+
     override fun effacer(id: Int) {
         bd.update("DELETE FROM réservations WHERE id = ?", id)
     }

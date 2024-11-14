@@ -17,6 +17,16 @@ class ReservationsService(private val reservationsDAO: ReservationsDAOImpl) {
         return reservationsDAO.chercherParId(id)
     }
     
+    fun modifierRéservation( id: Int, réservation: Reservation ): Reservation {
+        val réservationVérification = this.obtenirReservationParId(id)
+        
+        if ( réservationVérification != null ) {
+            return reservationsDAO.modifierRéservation(id, réservation)
+        } else {
+            throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
+        }
+    }
+
     fun supprimerRéservation(id: Int) {
         val réservation = this.obtenirReservationParId(id)
         
