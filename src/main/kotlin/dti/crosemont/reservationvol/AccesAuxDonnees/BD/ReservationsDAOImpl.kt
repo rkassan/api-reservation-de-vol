@@ -91,9 +91,7 @@ override fun chercherParId(id: Int): Reservation? {
     }.firstOrNull()
 }
 
- //effacer
     override fun effacer(id: Int) {
-        TODO("effacer function pas encore implemented")
+        bd.update("DELETE FROM réservations WHERE id = ?", id)
     }
-
 }

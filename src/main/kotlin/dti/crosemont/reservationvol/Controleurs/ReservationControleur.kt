@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
 import dti.crosemont.reservationvol.ReservationsService
 import dti.crosemont.reservationvol.Domaine.Modele.Reservation
+import dti.crosemont.reservationvol.Controleurs.Exceptions.RéservationInexistanteException
 
 
 @RestController
@@ -52,8 +53,9 @@ class ReservationControleur(val reservationsService: ReservationsService) {
     }
 
     @DeleteMapping("/{numéroRéservation}")
-    fun supprimerReservation(@PathVariable numéroRéservation: String): ResponseEntity<HttpStatus> {
-        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+    fun supprimerReservation(@PathVariable numéroRéservation: Int): ResponseEntity<HttpStatus> {
+            reservationsService.supprimerRéservation(numéroRéservation)    
+            return ResponseEntity(HttpStatus.OK)
     }
 }
 
