@@ -4,4 +4,5 @@ import dti.crosemont.reservationvol.Domaine.Modele.Client
 
 interface ClientDAO : DAO<Client>{
     fun chercherParMotCle(motClé : String) : List<Client>
+    fun ajouter( client : Client ) : Client?
 }
