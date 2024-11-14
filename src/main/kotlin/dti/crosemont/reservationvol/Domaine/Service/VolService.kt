@@ -1,12 +1,16 @@
 package dti.crosemont.reservationvol.Domaine.Service
 
 import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.VolsDAO
+import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
 import org.springframework.stereotype.Service
 import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
 import dti.crosemont.reservationvol.Domaine.Modele.Vol
 import dti.crosemont.reservationvol.Domaine.Modele.`Siège`
+import org.springframework.http.HttpMethod
+import org.springframework.web.servlet.resource.NoResourceFoundException
 import java.time.LocalDateTime
+import kotlin.math.exp
 
 @Service
 class VolService(private val volsDAO: VolsDAO) {
@@ -42,7 +46,6 @@ class VolService(private val volsDAO: VolsDAO) {
         if (volExistant == null) {
             return ResponseEntity(HttpStatus.NOT_FOUND)
         }
-
         if (!volsDAO.trajetExiste(modifieVol.trajet.id)) {
             return ResponseEntity(HttpStatus.NOT_FOUND)
         }
@@ -66,9 +69,31 @@ class VolService(private val volsDAO: VolsDAO) {
     
     fun chercherTous(): List<Vol> = volsDAO.chercherTous()
 
-    fun chercherParId(id: Int): Vol? = volsDAO.chercherParId(id)
+    fun chercherParId(id: Int): Vol? {
 
-    fun effacer(id: Int) = volsDAO.effacer(id)
+        val vol = volsDAO.chercherParId(id)
 
-    fun chercherSiegeParVolId(id: Int): List<Siège> = volsDAO.obtenirSiegeParVolId(id)
+        if(vol == null){
+            throw NoResourceFoundException(HttpMethod.GET, "vols/$id")
+        }
+        return vol;
+    }
+
+    fun effacer(id: Int) {
+        val vol = volsDAO.chercherParId(id)
+
+        if(vol == null){
+            throw NoResourceFoundException(HttpMethod.GET, "vols/$id")
+        }
+        volsDAO.effacer(id)
+    }
+
+    fun chercherSiegeParVolId(id: Int): List<Siège> {
+        val vol = volsDAO.chercherParId(id)
+
+        if(vol == null){
+            throw NoResourceFoundException(HttpMethod.GET, "vols/$id")
+        }
+        return volsDAO.obtenirSiegeParVolId(id)
+    }
 }
