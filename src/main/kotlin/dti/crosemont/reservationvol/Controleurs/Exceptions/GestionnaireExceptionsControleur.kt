@@ -11,14 +11,13 @@ import java.time.LocalDateTime
 @RestControllerAdvice
 class GestionnaireExceptionsControleur{
 
-    @ExceptionHandler(NoResourceFoundException::class)
+    @ExceptionHandler(RessourceInexistanteException::class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
-    fun gérerRessourceInexistanteException(exception : NoResourceFoundException, requête : WebRequest) : MessageErreur = 
+    fun gérerRessourceInexistanteException(exception : RessourceInexistanteException, requête : WebRequest) : MessageErreur =
         MessageErreur(HttpStatus.NOT_FOUND.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))
 
     @ExceptionHandler(RequêteMalFormuléeException::class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     fun gérerRequêteMalFormuléeException(exception: RequêteMalFormuléeException, requête: WebRequest): MessageErreur =
             MessageErreur(HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))
-    
 }

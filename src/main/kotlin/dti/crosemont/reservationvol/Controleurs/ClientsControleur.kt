@@ -1,5 +1,6 @@
 package dti.crosemont.reservationvol.Controleurs
 
+import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
 import dti.crosemont.reservationvol.Domaine.Modele.Client
 import dti.crosemont.reservationvol.Domaine.Service.ClientsService
 import org.springframework.http.HttpStatus
@@ -35,15 +36,23 @@ class ClientsControleur( private val service : ClientsService) {
 
         @PostMapping
         fun ajouterClient(@RequestBody client: Client): ResponseEntity<Client> =
-                ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+                ResponseEntity.ok( service.ajouterClient( client ) )
 
         @PutMapping("/{id}")
-        fun ModifierClient(
+        fun modifierClient(
                 @PathVariable id: Int,
                 @RequestBody client: Client
-        ): ResponseEntity<Client> = ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+        ): ResponseEntity<Client> {
+                if ( id == client.id ) {
+                        return ResponseEntity.ok( service.modifierClient( client ) )
+                } else {
+                        throw RequêteMalFormuléeException( "Modification du client invalide" )
+                }
+        }
 
         @DeleteMapping("/{id}")
-        fun supprimerUnClientParId(@PathVariable id: Int): ResponseEntity<HttpStatus> =
-                ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+        fun supprimerUnClientParId(@PathVariable id: Int): ResponseEntity<HttpStatus> {
+                service.supprimerUnClient( id )
+                return ResponseEntity( HttpStatus.NO_CONTENT )
+        }
 }
