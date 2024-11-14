@@ -1,9 +1,11 @@
 package dti.crosemont.reservationvol.AccesAuxDonnees.BD
 
-import dti.crosemont.reservationvol.Entites.Aeroport
-import dti.crosemont.reservationvol.Entites.Ville
+import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.AeroportDAO
+import dti.crosemont.reservationvol.Domaine.Modele.Aeroport
+import dti.crosemont.reservationvol.Domaine.Modele.Ville
 import java.sql.ResultSet
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.query
 import org.springframework.stereotype.Repository
 
 @Repository
