@@ -4,9 +4,12 @@ import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.VolsDAO
 import org.springframework.stereotype.Service
 import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
+import org.springframework.web.servlet.resource.NoResourceFoundException
 import dti.crosemont.reservationvol.Domaine.Modele.Vol
 import dti.crosemont.reservationvol.Domaine.Modele.`Siège`
 import java.time.LocalDateTime
+import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
+import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
 
 @Service
 class VolService(private val volsDAO: VolsDAO) {
@@ -17,11 +20,11 @@ class VolService(private val volsDAO: VolsDAO) {
 
     fun ajouterVol(vol: Vol): ResponseEntity<Vol> {
         if (!volsDAO.trajetExiste(vol.trajet.id)) {
-            return ResponseEntity(HttpStatus.NOT_FOUND)
+            throw RessourceInexistanteException("Le trajet avec l'ID ${vol.trajet.id} n'existe pas.")
         }
         
         if (!volsDAO.avionExiste(vol.avion.id)) {
-            return ResponseEntity(HttpStatus.NOT_FOUND)
+            throw RessourceInexistanteException("L'avion avec l'ID ${vol.avion.id} n'existe pas.")
         }
         
     
@@ -38,28 +41,25 @@ class VolService(private val volsDAO: VolsDAO) {
     }
 
     fun modifierVol(id: Int, modifieVol: Vol): ResponseEntity<Vol> {
-        val volExistant = volsDAO.chercherParId(id)
-        if (volExistant == null) {
-            return ResponseEntity(HttpStatus.NOT_FOUND)
-        }
-
+        val volExistant = volsDAO.chercherParId(id) ?: throw RessourceInexistanteException("Le vol avec l'ID $id n'existe pas.")
+        
         if (!volsDAO.trajetExiste(modifieVol.trajet.id)) {
-            return ResponseEntity(HttpStatus.NOT_FOUND)
+            throw RessourceInexistanteException("Le trajet avec l'ID ${modifieVol.trajet.id} n'existe pas.")
         }
         if (!volsDAO.avionExiste(modifieVol.avion.id)) {
-            return ResponseEntity(HttpStatus.NOT_FOUND)
+            throw RessourceInexistanteException("L'avion avec l'ID ${modifieVol.avion.id} n'existe pas.")
         }
+        
         val trajetOriginal = volExistant.trajet
         val avionOriginal = volExistant.avion
         
         if (modifieVol.trajet != trajetOriginal.copy(id = modifieVol.trajet.id) || 
             modifieVol.avion != avionOriginal.copy(id = modifieVol.avion.id)) {
-            return ResponseEntity(HttpStatus.BAD_REQUEST)
+            throw RequêteMalFormuléeException("Modification du trajet ou de l'avion n'est pas autorisée au-delà de la mise à jour de l'ID")
         }
         if (modifieVol.vol_statut.any { it.idVol != id }) {
-            return ResponseEntity(HttpStatus.BAD_REQUEST)
+            throw RequêteMalFormuléeException("Le statut fait référence à un ID de vol incorrect")
         }
-
         val volMisAJour = volsDAO.modifierVol(id, modifieVol)
         return ResponseEntity(volMisAJour, HttpStatus.OK)
     }
