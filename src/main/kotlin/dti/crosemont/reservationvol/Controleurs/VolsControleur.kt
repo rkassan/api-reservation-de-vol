@@ -50,14 +50,15 @@ class VolsControleur(private val volService: VolService) {
 
     @PostMapping
     fun ajoutervol(@RequestBody vol: Vol): ResponseEntity<Vol> {
-        return volService.ajouterVol(vol)
+        return ResponseEntity.ok(volService.ajouterVol(vol))
     }
 
 
     @PutMapping("/{id}")
-    fun modifierVol(@PathVariable id: Int, @RequestBody modifieVol: Vol): ResponseEntity<Vol> {
-        return volService.modifierVol(id, modifieVol)
-    }
+fun modifierVol(@PathVariable id: Int, @RequestBody modifieVol: Vol): ResponseEntity<Vol> {
+    return ResponseEntity.ok(volService.modifierVol(id, modifieVol))
+}
+
 
     @DeleteMapping("/{id}")
     fun supprimerVolParId(@PathVariable id: Int): ResponseEntity<HttpStatus> {
