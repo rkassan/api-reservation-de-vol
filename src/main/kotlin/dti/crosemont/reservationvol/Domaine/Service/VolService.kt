@@ -19,7 +19,7 @@ class VolService(private val volsDAO: VolsDAO) {
         return volsDAO.obtenirVolParParam(dateDebut, aeroportDebut, aeroportFin)
     }
 
-    fun ajouterVol(vol: Vol): ResponseEntity<Vol> {
+    fun ajouterVol(vol: Vol): Vol {
         if (!volsDAO.trajetExiste(vol.trajet.id)) {
             throw RessourceInexistanteException("Le trajet avec l'ID ${vol.trajet.id} n'existe pas.")
         }
@@ -38,11 +38,10 @@ class VolService(private val volsDAO: VolsDAO) {
         statutsMisAJour.forEach { statut -> volsDAO.ajouterStatutVol(nouveauVol.id, statut) }
         volsDAO.ajouterPrixParClasse(nouveauVol.id, vol.prixParClasse)
     
-        return ResponseEntity(nouveauVol.copy(vol_statut = statutsMisAJour), HttpStatus.CREATED)
+        return nouveauVol.copy(vol_statut = statutsMisAJour)
     }
 
-    fun modifierVol(id: Int, modifieVol: Vol): ResponseEntity<Vol> {
-
+    fun modifierVol(id: Int, modifieVol: Vol): Vol {
         val volExistant = volsDAO.chercherParId(id) ?: throw RessourceInexistanteException("Le vol avec l'ID $id n'existe pas.")
 
         if (!volsDAO.trajetExiste(modifieVol.trajet.id)) {
@@ -62,8 +61,7 @@ class VolService(private val volsDAO: VolsDAO) {
         if (modifieVol.vol_statut.any { it.idVol != id }) {
             throw RequêteMalFormuléeException("Le statut fait référence à un ID de vol incorrect")
         }
-        val volMisAJour = volsDAO.modifierVol(id, modifieVol)
-        return ResponseEntity(volMisAJour, HttpStatus.OK)
+        return volsDAO.modifierVol(id, modifieVol)
     }
     
     fun chercherTous(): List<Vol> = volsDAO.chercherTous()
@@ -72,7 +70,7 @@ class VolService(private val volsDAO: VolsDAO) {
         val vol = volsDAO.chercherParId(id)
 
         if(vol == null){
-            throw NoResourceFoundException(HttpMethod.GET, "vols/$id")
+            throw RessourceInexistanteException("Le vol $id n'existe pas.")
         }
         return vol;
     }
@@ -81,7 +79,7 @@ class VolService(private val volsDAO: VolsDAO) {
         val vol = volsDAO.chercherParId(id)
 
         if(vol == null){
-            throw NoResourceFoundException(HttpMethod.GET, "vols/$id")
+            throw RessourceInexistanteException("Le vol $id n'existe pas.")
         }
         volsDAO.effacer(id)
     }
@@ -90,7 +88,7 @@ class VolService(private val volsDAO: VolsDAO) {
         val vol = volsDAO.chercherParId(id)
 
         if(vol == null){
-            throw NoResourceFoundException(HttpMethod.GET, "vols/$id")
+            throw RessourceInexistanteException("Le vol $id n'existe pas.")
         }
         return volsDAO.obtenirSiegeParVolId(id)
     }
