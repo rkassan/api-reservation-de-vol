@@ -17,13 +17,22 @@ class AeroportDAOImpl(private val bd: JdbcTemplate) : AeroportDAO {
         private const val OBTENIR_AEROPORT_PAR_CODE =
                 "SELECT * FROM aeroports INNER JOIN villes ON aeroports.ville_id = villes.id WHERE code = ?;"
         private const val OBTENIR_AEROPORT_PAR_NOM =
-                "SELECT * FROM aeroports INNER JOIN villes ON aeroports.ville_id = villes.id WHERE nom LIKE ?;"
+                "SELECT * FROM aeroports INNER JOIN villes ON aeroports.ville_id = villes.id WHERE nom = ?;"
         private const val AJOUTER_AEROPORT : String =
                 """
-                INSERT INTO aeroports ( id, code, nom, ville, adresse )
+                INSERT INTO aeroports ( code, nom, ville, adresse )
                 VALUES ( ?, ?, ?, ?, ?, ? );
                 """
-       
+        private const val OBTENIR_DERNIER_AEROPORT_INSÉRER =
+                """
+                    SELECT * FROM aeroports 
+                    WHERE id = ( SELECT MAX( id ) from aeroports   );
+                """        
+       private const val OBTENIR_DERNIER_CLIENT_INSÉRER =
+                """
+                    SELECT * FROM clients 
+                    WHERE id = ( SELECT MAX( id ) from clients  );
+                """
         private const val MODIFIER_AEROPORT : String =
                 """
                     UPDATE aeroports
@@ -68,6 +77,22 @@ class AeroportDAOImpl(private val bd: JdbcTemplate) : AeroportDAO {
                 aeroport.adresse )
 
         return if( résultat != 0 ) aeroport else null        
+    }
+
+    override fun ajouter( aeroport : Aeroport ) : Aeroport?{
+        var insertedAeroport : Aeroport? = null
+
+        val resultat = bd.update( AJOUTER_AEROPORT,
+                aeroport.code,
+                aeroport.nom,
+                aeroport.ville,
+                aeroport.adresse )
+
+        if( resultat != 0 ){
+                insertedAeroport = bd.query( sql = OBTENIR_DERNIER_AEROPORT_INSÉRER )
+                        { réponse, _ -> convertirRésultatEnAeroport( réponse ) }.singleOrNull()
+                }
+        return insertedAeroport
     }
 
     private fun convertirRésultatEnAeroport(réponse: ResultSet): Aeroport {
