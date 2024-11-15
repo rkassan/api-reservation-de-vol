@@ -15,6 +15,16 @@ class ClientDAOImpl( private val bd : JdbcTemplate ) : ClientDAO {
             """
             SELECT * FROM clients WHERE prénom LIKE ? OR nom LIKE ?;
             """
+        private const val AJOUTER_CLIENT : String =
+                """
+                INSERT INTO clients (nom, prénom, numéro_passeport, addresse, email, numéro_téléphone)
+                VALUES (?, ?, ?, ?, ?, ?);
+                """
+        private const val OBTENIR_DERNIER_CLIENT_INSÉRER =
+                """
+                    SELECT * FROM clients 
+                    WHERE id = ( SELECT MAX(id) from clients  );            
+                """
     }
 
     override fun chercherTous(): List<Client> =
@@ -29,13 +39,32 @@ class ClientDAOImpl( private val bd : JdbcTemplate ) : ClientDAO {
 
     override fun effacer( id: Int ) { }
 
+    override fun ajouter(client : Client) : Client?{
+        var insertedClient : Client? = null
+
+        val result = bd.update( AJOUTER_CLIENT,
+                client.nom,
+                client.prénom,
+                client.numéroPasseport,
+                client.adresse,
+                client.email,
+                client.numéroTéléphone )
+
+        if( result != 0 ){
+            insertedClient = bd.query(OBTENIR_DERNIER_CLIENT_INSÉRER)
+                { réponse, _ -> convertirRésultatEnClient( réponse ) }.singleOrNull()
+        }
+
+        return insertedClient
+    }
+
     private fun convertirRésultatEnClient( réponse : ResultSet ) : Client {
         return Client(
             id = réponse.getInt( "id" ) , 
             nom = réponse.getString( "nom" ), 
             prénom = réponse.getString( "prénom" ), 
-            adresse = réponse.getString( "numéro_passeport" ), 
-            numéroPasseport = réponse.getNString( "addresse" ),
+            adresse = réponse.getString( "addresse" ),
+            numéroPasseport = réponse.getString( "numéro_passeport" ),
             email = réponse.getString( "email" ),
             numéroTéléphone = réponse.getString( "numéro_téléphone" )
         )

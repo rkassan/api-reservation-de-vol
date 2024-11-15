@@ -1,14 +1,15 @@
 package dti.crosemont.reservationvol.Domaine.Service
 
 import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.VolsDAO
+import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
 import org.springframework.stereotype.Service
 import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
 import org.springframework.web.servlet.resource.NoResourceFoundException
 import dti.crosemont.reservationvol.Domaine.Modele.Vol
 import dti.crosemont.reservationvol.Domaine.Modele.`Siège`
+import org.springframework.http.HttpMethod
 import java.time.LocalDateTime
-import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
 
 @Service
@@ -42,7 +43,7 @@ class VolService(private val volsDAO: VolsDAO) {
 
     fun modifierVol(id: Int, modifieVol: Vol): Vol {
         val volExistant = volsDAO.chercherParId(id) ?: throw RessourceInexistanteException("Le vol avec l'ID $id n'existe pas.")
-        
+
         if (!volsDAO.trajetExiste(modifieVol.trajet.id)) {
             throw RessourceInexistanteException("Le trajet avec l'ID ${modifieVol.trajet.id} n'existe pas.")
         }
@@ -65,9 +66,30 @@ class VolService(private val volsDAO: VolsDAO) {
     
     fun chercherTous(): List<Vol> = volsDAO.chercherTous()
 
-    fun chercherParId(id: Int): Vol? = volsDAO.chercherParId(id)
+    fun chercherParId(id: Int): Vol? {
+        val vol = volsDAO.chercherParId(id)
 
-    fun effacer(id: Int) = volsDAO.effacer(id)
+        if(vol == null){
+            throw RessourceInexistanteException("Le vol $id n'existe pas.")
+        }
+        return vol;
+    }
 
-    fun chercherSiegeParVolId(id: Int): List<Siège> = volsDAO.obtenirSiegeParVolId(id)
+    fun effacer(id: Int) {
+        val vol = volsDAO.chercherParId(id)
+
+        if(vol == null){
+            throw RessourceInexistanteException("Le vol $id n'existe pas.")
+        }
+        volsDAO.effacer(id)
+    }
+
+    fun chercherSiegeParVolId(id: Int): List<Siège> {
+        val vol = volsDAO.chercherParId(id)
+
+        if(vol == null){
+            throw RessourceInexistanteException("Le vol $id n'existe pas.")
+        }
+        return volsDAO.obtenirSiegeParVolId(id)
+    }
 }

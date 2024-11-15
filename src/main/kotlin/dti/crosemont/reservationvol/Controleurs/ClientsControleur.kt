@@ -35,7 +35,7 @@ class ClientsControleur( private val service : ClientsService) {
 
         @PostMapping
         fun ajouterClient(@RequestBody client: Client): ResponseEntity<Client> =
-                ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+                ResponseEntity.ok( service.ajouterClient( client ) )
 
         @PutMapping("/{id}")
         fun ModifierClient(
