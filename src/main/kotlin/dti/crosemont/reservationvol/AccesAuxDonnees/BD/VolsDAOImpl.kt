@@ -30,7 +30,7 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         JOIN villes AS ville_debut ON ap_deb.ville_id = ville_debut.id 
                         JOIN villes AS ville_fin ON ap_fin.ville_id = ville_fin.id 
                         JOIN prix_par_classe ON vols.id = prix_par_classe.id_vol 
-                        JOIN avions ON vols.avion_id = avions.id 
+                        JOIN avions ON vols.avion_id = avions.id
                         ORDER BY vols.id;
                         """
 
@@ -65,9 +65,8 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
 
                 private const val QUERY_SIEGE_PAR_VOL = """
                         SELECT * FROM sièges
-                        JOIN avions_sièges ON avions_sièges.siège_id = sièges.id
-                        JOIN avions ON avions_sièges.avion_id = avions.id
-                        JOIN vols ON vols.avion_id = avions.id
+                        JOIN vols_sièges ON vols_sièges.siège_id = sièges.id
+                        JOIN vols ON vols_sièges.vol_id = vols.id
                         WHERE vols.id = ?
                         ORDER BY vols.id;
                         """
@@ -135,6 +134,8 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                                 .toLocalDateTime()
                                 )
                         }
+                val volSièges = listOf<Siège>()
+
                 return Vol(
                         réponse.getInt("id"),
                         réponse.getTimestamp("date_départ").toLocalDateTime(),
@@ -144,7 +145,8 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         réponse.getInt("poids_max_bag"),
                         trajet,
                         volStatuts,
-                        réponse.getInt("durée").toDuration(DurationUnit.MINUTES).toJavaDuration()
+                        réponse.getInt("durée").toDuration(DurationUnit.MINUTES).toJavaDuration(),
+                        volSièges
                 )
         }
 
@@ -244,7 +246,17 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
         return modifieVol.copy(id = id)
     }
 
-    override fun obtenirSiegeParVolId(id : Int): List<Siège> =
-        bd.query(QUERY_SIEGE_PAR_VOL, id) { réponse, _ -> Siège(réponse.getInt("id"), réponse.getString("numéro_siège"), réponse.getString("classe"))
-}
+    override fun obtenirSiegeParVolId(id: Int): List<Siège> =
+            bd.query(
+                    QUERY_SIEGE_PAR_VOL,
+                    id
+            ){ réponseSiège, _ ->
+                Siège(
+                        réponseSiège.getInt("sièges.id"),
+                        réponseSiège.getString("sièges.numéro_siège"),
+                        réponseSiège.getString("sièges.classe"),
+                        réponseSiège.getString("vols_sièges.statut_siege")
+                )
+            }
+
 }

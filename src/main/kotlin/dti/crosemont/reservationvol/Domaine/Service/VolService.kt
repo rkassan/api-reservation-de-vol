@@ -27,7 +27,6 @@ class VolService(private val volsDAO: VolsDAO) {
         if (!volsDAO.avionExiste(vol.avion.id)) {
             throw RessourceInexistanteException("L'avion avec l'ID ${vol.avion.id} n'existe pas.")
         }
-        
     
         val nouveauVol = volsDAO.ajouterVol(vol)
     
