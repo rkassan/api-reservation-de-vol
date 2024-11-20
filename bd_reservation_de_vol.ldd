@@ -39,8 +39,8 @@ CREATE TABLE avions (
 /* CREATION TABLE SIÈGES */
 CREATE TABLE sièges (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    numéro_siège VARCHAR(255) UNIQUE NOT NULL,
-    classe ENUM('économique', 'business', 'première') NOT NULL
+    numéro_siège VARCHAR(255) NOT NULL,
+    classe ENUM('économique', 'affaire', 'première') NOT NULL
 );
 
 /*CRÉATION TABLE TRAJET*/
@@ -70,7 +70,7 @@ CREATE TABLE vols (
 CREATE TABLE vols_sièges (
     vol_id INT NOT NULL,
     siège_id INT NOT NULL,
-    statut_siege ENUM('réservé', 'occupé', 'disponible') NOT NULL,
+    statut_siege ENUM('occupé', 'disponible') NOT NULL,
     PRIMARY KEY (vol_id, siège_id),
     FOREIGN KEY (vol_id) REFERENCES vols(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (siège_id) REFERENCES sièges(id) ON DELETE CASCADE ON UPDATE CASCADE
