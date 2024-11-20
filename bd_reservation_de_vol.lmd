@@ -98,24 +98,6 @@ INSERT INTO sièges (numéro_siège, classe) VALUES
 ('4B', 'économique'),
 ('4C', 'économique');
 
--- Insertion des relations avions-sièges
-INSERT INTO avions_sièges (avion_id, siège_id, statut_siege) VALUES
-(1, 1, 'disponible'),
-(1, 2, 'disponible'),
-(1, 3, 'disponible'),
-(1, 4, 'disponible'),
-(1, 5, 'disponible'),
-(2, 6, 'disponible'),
-(2, 7, 'disponible'),
-(2, 8, 'disponible'),
-(2, 9, 'disponible'),
-(2, 10, 'disponible'),
-(3, 11, 'disponible'),
-(3, 12, 'disponible'),
-(3, 13, 'disponible'),
-(3, 14, 'disponible'),
-(3, 15, 'disponible');
-
 -- Insertion des trajets
 INSERT INTO trajets (numéro_trajet, id_aéroport_debut, id_aéroport_fin) VALUES
 ('PAR-LON-001', 1, 3),
@@ -149,6 +131,24 @@ INSERT INTO vols (date_départ, date_arrivée, avion_id, trajet_id, poids_max_ba
 ('2024-11-10 17:00:00', '2024-11-11 00:00:00', 2, 12, 23, 420),
 ('2024-11-11 09:00:00', '2024-11-11 11:00:00', 3, 13, 23, 120),
 ('2024-11-11 14:00:00', '2024-11-11 16:00:00', 4, 14, 23, 120);
+
+-- Insertion des relations vols-sièges
+INSERT INTO vols_sièges (vol_id, siège_id, statut_siege) VALUES
+(1, 1, 'occupé'),
+(1, 2, 'occupé'),
+(1, 3, 'occupé'),
+(1, 4, 'occupé'),
+(1, 5, 'occupé'),
+(2, 6, 'occupé'),
+(2, 7, 'occupé'),
+(2, 8, 'occupé'),
+(2, 9, 'occupé'),
+(2, 10, 'occupé'),
+(3, 11, 'occupé'),
+(3, 12, 'occupé'),
+(3, 13, 'occupé'),
+(3, 14, 'occupé'),
+(3, 15, 'occupé');
 
 -- Insertion des statuts de vol
 INSERT INTO vol_statut (id_vol, statut, heure) VALUES
