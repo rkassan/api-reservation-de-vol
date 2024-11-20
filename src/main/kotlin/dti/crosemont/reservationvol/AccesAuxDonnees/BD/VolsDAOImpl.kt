@@ -70,7 +70,11 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         WHERE vols.id = ?
                         ORDER BY vols.id;
                         """
-                 
+
+                private const val INSERT_DANS_VOLS_SIEGES = """
+                    INSERT INTO vols_sièges (vol_id, siège_id, statut_siege) VALUES
+                    (?,?,'disponible');
+                    """
            
      
         }
@@ -175,9 +179,9 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
         bd.update(sql, vol.dateDepart, vol.dateArrivee, vol.avion.id, vol.trajet.id, vol.poidsMaxBag, vol.duree.toMinutes())
         
         val nouvelId = bd.queryForObject("SELECT LAST_INSERT_ID()", Int::class.java) ?: throw Exception("Erreur lors de l'ajout du vol")
-
-       
-        
+        for(i in 1..72){
+            bd.update(INSERT_DANS_VOLS_SIEGES, nouvelId, i)
+        }
         return vol.copy(id = nouvelId)
     }
 
