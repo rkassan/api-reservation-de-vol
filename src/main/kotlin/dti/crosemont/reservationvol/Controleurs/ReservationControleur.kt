@@ -27,36 +27,27 @@ import dti.crosemont.reservationvol.Controleurs.Exceptions.MessageErreur
 class ReservationControleur(val reservationsService: ReservationsService) {
 
     @GetMapping
-    fun obtenirToutesLesReservations(): ResponseEntity<List<Reservation>> =
-        ResponseEntity.ok(reservationsService.obtenirToutesLesReservations())
+        fun obtenirToutesLesReservations(): ResponseEntity<List<Reservation>> =
+            ResponseEntity.ok(reservationsService.obtenirToutesLesReservations())
 
 
-    //Get d'un reservation mais avec un Exception de MessageErreur
     @GetMapping("/{id}")
-    fun obtenirReservationParId(@PathVariable id: Int): ResponseEntity<Any> {
-        val reservation = reservationsService.obtenirReservationParId(id)
+        fun obtenirReservationParId(@PathVariable id: Int): ResponseEntity<Any> {
+            val reservation = reservationsService.obtenirReservationParId(id)
             return if (reservation != null) {
-                ResponseEntity.ok(reservation)
-        }else {
-        val errorMessage = MessageErreur(
-            code = HttpStatus.NOT_FOUND.value(),
-            date = LocalDateTime.now(),
-            message = "La reservation avec Id $id introuvable.",
-            chemin = "/reservations/$id"
-        )
-        ResponseEntity(errorMessage, HttpStatus.NOT_FOUND)
+                ResponseEntity.ok(reservation)  
+            } else {
+                ResponseEntity.status(HttpStatus.NOT_FOUND).build()  
             }
         }
-    
-    
+
     @PostMapping
-    fun ajouterReservation(@RequestBody reservation: Reservation): ResponseEntity<Reservation> {
-        return try {
-            val ajouteReservation = reservationsService.ajouterReservation(reservation)    
-            ResponseEntity(ajouteReservation, HttpStatus.CREATED)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+        fun ajouterReservation(@RequestBody reservation: Reservation): ResponseEntity<Reservation> {
+         return try {
+            val nouvelleReservation = reservationsService.ajouterReservation(reservation)
+                ResponseEntity.ok(nouvelleReservation)
+            } catch (e: IllegalArgumentException) {
+                ResponseEntity.badRequest().body(null)
         }
     }
 
