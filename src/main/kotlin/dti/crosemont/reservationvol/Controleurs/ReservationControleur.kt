@@ -43,12 +43,8 @@ class ReservationControleur(val reservationsService: ReservationsService) {
 
     @PostMapping
         fun ajouterReservation(@RequestBody reservation: Reservation): ResponseEntity<Reservation> {
-         return try {
             val nouvelleReservation = reservationsService.ajouterReservation(reservation)
-                ResponseEntity.ok(nouvelleReservation)
-            } catch (e: IllegalArgumentException) {
-                ResponseEntity.badRequest().body(null)
-        }
+                return ResponseEntity.ok(nouvelleReservation)         
     }
 
     @PutMapping("/{id}")

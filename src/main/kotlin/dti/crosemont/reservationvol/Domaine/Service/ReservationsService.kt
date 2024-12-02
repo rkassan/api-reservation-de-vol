@@ -45,14 +45,10 @@ class ReservationsService(  private val reservationsDAO: ReservationsDAOImpl,
         siègeSélectionné.statut = "occupé"
         siegeDAO.save(siègeSélectionné)
 
-        // Associer les clients a la réservation
-        reservationsDAO.associerClientsÀRéservation(reservation.clients, nouvelleRéservation.id)
-
         // Associer le siège sélectionné a la réservation dans la table réservations_sièges
         val siègeId = sièges.find { it.numéroSiège == reservation.siegeSelectionne }?.id
          ?: throw IllegalArgumentException("Le siège ${reservation.siegeSelectionne} n'existe pas.")
     
-        reservationsDAO.associerSiègeÀRéservation(nouvelleRéservation.id, siègeId)
 
         return nouvelleRéservation
 }

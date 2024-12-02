@@ -37,7 +37,7 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
 
         fun associerClientsÀRéservation(clients: List<Client>, reservationId: Int) {
             clients.forEach { client ->
-                val query = "INSERT INTO réservations_clients (id_réservation, id_client) VALUES (?, ?)"
+                val query = "INSERT INTO réservations_clients (id_réservation, id_clients) VALUES (?, ?)"
                     bd.update(query, reservationId, client.id)
                  }
         }
@@ -93,11 +93,11 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
 
         override fun ajouterReservation(reservation: Reservation): Reservation {
             // Verifier si mon siege est dispo
-            if (!verifierSiègeDisponible(reservation.idVol, reservation.siegeSelectionne.toInt())) {
+            if (!verifierSiègeDisponible(reservation.idVol, reservation.sièges[0].id)) {
                 throw IllegalArgumentException("Le siège sélectionné n'est pas disponible.")
             }
             // Changer le status a occupe
-            mettreÀJourStatutSiège(reservation.idVol, reservation.siegeSelectionne.toInt(), "occupé")
+            mettreÀJourStatutSiège(reservation.idVol, reservation.sièges[0].id, "occupé")
             val query = """
                 INSERT INTO réservations (numéro_réservation, id_vol, classe, siège_selectionné, bagages)
                 VALUES (?, ?, ?, ?, ?)
@@ -112,7 +112,7 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
             associerClientsÀRéservation(reservation.clients, reservationId)
 
             // Assocation du siegea la reservation
-            associerSiègeÀRéservation(reservationId, reservation.siegeSelectionne.toInt())
+            associerSiègeÀRéservation(reservationId, reservation.sièges[0].id)
 
             return chercherParId(reservationId)!!
         }
