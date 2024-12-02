@@ -19,8 +19,8 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
                     id = reponse.getInt("id"),
                     numéroRéservation = reponse.getString("numéro_réservation"),
                     idVol = reponse.getInt("id_vol"),
-                    clients = getClientsForReservation(reponse.getInt("id")), 
-                    sièges = getSiègesForReservation(reponse.getInt("id")),  
+                    client = getClientForReservation(reponse.getInt("id")), 
+                    siège = getSiègeForReservation(reponse.getInt("id")),  
                     classe = reponse.getString("classe"),
                     siegeSelectionne = reponse.getString("siège_selectionné"),
                     bagages = reponse.getInt("bagages")
@@ -35,16 +35,14 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
         }
 
 
-        fun associerClientsÀRéservation(clients: List<Client>, reservationId: Int) {
-            clients.forEach { client ->
-                val query = "INSERT INTO réservations_clients (id_réservation, id_clients) VALUES (?, ?)"
-                    bd.update(query, reservationId, client.id)
-                 }
+        fun associerClientÀRéservation(client: Client, reservationId: Int) {
+            val query = "INSERT INTO réservations (id_client, id) VALUES (?, ?)"
+            bd.update(query, client.id, reservationId)
         }
 
         fun associerSiègeÀRéservation(idRéservation: Int, idSiège: Int) {
-            val query = "INSERT INTO réservations_sièges (id_réservation, id_siège) VALUES (?, ?)"
-                bd.update(query, idRéservation, idSiège)
+            val query = "INSERT INTO réservations (id_siège, id) VALUES (?, ?)"
+            bd.update(query, idRéservation, idSiège)
         }
 
         fun mettreÀJourStatutSiège(idVol: Int, idSiège: Int, statut: String) {
@@ -53,66 +51,66 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
         }
 
 
+    private fun getClientForReservation(reservationId: Int): Client {
+        val query = """
+            SELECT clients.* 
+            FROM clients
+            WHERE clients.id = (SELECT id_client FROM réservations WHERE id = ?)
+        """
+        return bd.queryForObject(query, arrayOf(reservationId)) { reponse, _ ->
+            Client(
+                id = reponse.getInt("id"),
+                nom = reponse.getString("nom"),
+                prénom = reponse.getString("prénom"),
+                adresse = reponse.getString("addresse"),
+                numéroPasseport = reponse.getString("numéro_passeport"),
+                email = reponse.getString("email"),
+                numéroTéléphone = reponse.getString("numéro_téléphone")
+            )
+        } ?: throw IllegalArgumentException("Client not found for reservation $reservationId")
+    }
 
-        private fun getClientsForReservation(reservationId: Int): List<Client> {
-            val query = """
-                SELECT clients.*
-                FROM clients
-                JOIN réservations_clients ON clients.id = réservations_clients.id_clients
-                WHERE réservations_clients.id_réservation = ?
-            """
-            return bd.query(query, arrayOf(reservationId)) { reponse, _ ->
-                Client(
-                    id = reponse.getInt("id"),
-                    nom = reponse.getString("nom"),
-                    prénom = reponse.getString("prénom"),
-                    adresse = reponse.getString("addresse"),
-                    numéroPasseport = reponse.getString("numéro_passeport"),
-                    email = reponse.getString("email"),
-                    numéroTéléphone = reponse.getString("numéro_téléphone")
-                )
-            }
-        }
 
-        private fun getSiègesForReservation(reservationId: Int): List<Siège> {
+        private fun getSiègeForReservation(reservationId: Int): Siège {
             val query = """
-                SELECT sièges.*
+                SELECT sièges.* 
                 FROM sièges
                 JOIN réservations_sièges ON sièges.id = réservations_sièges.id_siège
                 WHERE réservations_sièges.id_réservation = ?
-                """
-            return bd.query(query, arrayOf(reservationId)) { reponse, _ ->
+            """
+                return bd.queryForObject(query, arrayOf(reservationId)) { reponse, _ ->
                 Siège(
                     id = reponse.getInt("id"),
                     numéroSiège = reponse.getString("numéro_siège"),
                     classe = reponse.getString("classe")
-                    )
-                }
-            }
+                )
+            } ?: throw IllegalArgumentException("Siège not found for reservation $reservationId")
+        }
 
 
         override fun ajouterReservation(reservation: Reservation): Reservation {
             // Verifier si mon siege est dispo
-            if (!verifierSiègeDisponible(reservation.idVol, reservation.sièges[0].id)) {
+            if (!verifierSiègeDisponible(reservation.idVol, reservation.siège.id)) {
                 throw IllegalArgumentException("Le siège sélectionné n'est pas disponible.")
             }
             // Changer le status a occupe
-            mettreÀJourStatutSiège(reservation.idVol, reservation.sièges[0].id, "occupé")
+            mettreÀJourStatutSiège(reservation.idVol, reservation.siège.id, "occupé")
+            
             val query = """
-                INSERT INTO réservations (numéro_réservation, id_vol, classe, siège_selectionné, bagages)
-                VALUES (?, ?, ?, ?, ?)
-                """
+            INSERT INTO réservations (numéro_réservation, id_vol, classe, siège_selectionné, bagages)
+            VALUES (?, ?, ?, ?, ?)
+            """
             val numeroReservation = java.util.UUID.randomUUID().toString()  // Generate a unique reservation number
             bd.update(query, numeroReservation, reservation.idVol, reservation.classe, reservation.siegeSelectionne, reservation.bagages)
 
             val reservationId = bd.queryForObject("SELECT LAST_INSERT_ID()", Int::class.java)
-                ?: throw IllegalArgumentException("Reservation ID is null")
+                ?: throw IllegalArgumentException("L'ID de la réservation est nul")
 
             //Assocition de clients a la Reservation 
-            associerClientsÀRéservation(reservation.clients, reservationId)
+            associerClientÀRéservation(reservation.client, reservationId)
 
             // Assocation du siegea la reservation
-            associerSiègeÀRéservation(reservationId, reservation.sièges[0].id)
+            associerSiègeÀRéservation(reservationId, reservation.siège.id)
 
             return chercherParId(reservationId)!!
         }
@@ -127,8 +125,8 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
                 id = reponse.getInt("id"),
                 numéroRéservation = reponse.getString("numéro_réservation"),
                 idVol = reponse.getInt("id_vol"),
-                clients = getClientsForReservation(reponse.getInt("id")),
-                sièges = getSiègesForReservation(reponse.getInt("id")),
+                client = getClientForReservation(reponse.getInt("id")), // single client
+                siège = getSiègeForReservation(reponse.getInt("id")), // single seat
                 classe = reponse.getString("classe"),
                 siegeSelectionne = reponse.getString("siège_selectionné"),
                 bagages = reponse.getInt("bagages")
