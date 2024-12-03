@@ -13,20 +13,20 @@ class AeroportDAOImpl(private val bd: JdbcTemplate) : AeroportDAO {
 
         companion object {
                 private const val OBTENIR_TOUT_LES_AEROPORTS =
-                        "SELECT * FROM aeroports INNER JOIN villes ON aeroports.ville_id = villes.id;"
+                        "SELECT * FROM aéroports INNER JOIN villes ON aéroports.ville_id = villes.id;"
                 private const val OBTENIR_AEROPORT_PAR_CODE =
-                        "SELECT * FROM aeroports INNER JOIN villes ON aeroports.ville_id = villes.id WHERE code = ?;"
+                        "SELECT * FROM aéroports INNER JOIN villes ON aéroports.ville_id = villes.id WHERE code = ?;"
                 private const val OBTENIR_AEROPORT_PAR_NOM =
-                        "SELECT * FROM aeroports INNER JOIN villes ON aeroports.ville_id = villes.id WHERE nom = ?;"
+                        "SELECT * FROM aéroports INNER JOIN villes ON aéroports.ville_id = villes.id WHERE nom = ?;"
                 private const val AJOUTER_AEROPORT: String =
                         """
-                INSERT INTO aeroports ( code, nom, ville, adresse )
+                INSERT INTO aéroports ( code, nom, ville, adresse )
                 VALUES ( ?, ?, ?, ?);
                 """
                 private const val OBTENIR_DERNIER_AEROPORT_INSÉRER =
                         """
-                    SELECT * FROM aeroports 
-                    WHERE id = ( SELECT MAX( id ) from aeroports   );
+                    SELECT * FROM aéroports 
+                    WHERE id = ( SELECT MAX( id ) from aéroports   );
                 """
                 private const val OBTENIR_DERNIER_CLIENT_INSÉRER =
                         """
@@ -35,7 +35,7 @@ class AeroportDAOImpl(private val bd: JdbcTemplate) : AeroportDAO {
                 """
                 private const val MODIFIER_AEROPORT: String =
                         """
-                    UPDATE aeroports
+                    UPDATE aéroports
                     SET code = ?, nom = ?, ville = ?, adresse = ?
                     WHERE id = ?;
                 """
@@ -114,13 +114,13 @@ class AeroportDAOImpl(private val bd: JdbcTemplate) : AeroportDAO {
                         code = réponse.getString("code"),
                         nom = réponse.getString("nom"),
                         ville =
-                                Ville(
-                                        id = réponse.getInt("ville_id"),
-                                        nom = réponse.getString("ville_nom"),
-                                        pays = réponse.getString("pays"),
-                                        url_photo = réponse.getString("url_photo")
-                                ),
-                        adresse = réponse.getString("adresse")
+                        Ville(
+                                id = réponse.getInt("villes.id"),
+                                nom = réponse.getString("villes.nom"),
+                                pays = réponse.getString("villes.pays"),
+                                url_photo = réponse.getString("villes.url_photo")
+                        ),
+                        adresse = réponse.getString("addresse")
                 )
         }
 }
