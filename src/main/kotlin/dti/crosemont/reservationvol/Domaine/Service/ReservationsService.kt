@@ -8,9 +8,10 @@ import dti.crosemont.reservationvol.Domaine.Modele.Client
 import dti.crosemont.reservationvol.AccesAuxDonnees.BD.ReservationsDAOImpl
 import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.SiègeDAO
 import dti.crosemont.reservationvol.Domaine.Service.VolService
-
-
+import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
+import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RéservationInexistanteException
+
 
 @Service
 class ReservationsService(  private val reservationsDAO: ReservationsDAOImpl,
@@ -24,18 +25,18 @@ class ReservationsService(  private val reservationsDAO: ReservationsDAOImpl,
     fun ajouterReservation(reservation: Reservation): Reservation {
         // Vérification si le vol existe
         val vol = volService.chercherParId(reservation.idVol)
-            ?: throw IllegalArgumentException("Vol avec l'ID ${reservation.idVol} introuvable.")
+            ?: throw RessourceInexistanteException("Vol avec l'ID ${reservation.idVol} introuvable.")
     
         // ici cest pour avoir  les sièges du vol
         val sièges = volService.chercherSiegeParVolId(reservation.idVol)
 
         // Trouver le siège sélectionné dans la liste
         val siègeSélectionné = sièges.find { it.numéroSiège == reservation.siegeSelectionne }
-            ?: throw IllegalArgumentException("Le siège ${reservation.siegeSelectionne} n'est pas disponible pour ce vol.")
+            ?: throw RequêteMalFormuléeException("Le siège ${reservation.siegeSelectionne} n'est pas disponible pour ce vol.")
 
         // Vérification si le siège est occupé
         if (siègeSélectionné.statut == "occupé") {
-            throw IllegalArgumentException("Le siège ${reservation.siegeSelectionne} est déjà réservé.")
+            throw RequêteMalFormuléeException("Le siège ${reservation.siegeSelectionne} est déjà réservé.")
          }
          
         val nouvelleRéservation = reservationsDAO.ajouterReservation(reservation)
