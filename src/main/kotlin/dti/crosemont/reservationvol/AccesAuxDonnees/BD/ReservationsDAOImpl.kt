@@ -97,8 +97,8 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
             mettreÀJourStatutSiège(reservation.idVol, reservation.siège.id, "occupé")
             
             val query = """
-            INSERT INTO réservations (numéro_réservation, id_vol, classe, siège_selectionné, bagages)
-            VALUES (?, ?, ?, ?, ?)
+            (numéro_réservation, id_vol, classe, siège_selectionné, bagages, id_client, id_siège)
+            VALUES (?, ?, ?, ?, ?, ?)
             """
             val numeroReservation = java.util.UUID.randomUUID().toString()  // Generate a unique reservation number
             bd.update(query, numeroReservation, reservation.idVol, reservation.classe, reservation.siegeSelectionne, reservation.bagages)
