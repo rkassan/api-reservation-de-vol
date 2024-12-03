@@ -37,11 +37,8 @@ class VolsControleur(private val volService: VolService) {
 
         val vols = volService.obtenirVolParParam(dateDebut, aeroportDebut, aeroportFin)
 
-        return if (vols.isNotEmpty()) {
-            ResponseEntity(vols, HttpStatus.OK)
-        } else {
-            ResponseEntity(HttpStatus.NOT_FOUND)
-        }
+        return ResponseEntity(vols, HttpStatus.OK)
+
     }
 
     @GetMapping("/{id}/sièges")
