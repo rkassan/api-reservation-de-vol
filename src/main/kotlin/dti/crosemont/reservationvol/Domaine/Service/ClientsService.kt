@@ -11,6 +11,8 @@ class ClientsService( private val dao : ClientDAO) {
 
     fun obtenirToutLesClient() : List<Client> = dao.chercherTous()
     fun obtenirClientsParMotCle( motClé : String ) : List<Client> = dao.chercherParMotCle( motClé )
+    fun obtenirClientParEmail( email : String ) : Client =
+        dao.obtenirParEmail( email ) ?: throw RessourceInexistanteException( "L'email $email n'est pas associé à aucun client" )
     fun obtenirParId( id : Int ) : Client =
             dao.chercherParId( id ) ?: throw RessourceInexistanteException( "Le client n'existe pas" )
 

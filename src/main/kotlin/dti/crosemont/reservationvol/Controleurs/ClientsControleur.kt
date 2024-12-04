@@ -34,6 +34,13 @@ class ClientsControleur( private val service : ClientsService) {
         fun obtenirUnClientParId( @PathVariable id: Int ) : ResponseEntity<Client> =
                 ResponseEntity.ok( service.obtenirParId( id ) )
 
+        @GetMapping("/profile")
+        fun obtenirProfile() : ResponseEntity<Client> {
+                val email = "jean.dubois@email.com" // TODO : Lire l'email de l'utilisateur connecté avec token
+                return ResponseEntity.ok( service.obtenirClientParEmail( email ) )
+        }
+
+
         @PostMapping
         fun ajouterClient(@RequestBody client: Client): ResponseEntity<Client> =
                 ResponseEntity.ok( service.ajouterClient( client ) )

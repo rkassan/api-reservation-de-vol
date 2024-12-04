@@ -11,6 +11,7 @@ class ClientDAOImpl( private val bd : JdbcTemplate ) : ClientDAO {
     companion object {
         private const val OBTENIR_TOUT_LES_CLIENTS : String = "SELECT * FROM clients;"
         private const val OBTENIR_CLIENT_PAR_ID : String = "SELECT * FROM clients WHERE id = ?;"
+        private const val OBTENIR_CLIENT_PAR_EMAIL : String = "SELECT * FROM clients WHERE email = ?;"
         private const val OBTENIR_CLIENT_PAR_MOT_CLÉ : String = 
             """
             SELECT * FROM clients WHERE prénom LIKE ? OR nom LIKE ?;
@@ -47,6 +48,11 @@ class ClientDAOImpl( private val bd : JdbcTemplate ) : ClientDAO {
     
     override fun chercherParMotCle(motClé: String): List<Client> =
         bd.query( sql =  OBTENIR_CLIENT_PAR_MOT_CLÉ, "$motClé%", "$motClé%" ) { réponse, _ -> convertirRésultatEnClient(réponse)}
+
+    override fun obtenirParEmail(email: String): Client? {
+        return bd.query( sql =  OBTENIR_CLIENT_PAR_EMAIL, email )
+            { réponse, _ -> convertirRésultatEnClient( réponse ) }.singleOrNull()
+    }
 
     override fun ajouter( client : Client ) : Client?{
         var insertedClient : Client? = null
