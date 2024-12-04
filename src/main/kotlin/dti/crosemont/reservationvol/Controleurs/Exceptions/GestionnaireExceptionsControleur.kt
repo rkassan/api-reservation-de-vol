@@ -26,4 +26,9 @@ class GestionnaireExceptionsControleur{
     fun RéservationInexistanteException(exception : RéservationInexistanteException, requête : WebRequest) : MessageErreur =
             MessageErreur(HttpStatus.NOT_FOUND.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))
 
+    @ExceptionHandler(ModificationException::class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    fun ModificationException(exception: ModificationException, requête: WebRequest): MessageErreur =
+            MessageErreur(HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))
+
 }
