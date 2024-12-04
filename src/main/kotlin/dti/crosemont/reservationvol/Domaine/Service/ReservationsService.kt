@@ -27,32 +27,28 @@ class ReservationsService(  private val reservationsDAO: ReservationsDAOImpl,
         val vol = volService.chercherParId(reservation.idVol)
             ?: throw RessourceInexistanteException("Vol avec l'ID ${reservation.idVol} introuvable.")
     
-        // ici cest pour avoir  les sièges du vol
+        // ici c'est pour avoir les sièges du vol
         val sièges = volService.chercherSiegeParVolId(reservation.idVol)
 
-        // Trouver le siège sélectionné dans la liste
-        val siègeSélectionné = sièges.find { it.numéroSiège == reservation.siegeSelectionne }
-            ?: throw RequêteMalFormuléeException("Le siège ${reservation.siegeSelectionne} n'est pas disponible pour ce vol.")
+        // Vérifier si le siège sélectionné existe dans la liste des sièges disponibles
+        val siègeSélectionné = sièges.find { it.numéroSiège == reservation.siège.numéroSiège }
+            ?: throw RequêteMalFormuléeException("Le siège ${reservation.siège.numéroSiège} n'est pas disponible pour ce vol.")
 
         // Vérification si le siège est occupé
         if (siègeSélectionné.statut == "occupé") {
-            throw RequêteMalFormuléeException("Le siège ${reservation.siegeSelectionne} est déjà réservé.")
-         }
-         
+            throw RequêteMalFormuléeException("Le siège ${reservation.siège.numéroSiège} est déjà réservé.")
+        }
+    
+        
         val nouvelleRéservation = reservationsDAO.ajouterReservation(reservation)
 
-        // mise a joiur statut du siège "occupé"
+        // Mise à jour du statut du siège en "occupé"
         siègeSélectionné.statut = "occupé"
         siegeDAO.save(siègeSélectionné)
 
-
-        // Associer le client et le siège à la réservation en appelant les DAO
-            //reservationsDAO.associerClientÀRéservation(reservation.client, nouvelleRéservation.id)
-            //reservationsDAO.associerSiègeÀRéservation(nouvelleRéservation.id, siègeSélectionné.id)
-   
-
         return nouvelleRéservation
-}
+    }
+
 
 
 
