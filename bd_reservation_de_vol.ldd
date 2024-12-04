@@ -95,31 +95,23 @@ CREATE TABLE prix_par_classe (
     FOREIGN KEY (id_vol) REFERENCES vols(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-/* CREATION TABLE RÉSERVATIONS */
+/* CREATION TABLE RÉSERVATIONS MODIF ajoute de id_clients et id_siège*/
+/*siège_selectionné VARCHAR(255), no need for this anymore*/
 CREATE TABLE réservations (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     numéro_réservation VARCHAR(255) NOT NULL UNIQUE,
     id_vol INT NOT NULL,
+    id_client INT NOT NULL,
+    id_sièges INT NOT NULL,
     classe SET('économique', 'business', 'première') NOT NULL,
-    siège_selectionné VARCHAR(255),
     bagages INT,
-    FOREIGN KEY (id_vol) REFERENCES vols(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
+    FOREIGN KEY (id_vol) REFERENCES vols(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (id_client) REFERENCES clients(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (id_sièges) REFERENCES sièges(id) ON DELETE CASCADE ON UPDATE CASCADE
 
-/* CREATION TABLE RÉSERVATIONS_CLIENTS */
-CREATE TABLE réservations_clients (
-    id_clients INT NOT NULL,
-    id_réservation INT NOT NULL,
-    PRIMARY KEY (id_clients, id_réservation),
-    FOREIGN KEY (id_clients) REFERENCES clients(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_réservation) REFERENCES réservations(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
+    /*RÉSERVATIONS_CLIENTS DROP THIS TABLE PARCE QUE LA RELATION EST UN CLIENT PLUSIERS RESERVATIONS
+    DONC PAS BESOIN D AVOIR CETTE TABLE */
 
-/* CREATION TABLE RÉSERVATIONS_SIÈGES */
-CREATE TABLE réservations_sièges (
-    id_réservation INT NOT NULL,
-    id_siège INT NOT NULL,
-    PRIMARY KEY (id_réservation, id_siège),
-    FOREIGN KEY (id_réservation) REFERENCES réservations(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id_siège) REFERENCES sièges(id) ON DELETE CASCADE ON UPDATE CASCADE
+    /*TABLE RÉSERVATIONS_SIÈGES  drop THIS TABLE CAR LA RELATION EST UN SIEGE PAR RESERVATION
+
 );
