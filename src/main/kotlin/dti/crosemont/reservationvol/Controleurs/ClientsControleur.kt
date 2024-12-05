@@ -2,6 +2,7 @@ package dti.crosemont.reservationvol.Controleurs
 
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
 import dti.crosemont.reservationvol.Domaine.Modele.Client
+import dti.crosemont.reservationvol.Domaine.OTD.ClientOTD
 import dti.crosemont.reservationvol.Domaine.Service.ClientsService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -34,6 +35,13 @@ class ClientsControleur( private val service : ClientsService) {
         fun obtenirUnClientParId( @PathVariable id: Int ) : ResponseEntity<Client> =
                 ResponseEntity.ok( service.obtenirParId( id ) )
 
+        @GetMapping("/profile")
+        fun obtenirProfile() : ResponseEntity<Client> {
+                val email = "jean.dubois@email.com" // TODO : Lire l'email de l'utilisateur connecté avec token
+                return ResponseEntity.ok( service.obtenirClientParEmail( email ) )
+        }
+
+
         @PostMapping
         fun ajouterClient(@RequestBody client: Client): ResponseEntity<Client> =
                 ResponseEntity.ok( service.ajouterClient( client ) )
@@ -41,13 +49,9 @@ class ClientsControleur( private val service : ClientsService) {
         @PutMapping("/{id}")
         fun modifierClient(
                 @PathVariable id: Int,
-                @RequestBody client: Client
+                @RequestBody client: ClientOTD
         ): ResponseEntity<Client> {
-                if ( id == client.id ) {
-                        return ResponseEntity.ok( service.modifierClient( client ) )
-                } else {
-                        throw RequêteMalFormuléeException( "Modification du client invalide" )
-                }
+                return ResponseEntity.ok( service.modifierClient( client, id ) )
         }
 
         @DeleteMapping("/{id}")

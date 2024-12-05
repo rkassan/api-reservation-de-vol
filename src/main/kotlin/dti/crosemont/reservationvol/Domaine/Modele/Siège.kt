@@ -4,5 +4,5 @@ data class Siège(
     val id: Int,
     val numéroSiège: String,             
     val classe: String,
-    val statut: String = "occupé"
+    var statut: String = "occupé"
 )
