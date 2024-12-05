@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.config.Customizer.withDefaults
 
+
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
 class ConfigurationAccès {

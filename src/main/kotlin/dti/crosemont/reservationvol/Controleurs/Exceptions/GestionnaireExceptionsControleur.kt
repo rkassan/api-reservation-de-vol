@@ -26,4 +26,14 @@ class GestionnaireExceptionsControleur{
     fun RéservationInexistanteException(exception : RéservationInexistanteException, requête : WebRequest) : MessageErreur =
             MessageErreur(HttpStatus.NOT_FOUND.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))
 
+    @ExceptionHandler(AccèsNonAutoriséException::class)
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    fun gérerAccèsNonAutoriséException(exception: AccèsNonAutoriséException, requête: WebRequest): MessageErreur =
+        MessageErreur(HttpStatus.UNAUTHORIZED.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))
+
+   @ExceptionHandler(AccèsRefuséException::class)
+     @ResponseStatus(code = HttpStatus.FORBIDDEN)
+    fun gérerAccèsRefuséException(exception: AccèsRefuséException, requête: WebRequest): MessageErreur =
+        MessageErreur(HttpStatus.FORBIDDEN.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))      
+
 }
