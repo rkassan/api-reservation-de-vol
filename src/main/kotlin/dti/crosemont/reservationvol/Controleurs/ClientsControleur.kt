@@ -52,7 +52,8 @@ class ClientsControleur( private val service : ClientsService) {
                 @PathVariable id: Int,
                 @RequestBody client: ClientOTD
         ): ResponseEntity<Client> {
-                return ResponseEntity.ok( service.modifierClient( client, id ) )
+                val clientExistant = service.obtenirParId( id )
+                return ResponseEntity.ok( service.modifierClient( client, id, clientExistant ) )
         }
 
         @DeleteMapping("/{id}")

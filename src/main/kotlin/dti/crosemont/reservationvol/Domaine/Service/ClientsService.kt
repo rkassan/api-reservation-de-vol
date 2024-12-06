@@ -30,9 +30,8 @@ class ClientsService( private val dao: ClientDAO ) {
     fun ajouterClient( client : Client ) : Client =
             dao.ajouter( client ) ?: throw RequêteMalFormuléeException( "L'ajout du client à échouer" )
 
-    @PreAuthorize("hasAnyAuthority('modifier:clients') || authentication.principal.claims['courriel'] == #clientOTD.email")
-    fun modifierClient( clientOTD : ClientOTD, id: Int ) : Client {
-        val clientExistant = obtenirParId( id )
+    @PreAuthorize("hasAnyAuthority('modifier:clients') || authentication.principal.claims['courriel'] == #clientExistant.email")
+    fun modifierClient( clientOTD : ClientOTD, id: Int, clientExistant : Client ) : Client {
         clientOTD.apply {
             nom?.let { clientExistant.nom = it }
             prénom?.let { clientExistant.prénom = it }
