@@ -5,6 +5,5 @@ class ClientOTD(
     var prénom : String?,
     var adresse : String?,
     val numéroPasseport  : String?,
-    var email : String?,
     var numéroTéléphone : String?,
 )

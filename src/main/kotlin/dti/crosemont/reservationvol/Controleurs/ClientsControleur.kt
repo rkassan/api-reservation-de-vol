@@ -1,13 +1,11 @@
 package dti.crosemont.reservationvol.Controleurs
 
-import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
 import dti.crosemont.reservationvol.Domaine.Modele.Client
 import dti.crosemont.reservationvol.Domaine.OTD.ClientOTD
 import dti.crosemont.reservationvol.Domaine.Service.ClientsService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping

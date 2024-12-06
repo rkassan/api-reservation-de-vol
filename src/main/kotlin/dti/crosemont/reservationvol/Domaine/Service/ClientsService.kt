@@ -38,7 +38,6 @@ class ClientsService( private val dao: ClientDAO ) {
             prénom?.let { clientExistant.prénom = it }
             adresse?.let { clientExistant.adresse = it }
             numéroPasseport?.let { clientExistant.numéroPasseport = it }
-            email?.let { clientExistant.email = it }
             numéroTéléphone?.let { clientExistant.numéroTéléphone = it }
         }
         return dao.modifier( clientExistant ) ?: throw ModificationException( "La modification du client à échouer" )

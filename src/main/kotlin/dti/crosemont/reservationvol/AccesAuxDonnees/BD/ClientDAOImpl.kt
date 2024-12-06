@@ -29,7 +29,7 @@ class ClientDAOImpl( private val bd : JdbcTemplate ) : ClientDAO {
         private const val MODIFIER_CLIENT : String =
                 """
                     UPDATE clients 
-                    SET nom = ?, prénom = ?, numéro_passeport = ?, addresse = ?, email = ?, numéro_téléphone = ?
+                    SET nom = ?, prénom = ?, numéro_passeport = ?, addresse = ?, numéro_téléphone = ?
                     WHERE id = ?;
                 """
 
@@ -79,7 +79,6 @@ class ClientDAOImpl( private val bd : JdbcTemplate ) : ClientDAO {
                 client.prénom,
                 client.numéroPasseport,
                 client.adresse,
-                client.email,
                 client.numéroTéléphone,
                 client.id )
         return if( result != 0 ) client else null
