@@ -22,7 +22,7 @@ class ClientsService( private val dao : ClientDAO) {
             dao.ajouter( client ) ?: throw RequêteMalFormuléeException( "L'ajout du client à échouer" )
 
     fun modifierClient( clientOTD : ClientOTD, id: Int ) : Client {
-        val clientExistant = dao.chercherParId( id ) ?: throw RessourceInexistanteException( "Le client n'existe pas" )
+        val clientExistant = obtenirParId( id )
         clientOTD.apply {
             nom?.let { clientExistant.nom = it }
             prénom?.let { clientExistant.prénom = it }
