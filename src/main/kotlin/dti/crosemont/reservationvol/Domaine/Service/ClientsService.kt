@@ -7,20 +7,30 @@ import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteE
 import org.springframework.stereotype.Service
 import dti.crosemont.reservationvol.Domaine.Modele.Client
 import dti.crosemont.reservationvol.Domaine.OTD.ClientOTD
+import org.springframework.security.access.prepost.PostAuthorize
+import org.springframework.security.access.prepost.PreAuthorize
 
 @Service
-class ClientsService( private val dao : ClientDAO) {
-
+class ClientsService( private val dao: ClientDAO ) {
+    @PreAuthorize("hasAnyAuthority('consulter:clients')")
     fun obtenirToutLesClient() : List<Client> = dao.chercherTous()
+
+    @PreAuthorize("hasAnyAuthority('consulter:clients')")
     fun obtenirClientsParMotCle( motClé : String ) : List<Client> = dao.chercherParMotCle( motClé )
+
+    @PostAuthorize("hasAnyAuthority('consulter:clients') || authentication.principal.claims['courriel'] == returnObject.email")
     fun obtenirClientParEmail( email : String ) : Client =
         dao.obtenirParEmail( email ) ?: throw RessourceInexistanteException( "L'email $email n'est pas associé à aucun client" )
+
+    @PostAuthorize("hasAnyAuthority('consulter:clients') || authentication.principal.claims['courriel'] == returnObject.email")
     fun obtenirParId( id : Int ) : Client =
             dao.chercherParId( id ) ?: throw RessourceInexistanteException( "Le client n'existe pas" )
 
+    @PreAuthorize("hasAnyAuthority('créer:clients') || clientServiceSécurité.naPasDeCompte(#client.email)")
     fun ajouterClient( client : Client ) : Client =
             dao.ajouter( client ) ?: throw RequêteMalFormuléeException( "L'ajout du client à échouer" )
 
+    @PreAuthorize("hasAnyAuthority('modifier:clients') || authentication.principal.claims['courriel'] == #clientOTD.email")
     fun modifierClient( clientOTD : ClientOTD, id: Int ) : Client {
         val clientExistant = obtenirParId( id )
         clientOTD.apply {
@@ -34,5 +44,6 @@ class ClientsService( private val dao : ClientDAO) {
         return dao.modifier( clientExistant ) ?: throw ModificationException( "La modification du client à échouer" )
     }
 
+    @PreAuthorize("hasAnyAuthority('supprimer:clients')")
     fun supprimerUnClient( id : Int ) = dao.effacer( id )
 }

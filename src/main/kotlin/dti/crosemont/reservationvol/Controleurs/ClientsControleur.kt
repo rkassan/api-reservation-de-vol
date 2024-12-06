@@ -6,6 +6,9 @@ import dti.crosemont.reservationvol.Domaine.OTD.ClientOTD
 import dti.crosemont.reservationvol.Domaine.Service.ClientsService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -36,8 +39,8 @@ class ClientsControleur( private val service : ClientsService) {
                 ResponseEntity.ok( service.obtenirParId( id ) )
 
         @GetMapping("/profile")
-        fun obtenirProfile() : ResponseEntity<Client> {
-                val email = "jean.dubois@email.com" // TODO : Lire l'email de l'utilisateur connecté avec token
+        fun obtenirProfile( @AuthenticationPrincipal principal : Jwt) : ResponseEntity<Client> {
+                val email = principal.claims["courriel"] as String
                 return ResponseEntity.ok( service.obtenirClientParEmail( email ) )
         }
 
