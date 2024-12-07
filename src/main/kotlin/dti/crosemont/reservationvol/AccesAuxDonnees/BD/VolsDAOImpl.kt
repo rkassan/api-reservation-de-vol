@@ -49,7 +49,7 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         """
 
                 
-                private const val QUERY_VOL_PAR_PARAM = 
+                private const val QUERY_VOL_PAR_PARAM =
                         """
                         SELECT * FROM vols
                         JOIN trajets ON vols.trajet_id = trajets.id 
@@ -59,7 +59,9 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         JOIN villes AS ville_fin ON ap_fin.ville_id = ville_fin.id 
                         JOIN prix_par_classe ON vols.id = prix_par_classe.id_vol 
                         JOIN avions ON vols.avion_id = avions.id 
-                        WHERE date_départ = ? AND ap_deb.code = ? AND ap_fin.code = ?
+                        WHERE date_départ BETWEEN ? AND DATE_ADD(?, INTERVAL 30 DAY)
+                        AND ap_deb.code = ? 
+                        AND ap_fin.code = ?
                         ORDER BY vols.date_départ;
                         """
 
@@ -166,7 +168,7 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
   
       
     override fun obtenirVolParParam(dateDebut: LocalDateTime, aeroportDebut: String, aeroportFin: String): List<Vol> {
-            return bd.query(QUERY_VOL_PAR_PARAM, dateDebut, aeroportDebut, aeroportFin) { réponse, _ ->
+            return bd.query(QUERY_VOL_PAR_PARAM, dateDebut ,dateDebut, aeroportDebut, aeroportFin) { réponse, _ ->
                 mapVol(réponse)
             }
         }

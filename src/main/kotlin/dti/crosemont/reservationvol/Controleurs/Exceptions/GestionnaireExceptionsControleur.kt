@@ -21,9 +21,24 @@ class GestionnaireExceptionsControleur{
     fun gérerRequêteMalFormuléeException(exception: RequêteMalFormuléeException, requête: WebRequest): MessageErreur =
             MessageErreur(HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))
 
+    @ExceptionHandler(ModificationException::class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    fun ModificationException(exception: ModificationException, requête: WebRequest): MessageErreur =
+            MessageErreur(HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))
+        
     @ExceptionHandler(RéservationInexistanteException::class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     fun RéservationInexistanteException(exception : RéservationInexistanteException, requête : WebRequest) : MessageErreur =
             MessageErreur(HttpStatus.NOT_FOUND.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))
+
+    @ExceptionHandler(AccèsNonAutoriséException::class)
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    fun gérerAccèsNonAutoriséException(exception: AccèsNonAutoriséException, requête: WebRequest): MessageErreur =
+        MessageErreur(HttpStatus.UNAUTHORIZED.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))
+
+   @ExceptionHandler(AccèsRefuséException::class)
+     @ResponseStatus(code = HttpStatus.FORBIDDEN)
+    fun gérerAccèsRefuséException(exception: AccèsRefuséException, requête: WebRequest): MessageErreur =
+        MessageErreur(HttpStatus.FORBIDDEN.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))      
 
 }
