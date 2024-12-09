@@ -8,6 +8,7 @@ import dti.crosemont.reservationvol.Domaine.Modele.Ville
 import dti.crosemont.reservationvol.Domaine.Modele.Vol
 import dti.crosemont.reservationvol.Domaine.Modele.VolStatut
 import dti.crosemont.reservationvol.Domaine.Modele.`Siège`
+import dti.crosemont.reservationvol.Domaine.OTD.VolOTD
 import java.sql.ResultSet
 import java.time.LocalDateTime
 import kotlin.time.DurationUnit
@@ -213,6 +214,8 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
         return bd.queryForObject(sql, arrayOf(id), Int::class.java) ?: 0 > 0
     }
 
+
+
     override fun modifierVol(id: Int, modifieVol: Vol): Vol {
         val sql = """
             UPDATE vols 
@@ -220,37 +223,40 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
             WHERE id = ?
         """
         bd.update(
-            sql, 
-            modifieVol.dateDepart, 
-            modifieVol.dateArrivee, 
-            modifieVol.avion.id, 
-            modifieVol.trajet.id, 
-            modifieVol.poidsMaxBag, 
-            modifieVol.duree.toMinutes(),
-            id
+                sql,
+                modifieVol.dateDepart,
+                modifieVol.dateArrivee,
+                modifieVol.avion.id,
+                modifieVol.trajet.id,
+                modifieVol.poidsMaxBag,
+                modifieVol.duree.toMinutes(),
+                id
         )
-    
+
         val prixSql = """
             UPDATE prix_par_classe 
             SET prix_économique = ?, prix_affaire = ?, prix_première = ?
             WHERE id_vol = ?
         """
         bd.update(
-            prixSql,
-            modifieVol.prixParClasse["économique"],
-            modifieVol.prixParClasse["affaire"],
-            modifieVol.prixParClasse["première"],
-            id
+                prixSql,
+                modifieVol.prixParClasse["économique"],
+                modifieVol.prixParClasse["affaire"],
+                modifieVol.prixParClasse["première"],
+                id
         )
-    
+
         val deleteStatutsSql = "DELETE FROM vol_statut WHERE id_vol = ?"
         bd.update(deleteStatutsSql, id)
         modifieVol.vol_statut.forEach { statut ->
             ajouterStatutVol(id, statut)
         }
-    
+
         return modifieVol.copy(id = id)
     }
+
+
+
 
     override fun obtenirSiegeParVolId(id: Int): List<Siège> =
             bd.query(
@@ -264,5 +270,5 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         réponseSiège.getString("vols_sièges.statut_siege")
                 )
             }
-
 }
+
