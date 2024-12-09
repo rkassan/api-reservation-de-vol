@@ -2,10 +2,7 @@ package dti.crosemont.reservationvol
 
 import org.springframework.stereotype.Service
 import dti.crosemont.reservationvol.Domaine.Modele.Reservation
-import dti.crosemont.reservationvol.Domaine.Modele.Siège
-import dti.crosemont.reservationvol.Domaine.Modele.Vol
-import dti.crosemont.reservationvol.Domaine.Modele.Client 
-import dti.crosemont.reservationvol.AccesAuxDonnees.BD.ReservationsDAOImpl
+import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.ReservationsDAO
 import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.SiègeDAO
 import dti.crosemont.reservationvol.Domaine.Service.VolService
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
@@ -14,9 +11,9 @@ import dti.crosemont.reservationvol.Controleurs.Exceptions.RéservationInexistan
 
 
 @Service
-class ReservationsService(  private val reservationsDAO: ReservationsDAOImpl,
-                            private val siegeDAO: SiègeDAO, 
-                            private val volService: VolService) {
+class ReservationsService(private val reservationsDAO: ReservationsDAO,
+                          private val siegeDAO: SiègeDAO,
+                          private val volService: VolService) {
 
 
     fun obtenirToutesLesReservations(): List<Reservation> = reservationsDAO.chercherTous()
@@ -48,7 +45,7 @@ class ReservationsService(  private val reservationsDAO: ReservationsDAOImpl,
 
         return nouvelleRéservation
     }
-
+//line 56 : i changed the Exeption to RéservationInexistanteException
     fun obtenirReservationParId(id: Int): Reservation? {
 
         val réservationObtenue = reservationsDAO.chercherParId(id)
@@ -56,7 +53,7 @@ class ReservationsService(  private val reservationsDAO: ReservationsDAOImpl,
         if ( réservationObtenue != null ) {
             return réservationObtenue
         } else {
-            throw RessourceInexistanteException("Réservation avec le id: $id est inexistante")
+            throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
         }
     }
     
