@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
 import dti.crosemont.reservationvol.ReservationsService
 import dti.crosemont.reservationvol.Domaine.Modele.Reservation
+import dti.crosemont.reservationvol.Domaine.OTD.ReservationOTD
+import dti.crosemont.reservationvol.Domaine.Service.ClientsService
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RéservationInexistanteException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.MessageErreur
 
@@ -24,7 +26,7 @@ import dti.crosemont.reservationvol.Controleurs.Exceptions.MessageErreur
 
 @RestController
 @RequestMapping("/reservations")
-class ReservationControleur(val reservationsService: ReservationsService) {
+class ReservationControleur(val reservationsService: ReservationsService, val clientsService: ClientsService) {
 
     @GetMapping
         fun obtenirToutesLesReservations(): ResponseEntity<List<Reservation>> =
@@ -48,9 +50,9 @@ class ReservationControleur(val reservationsService: ReservationsService) {
     }
 
     @PutMapping("/{id}")
-    fun modifierReservation(@PathVariable id: Int, @RequestBody réservation: Reservation): ResponseEntity<Reservation> {
-        
-        return ResponseEntity(reservationsService.modifierRéservation(id, réservation), HttpStatus.OK)
+    fun modifierReservation(@PathVariable id: Int, @RequestBody réservationOTD: ReservationOTD): ResponseEntity<Reservation> {
+
+        return ResponseEntity.ok( reservationsService.modifierRéservation( id, réservationOTD ) )
     }
 
     @DeleteMapping("/{id}")
