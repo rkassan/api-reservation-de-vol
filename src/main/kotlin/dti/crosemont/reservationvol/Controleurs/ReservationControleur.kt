@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus
 import dti.crosemont.reservationvol.ReservationsService
 import dti.crosemont.reservationvol.Domaine.Modele.Reservation
 import dti.crosemont.reservationvol.Domaine.OTD.ReservationOTD
+import dti.crosemont.reservationvol.Domaine.OTD.PostReservationOTD
 import dti.crosemont.reservationvol.Domaine.Service.ClientsService
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RéservationInexistanteException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.MessageErreur
@@ -44,9 +45,9 @@ class ReservationControleur(val reservationsService: ReservationsService, val cl
         }
 
     @PostMapping
-        fun ajouterReservation(@RequestBody reservation: Reservation): ResponseEntity<Reservation> {
-            val nouvelleReservation = reservationsService.ajouterReservation(reservation)
-                return ResponseEntity.ok(nouvelleReservation)         
+        fun ajouterReservation(@RequestBody reservationOTD: PostReservationOTD): ResponseEntity<Reservation> {
+            val nouvelleReservation = reservationsService.ajouterReservation(reservationOTD)
+        return ResponseEntity.ok(nouvelleReservation)
     }
 
     @PutMapping("/{id}")
