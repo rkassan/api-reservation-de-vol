@@ -5,61 +5,103 @@ import dti.crosemont.reservationvol.Domaine.Modele.Reservation
 import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.ReservationsDAO
 import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.SiègeDAO
 import dti.crosemont.reservationvol.Domaine.Service.VolService
+import dti.crosemont.reservationvol.Domaine.Service.ClientsService
+import dti.crosemont.reservationvol.Domaine.OTD.ReservationOTD
+import dti.crosemont.reservationvol.Domaine.OTD.PostReservationOTD
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RéservationInexistanteException
+import org.springframework.security.access.prepost.PostAuthorize
+import org.springframework.security.access.prepost.PreAuthorize
+import dti.crosemont.reservationvol.Controleurs.Exceptions.ModificationException
+import kotlin.enums.enumEntries
+import org.springframework.http.ResponseEntity
+
 
 
 @Service
 class ReservationsService(private val reservationsDAO: ReservationsDAO,
                           private val siegeDAO: SiègeDAO,
-                          private val volService: VolService) {
+                          private val volService: VolService,
+                          private val clientService: ClientsService) {
 
+    
+    val typeClasse = arrayListOf<String>("économique","business","première")
 
     fun obtenirToutesLesReservations(): List<Reservation> = reservationsDAO.chercherTous()
 
-    // --------------------changer ici pour associe la reservation avec le vol, client  et siege--------------------------------
-    fun ajouterReservation(reservation: Reservation): Reservation {
-        // Vérification si le vol existe
-        val vol = volService.chercherParId(reservation.idVol)
-            ?: throw RessourceInexistanteException("Vol avec l'ID ${reservation.idVol} introuvable.")
-    
-        // ici c'est pour avoir les sièges du vol
-        val sièges = volService.chercherSiegeParVolId(reservation.idVol)
+    fun ajouterReservation(reservationOTD: PostReservationOTD): Reservation {
+        // Vérification de l'email du client
+        val emailClient = reservationOTD.clientEmail
+            ?: throw RequêteMalFormuléeException("L'email du client est requis.")
 
-        // Vérifier si le siège sélectionné existe dans la liste des sièges disponibles
-        val siègeSélectionné = sièges.find { it.numéroSiège == reservation.siège.numéroSiège }
-            ?: throw RequêteMalFormuléeException("Le siège ${reservation.siège.numéroSiège} n'est pas disponible pour ce vol.")
+        // Récupérer le client via l'email
+        val client = clientService.obtenirClientParEmail(emailClient)
+            ?: throw RessourceInexistanteException("Client avec l'email $emailClient introuvable.")
 
-        // Vérification si le siège est occupé
+        val idVol = reservationOTD.idVol ?: throw RequêteMalFormuléeException("L'ID du vol est requis.")
+
+        val vol = volService.chercherParId(idVol)
+            ?: throw RessourceInexistanteException("Vol avec l'ID $idVol introuvable.")
+
+        val siègeSélectionné = volService.chercherSiegeParVolId(idVol)
+            .find { it.numéroSiège == reservationOTD.siège?.numéroSiège }
+            ?: throw RequêteMalFormuléeException("Le siège ${reservationOTD.siège?.numéroSiège} n'est pas disponible.")
+
         if (siègeSélectionné.statut == "occupé") {
-            throw RequêteMalFormuléeException("Le siège ${reservation.siège.numéroSiège} est déjà réservé.")
+            throw RequêteMalFormuléeException("Le siège ${reservationOTD.siège?.numéroSiège} est déjà réservé.")
         }
-    
-        
+
+        val classe = reservationOTD.classe ?: throw RequêteMalFormuléeException("La classe est requise.")
+        val bagages = reservationOTD.bagages ?: 0
+
+        val numéroRéservation = reservationOTD.numéroRéservation
+            ?: throw RequêteMalFormuléeException("Le numéro de réservation est requis.")
+
+        val reservation = Reservation(
+            id = 0, 
+            client = client,
+            idVol = idVol,
+            siège = siègeSélectionné,
+            classe = classe,
+            bagages = bagages,
+            numéroRéservation = numéroRéservation
+        )
+
         val nouvelleRéservation = reservationsDAO.ajouterReservation(reservation)
 
-        // Mise à jour du statut du siège en "occupé"
         siègeSélectionné.statut = "occupé"
         siegeDAO.save(siègeSélectionné)
 
         return nouvelleRéservation
     }
-//line 56 : i changed the Exeption to RéservationInexistanteException
-    fun obtenirReservationParId(id: Int): Reservation? {
+
+
+    fun obtenirReservationParId(id: Int): Reservation {
 
         val réservationObtenue = reservationsDAO.chercherParId(id)
 
-        if ( réservationObtenue != null ) {
+        if ( réservationObtenue != null ) { 
             return réservationObtenue
         } else {
             throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
         }
     }
     
-    fun modifierRéservation( id: Int, réservation: Reservation ): Reservation {
-        this.obtenirReservationParId(id)
+    fun modifierRéservation( id: Int, réservationOTD: ReservationOTD ): Reservation {
+        
+        val réservation = this.obtenirReservationParId(id)
 
+        this.vérifierParamètre(réservationOTD)
+
+        réservationOTD.apply {
+            idVol?.let { réservation.idVol = it }
+            client?.let { réservation.client = it }
+            siège?.let { réservation.siège = it }
+            classe?.let { réservation.classe = it }
+            bagages?.let { réservation.bagages = it }
+        }
+        
         return reservationsDAO.modifierRéservation(id, réservation)
     }
 
@@ -67,5 +109,11 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         val réservation = this.obtenirReservationParId(id)
         
         reservationsDAO.effacer(id)
+    }
+
+    private fun vérifierParamètre( réservationOTD: ReservationOTD ) {
+        if ( !(réservationOTD.classe != null && typeClasse.contains( réservationOTD.classe ) ) ) {
+            throw ModificationException("Classe saisit non valide.")
+        }         
     }
 }

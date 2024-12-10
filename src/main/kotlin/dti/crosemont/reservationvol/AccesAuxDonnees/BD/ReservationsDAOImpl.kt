@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository
 @Repository
 class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
 
-        //----------Chercher tous les reservations---------------!!!
+        
         override fun chercherTous(): List<Reservation> {
             val query = "SELECT * FROM réservations"
             return bd.query(query) { reponse, _ ->
@@ -33,18 +33,6 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
             return bd.queryForObject(query, arrayOf(idVol, idSiège), String::class.java) == "disponible"
         }
 
-
-        /*  C'est incessaire car id client (la table client est DEJA associe a la table reservation... A effacer apres)
-            fun associerClientÀRéservation(client: Client, reservationId: Int) {
-            val query = "INSERT INTO réservations (id_clients, id) VALUES (?, ?)"
-            bd.update(query, client.id, reservationId)
-        }*/
-
-        /* meme logic.. a effacer
-        fun associerSiègeÀRéservation(idRéservation: Int, idSiège: Int) {
-            val query = "INSERT INTO réservations (id_siège, id) VALUES (?, ?)"
-            bd.update(query, idRéservation, idSiège)
-        }*/
 
         fun mettreÀJourStatutSiège(idVol: Int, idSiège: Int, statut: String) {
             val query = "UPDATE vols_sièges SET statut_siege = ? WHERE vol_id = ? AND siège_id = ?"
@@ -96,13 +84,10 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
 
 
         override fun ajouterReservation(reservation: Reservation): Reservation {
-             // Vérifier si le siège est disponible
-
+            
             if (!verifierSiègeDisponible(reservation.idVol, reservation.siège.id)) {
                 throw IllegalArgumentException("Le siège sélectionné n'est pas disponible.")
             }
-
-            // Mettre à jour le statut du siège à "occupé"
             mettreÀJourStatutSiège(reservation.idVol, reservation.siège.id, "occupé")
 
             val query = """
@@ -110,11 +95,8 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
                 (numéro_réservation, id_vol, classe, id_sièges, id_client, bagages) 
                 VALUES (?, ?, ?, ?, ?, ?)
                 """
-
-            //Récupérer l'ID du siège avec le bon numéro de siège
             val siegeId = getSiègeIdByNuméro(reservation.siège.numéroSiège)
 
-            // Insérer la réservation dans la base de données
             bd.update(
                 query,
                 reservation.numéroRéservation,
@@ -125,12 +107,10 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
                 reservation.bagages
             )
 
-            // Récupérer l'ID de la réservation insérée
             val reservationId = bd.queryForObject("SELECT LAST_INSERT_ID()", Int::class.java)
                 ?: throw IllegalArgumentException("L'ID de la réservation est nul")
 
-            
-            return chercherParId(reservationId)!!
+        return chercherParId(reservationId)!!
         }
 
 
