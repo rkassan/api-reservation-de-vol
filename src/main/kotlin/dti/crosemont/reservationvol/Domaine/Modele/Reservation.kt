@@ -2,11 +2,10 @@ package dti.crosemont.reservationvol.Domaine.Modele
 
 data class Reservation (
         val id:Int,
-        val numéroRéservation: String,
-        val idVol: Int,
-        val clients: List<Client>,
-        val sièges: List<Siège>,
-        val classe: String,
-        val siegeSelectionne: String,
-        val bagages: Int
+        var numéroRéservation: String,
+        var idVol: Int,
+        var client: Client, 
+        var siège: Siège,
+        var classe: String,
+        var bagages: Int
     )

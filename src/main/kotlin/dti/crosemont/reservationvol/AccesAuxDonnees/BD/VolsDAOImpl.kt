@@ -1,6 +1,7 @@
 package dti.crosemont.reservationvol.AccesAuxDonnees.BD
 
 import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.VolsDAO
+import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
 import dti.crosemont.reservationvol.Domaine.Modele.Aeroport
 import dti.crosemont.reservationvol.Domaine.Modele.Avion
 import dti.crosemont.reservationvol.Domaine.Modele.Trajet
@@ -8,6 +9,7 @@ import dti.crosemont.reservationvol.Domaine.Modele.Ville
 import dti.crosemont.reservationvol.Domaine.Modele.Vol
 import dti.crosemont.reservationvol.Domaine.Modele.VolStatut
 import dti.crosemont.reservationvol.Domaine.Modele.`Siège`
+import dti.crosemont.reservationvol.Domaine.OTD.VolOTD
 import java.sql.ResultSet
 import java.time.LocalDateTime
 import kotlin.time.DurationUnit
@@ -30,7 +32,7 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         JOIN villes AS ville_debut ON ap_deb.ville_id = ville_debut.id 
                         JOIN villes AS ville_fin ON ap_fin.ville_id = ville_fin.id 
                         JOIN prix_par_classe ON vols.id = prix_par_classe.id_vol 
-                        JOIN avions ON vols.avion_id = avions.id 
+                        JOIN avions ON vols.avion_id = avions.id
                         ORDER BY vols.id;
                         """
 
@@ -49,7 +51,7 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         """
 
                 
-                private const val QUERY_VOL_PAR_PARAM = 
+                private const val QUERY_VOL_PAR_PARAM =
                         """
                         SELECT * FROM vols
                         JOIN trajets ON vols.trajet_id = trajets.id 
@@ -59,19 +61,24 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         JOIN villes AS ville_fin ON ap_fin.ville_id = ville_fin.id 
                         JOIN prix_par_classe ON vols.id = prix_par_classe.id_vol 
                         JOIN avions ON vols.avion_id = avions.id 
-                        WHERE date_départ = ? AND ap_deb.code = ? AND ap_fin.code = ?
+                        WHERE date_départ BETWEEN ? AND DATE_ADD(?, INTERVAL 30 DAY)
+                        AND ap_deb.code = ? 
+                        AND ap_fin.code = ?
                         ORDER BY vols.date_départ;
                         """
 
                 private const val QUERY_SIEGE_PAR_VOL = """
                         SELECT * FROM sièges
-                        JOIN avions_sièges ON avions_sièges.siège_id = sièges.id
-                        JOIN avions ON avions_sièges.avion_id = avions.id
-                        JOIN vols ON vols.avion_id = avions.id
+                        JOIN vols_sièges ON vols_sièges.siège_id = sièges.id
+                        JOIN vols ON vols_sièges.vol_id = vols.id
                         WHERE vols.id = ?
                         ORDER BY vols.id;
                         """
-                 
+
+                private const val INSERT_DANS_VOLS_SIEGES = """
+                    INSERT INTO vols_sièges (vol_id, siège_id, statut_siege) VALUES
+                    (?,?,'disponible');
+                    """
            
      
         }
@@ -135,6 +142,8 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                                                 .toLocalDateTime()
                                 )
                         }
+                val volSièges = listOf<Siège>()
+
                 return Vol(
                         réponse.getInt("id"),
                         réponse.getTimestamp("date_départ").toLocalDateTime(),
@@ -144,7 +153,8 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         réponse.getInt("poids_max_bag"),
                         trajet,
                         volStatuts,
-                        réponse.getInt("durée").toDuration(DurationUnit.MINUTES).toJavaDuration()
+                        réponse.getInt("durée").toDuration(DurationUnit.MINUTES).toJavaDuration(),
+                        volSièges
                 )
         }
 
@@ -160,7 +170,7 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
   
       
     override fun obtenirVolParParam(dateDebut: LocalDateTime, aeroportDebut: String, aeroportFin: String): List<Vol> {
-            return bd.query(QUERY_VOL_PAR_PARAM, dateDebut, aeroportDebut, aeroportFin) { réponse, _ ->
+            return bd.query(QUERY_VOL_PAR_PARAM, dateDebut ,dateDebut, aeroportDebut, aeroportFin) { réponse, _ ->
                 mapVol(réponse)
             }
         }
@@ -173,9 +183,9 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
         bd.update(sql, vol.dateDepart, vol.dateArrivee, vol.avion.id, vol.trajet.id, vol.poidsMaxBag, vol.duree.toMinutes())
         
         val nouvelId = bd.queryForObject("SELECT LAST_INSERT_ID()", Int::class.java) ?: throw Exception("Erreur lors de l'ajout du vol")
-
-       
-        
+        for(i in 1..72){
+            bd.update(INSERT_DANS_VOLS_SIEGES, nouvelId, i)
+        }
         return vol.copy(id = nouvelId)
     }
 
@@ -205,6 +215,8 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
         return bd.queryForObject(sql, arrayOf(id), Int::class.java) ?: 0 > 0
     }
 
+
+
     override fun modifierVol(id: Int, modifieVol: Vol): Vol {
         val sql = """
             UPDATE vols 
@@ -212,39 +224,52 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
             WHERE id = ?
         """
         bd.update(
-            sql, 
-            modifieVol.dateDepart, 
-            modifieVol.dateArrivee, 
-            modifieVol.avion.id, 
-            modifieVol.trajet.id, 
-            modifieVol.poidsMaxBag, 
-            modifieVol.duree.toMinutes(),
-            id
+                sql,
+                modifieVol.dateDepart,
+                modifieVol.dateArrivee,
+                modifieVol.avion.id,
+                modifieVol.trajet.id,
+                modifieVol.poidsMaxBag,
+                modifieVol.duree.toMinutes(),
+                id
         )
-    
+
         val prixSql = """
             UPDATE prix_par_classe 
             SET prix_économique = ?, prix_affaire = ?, prix_première = ?
             WHERE id_vol = ?
         """
         bd.update(
-            prixSql,
-            modifieVol.prixParClasse["économique"],
-            modifieVol.prixParClasse["affaire"],
-            modifieVol.prixParClasse["première"],
-            id
+                prixSql,
+                modifieVol.prixParClasse["économique"],
+                modifieVol.prixParClasse["affaire"],
+                modifieVol.prixParClasse["première"],
+                id
         )
-    
+
         val deleteStatutsSql = "DELETE FROM vol_statut WHERE id_vol = ?"
         bd.update(deleteStatutsSql, id)
         modifieVol.vol_statut.forEach { statut ->
             ajouterStatutVol(id, statut)
         }
-    
-        return modifieVol.copy(id = id)
+
+        return chercherParId(id) ?: throw RessourceInexistanteException("Le vol avec l'ID $id n'existe pas.")
     }
 
-    override fun obtenirSiegeParVolId(id : Int): List<Siège> =
-        bd.query(QUERY_SIEGE_PAR_VOL, id) { réponse, _ -> Siège(réponse.getInt("id"), réponse.getString("numéro_siège"), réponse.getString("classe"))
+
+
+
+    override fun obtenirSiegeParVolId(id: Int): List<Siège> =
+            bd.query(
+                    QUERY_SIEGE_PAR_VOL,
+                    id
+            ){ réponseSiège, _ ->
+                Siège(
+                        réponseSiège.getInt("sièges.id"),
+                        réponseSiège.getString("sièges.numéro_siège"),
+                        réponseSiège.getString("sièges.classe"),
+                        réponseSiège.getString("vols_sièges.statut_siege")
+                )
+            }
 }
-}
+

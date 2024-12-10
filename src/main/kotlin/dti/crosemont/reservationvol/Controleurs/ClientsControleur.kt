@@ -1,10 +1,12 @@
 package dti.crosemont.reservationvol.Controleurs
 
-import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
 import dti.crosemont.reservationvol.Domaine.Modele.Client
+import dti.crosemont.reservationvol.Domaine.OTD.ClientOTD
 import dti.crosemont.reservationvol.Domaine.Service.ClientsService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -34,6 +36,13 @@ class ClientsControleur( private val service : ClientsService) {
         fun obtenirUnClientParId( @PathVariable id: Int ) : ResponseEntity<Client> =
                 ResponseEntity.ok( service.obtenirParId( id ) )
 
+        @GetMapping("/profile")
+        fun obtenirProfile( @AuthenticationPrincipal principal : Jwt) : ResponseEntity<Client> {
+                val email = principal.claims["courriel"] as String
+                return ResponseEntity.ok( service.obtenirClientParEmail( email ) )
+        }
+
+
         @PostMapping
         fun ajouterClient(@RequestBody client: Client): ResponseEntity<Client> =
                 ResponseEntity.ok( service.ajouterClient( client ) )
@@ -41,13 +50,10 @@ class ClientsControleur( private val service : ClientsService) {
         @PutMapping("/{id}")
         fun modifierClient(
                 @PathVariable id: Int,
-                @RequestBody client: Client
+                @RequestBody client: ClientOTD
         ): ResponseEntity<Client> {
-                if ( id == client.id ) {
-                        return ResponseEntity.ok( service.modifierClient( client ) )
-                } else {
-                        throw RequêteMalFormuléeException( "Modification du client invalide" )
-                }
+                val clientExistant = service.obtenirParId( id )
+                return ResponseEntity.ok( service.modifierClient( client, id, clientExistant ) )
         }
 
         @DeleteMapping("/{id}")

@@ -1,7 +1,7 @@
 package dti.crosemont.reservationvol.Controleurs
 
-import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
 import dti.crosemont.reservationvol.Domaine.Modele.Aeroport
+import dti.crosemont.reservationvol.Domaine.OTD.AeroportOTD
 import dti.crosemont.reservationvol.Domaine.Service.AeroportService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -58,18 +58,10 @@ class AeroportControleur(private val service: AeroportService) {
     @PutMapping("/{id}")
     fun modifierAeroport(
             @PathVariable id: Int,
-            @RequestBody aeroport: Aeroport
+            @RequestBody aeroport: AeroportOTD
     ): ResponseEntity<Aeroport> {
-        if (id == aeroport.id) {
-            val aeroportModifie = service.modifierAeroport(aeroport)
-            return if (aeroportModifie != null) {
-                ResponseEntity.ok(aeroportModifie)
-            } else {
-                ResponseEntity.notFound().build()
-            }
-        } else {
-            throw RequêteMalFormuléeException("Modification de l'aéroport invalide")
-        }
+        val aeroportExistant = service.obtenirAeroportParId(id)
+        return ResponseEntity.ok(service.modifierAeroport(aeroport, id, aeroportExistant))
     }
 
     @DeleteMapping("/{id}")

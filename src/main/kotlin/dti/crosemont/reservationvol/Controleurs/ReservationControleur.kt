@@ -17,6 +17,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
 import dti.crosemont.reservationvol.ReservationsService
 import dti.crosemont.reservationvol.Domaine.Modele.Reservation
+import dti.crosemont.reservationvol.Domaine.OTD.ReservationOTD
+import dti.crosemont.reservationvol.Domaine.OTD.PostReservationOTD
+import dti.crosemont.reservationvol.Domaine.Service.ClientsService
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RéservationInexistanteException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.MessageErreur
 
@@ -24,46 +27,33 @@ import dti.crosemont.reservationvol.Controleurs.Exceptions.MessageErreur
 
 @RestController
 @RequestMapping("/reservations")
-class ReservationControleur(val reservationsService: ReservationsService) {
+class ReservationControleur(val reservationsService: ReservationsService, val clientsService: ClientsService) {
 
     @GetMapping
-    fun obtenirToutesLesReservations(): ResponseEntity<List<Reservation>> =
-        ResponseEntity.ok(reservationsService.obtenirToutesLesReservations())
+        fun obtenirToutesLesReservations(): ResponseEntity<List<Reservation>> =
+            ResponseEntity.ok(reservationsService.obtenirToutesLesReservations())
 
 
-    //Get d'un reservation mais avec un Exception de MessageErreur
     @GetMapping("/{id}")
-    fun obtenirReservationParId(@PathVariable id: Int): ResponseEntity<Any> {
-        val reservation = reservationsService.obtenirReservationParId(id)
+        fun obtenirReservationParId(@PathVariable id: Int): ResponseEntity<Any> {
+            val reservation = reservationsService.obtenirReservationParId(id)
             return if (reservation != null) {
-                ResponseEntity.ok(reservation)
-        }else {
-        val errorMessage = MessageErreur(
-            code = HttpStatus.NOT_FOUND.value(),
-            date = LocalDateTime.now(),
-            message = "La reservation avec Id $id introuvable.",
-            chemin = "/reservations/$id"
-        )
-        ResponseEntity(errorMessage, HttpStatus.NOT_FOUND)
+                ResponseEntity.ok(reservation)  
+            } else {
+                ResponseEntity.status(HttpStatus.NOT_FOUND).build()  
             }
         }
-    
-    
+
     @PostMapping
-    fun ajouterReservation(@RequestBody reservation: Reservation): ResponseEntity<Reservation> {
-        return try {
-            val ajouteReservation = reservationsService.ajouterReservation(reservation)    
-            ResponseEntity(ajouteReservation, HttpStatus.CREATED)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
-        }
+        fun ajouterReservation(@RequestBody reservationOTD: PostReservationOTD): ResponseEntity<Reservation> {
+            val nouvelleReservation = reservationsService.ajouterReservation(reservationOTD)
+        return ResponseEntity.ok(nouvelleReservation)
     }
 
     @PutMapping("/{id}")
-    fun modifierReservation(@PathVariable id: Int, @RequestBody réservation: Reservation): ResponseEntity<Reservation> {
-        
-        return ResponseEntity(reservationsService.modifierRéservation(id, réservation), HttpStatus.OK)
+    fun modifierReservation(@PathVariable id: Int, @RequestBody réservationOTD: ReservationOTD): ResponseEntity<Reservation> {
+
+        return ResponseEntity.ok( reservationsService.modifierRéservation( id, réservationOTD ) )
     }
 
     @DeleteMapping("/{id}")
