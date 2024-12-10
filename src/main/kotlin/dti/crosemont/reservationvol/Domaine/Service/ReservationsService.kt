@@ -106,7 +106,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
     }
 
     fun supprimerRéservation(id: Int) {
-        val réservation = this.obtenirReservationParId(id)
+        this.obtenirReservationParId(id)
         
         reservationsDAO.effacer(id)
     }
