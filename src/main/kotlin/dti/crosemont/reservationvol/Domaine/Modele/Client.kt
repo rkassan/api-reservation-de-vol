@@ -6,6 +6,6 @@ data class Client(
     var prénom : String,
     var adresse : String,
     var numéroPasseport  : String,
-    var email : String?,
-    var numéroTéléphone : String?,
+    var email : String,
+    var numéroTéléphone : String,
 )
