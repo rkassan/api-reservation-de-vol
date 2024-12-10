@@ -23,9 +23,10 @@ import java.time.chrono.ChronoLocalDateTime
 @Service
 class VolService(private val volsDAO: VolsDAO) {
 
+
     fun obtenirVolParParam(dateDebut: LocalDateTime, aeroportDebut: String, aeroportFin: String): List<Vol> {
         val chronoLocalDateTime: ChronoLocalDateTime<*> = LocalDateTime.now()
-        if(dateDebut.isBefore(chronoLocalDateTime)){
+        if(dateDebut.isAfter(chronoLocalDateTime)){
             return volsDAO.obtenirVolParParam(dateDebut, aeroportDebut, aeroportFin)
         }
         else {
