@@ -13,6 +13,7 @@ data class Vol(
         val poidsMaxBag: Int,
         val trajet: Trajet,
         val vol_statut: List<VolStatut>,
-        val duree: Duration
+        val duree: Duration,
+        var sièges: List<Siège>?
 )
 

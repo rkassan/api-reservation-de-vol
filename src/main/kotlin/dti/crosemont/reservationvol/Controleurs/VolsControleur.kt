@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.security.core.context.SecurityContextHolder
 
 @RestController
 @RequestMapping("/vols")
@@ -37,11 +38,8 @@ class VolsControleur(private val volService: VolService) {
 
         val vols = volService.obtenirVolParParam(dateDebut, aeroportDebut, aeroportFin)
 
-        return if (vols.isNotEmpty()) {
-            ResponseEntity(vols, HttpStatus.OK)
-        } else {
-            ResponseEntity(HttpStatus.NOT_FOUND)
-        }
+        return ResponseEntity(vols, HttpStatus.OK)
+
     }
 
     @GetMapping("/{id}/sièges")
@@ -55,9 +53,10 @@ class VolsControleur(private val volService: VolService) {
 
 
     @PutMapping("/{id}")
-fun modifierVol(@PathVariable id: Int, @RequestBody modifieVol: Vol): ResponseEntity<Vol> {
+fun modifierVol(@PathVariable id: Int, @RequestBody modifieVol: Vol): ResponseEntity<Vol> {  
     return ResponseEntity.ok(volService.modifierVol(id, modifieVol))
 }
+
 
 
     @DeleteMapping("/{id}")
