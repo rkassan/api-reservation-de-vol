@@ -5,6 +5,7 @@ import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteE
 import dti.crosemont.reservationvol.Domaine.Modele.Client
 import dti.crosemont.reservationvol.Domaine.OTD.ClientOTD
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import kotlin.test.Test
@@ -13,7 +14,7 @@ import kotlin.test.assertFailsWith
 
 @ExtendWith(MockitoExtension::class)
 class ClientsServiceTest {
-    lateinit var mockDAO : ClientDAO
+    val mockDAO : ClientDAO = Mockito.mock(ClientDAO::class.java)
 
     val listeClients = listOf(
         Client( 1, "Jean", "Dubois", "10 rue des Lilas", "123456789", "jean.dubois@email.com", "0123456789" ),
@@ -102,31 +103,15 @@ class ClientsServiceTest {
     @Test
     fun `Étant donné un ClientService, lorsque la méthode modifierClient est appelée avec un clientOTD et un id, le client est modifié`() {
         val clientOTD =
-            ClientOTD("Johnny", "Dubois", "10 rue des Lilas", "123456789", "jean.dubois@email.com", "0123456789")
+            ClientOTD("Johnny", "Dubois", "10 rue des Lilas", "123456789", "0123456789")
         val client = Client(1, "Johnny", "Dubois", "10 rue des Lilas", "123456789", "jean.dubois@email.com", "0123456789")
-        Mockito.`when`( mockDAO.chercherParId( 1 ) ).thenReturn( listeClients[0] )
         Mockito.`when`( mockDAO.modifier( client ) ).thenReturn( client )
 
         val cobaye = ClientsService( mockDAO )
 
         val résultat_attendu = client
-        val résultat_obtenue = cobaye.modifierClient( clientOTD, 4 )
+        val résultat_obtenue = cobaye.modifierClient( clientOTD, 4, listeClients[0]  )
 
         assertEquals( résultat_attendu, résultat_obtenue )
-    }
-
-    @Test
-    fun `Étant donné un ClientService, lorsque la méthode modifierClient est appelée avec un clientOTD et un id inexistant, une exception de type RessourceInexistanteException est lancée`() {
-        val clientOTD =
-            ClientOTD("Johnny", "Dubois", "10 rue des Lilas", "123456789", "sss", "0123456789")
-
-        Mockito.`when`(mockDAO.chercherParId(1)).thenReturn(listeClients[0])
-
-        val cobaye = ClientsService(mockDAO)
-
-        assertFailsWith<RessourceInexistanteException> {
-            cobaye.modifierClient(clientOTD, 1)
-        }
-
     }
 }

@@ -2,6 +2,7 @@ package dti.crosemont.reservationvol.Controleurs
 
 import dti.crosemont.reservationvol.Domaine.Modele.`Siège`
 import dti.crosemont.reservationvol.Domaine.Modele.Vol
+import dti.crosemont.reservationvol.Domaine.OTD.VolOTD
 import dti.crosemont.reservationvol.Domaine.Service.VolService
 import java.time.LocalDateTime
 import org.springframework.http.HttpStatus
@@ -53,8 +54,8 @@ class VolsControleur(private val volService: VolService) {
 
 
     @PutMapping("/{id}")
-fun modifierVol(@PathVariable id: Int, @RequestBody modifieVol: Vol): ResponseEntity<Vol> {  
-    return ResponseEntity.ok(volService.modifierVol(id, modifieVol))
+fun modifierVol(@PathVariable id: Int, @RequestBody modifieVol: VolOTD): ResponseEntity<Vol> {
+    return ResponseEntity.ok(volService.modifierVol(id,modifieVol))
 }
 
 

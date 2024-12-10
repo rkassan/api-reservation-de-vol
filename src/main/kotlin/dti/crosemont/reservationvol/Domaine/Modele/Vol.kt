@@ -6,14 +6,14 @@ import java.time.Duration
 
 data class Vol(
         val id: Int,
-        val dateDepart: LocalDateTime,
-        val dateArrivee: LocalDateTime,
-        val avion: Avion,
-        val prixParClasse: Map<String, Double>,
-        val poidsMaxBag: Int,
-        val trajet: Trajet,
-        val vol_statut: List<VolStatut>,
-        val duree: Duration,
+        var dateDepart: LocalDateTime,
+        var dateArrivee: LocalDateTime,
+        var avion: Avion,
+        var prixParClasse: Map<String, Double>,
+        var poidsMaxBag: Int,
+        var trajet: Trajet,
+        var vol_statut: List<VolStatut>,
+        var duree: Duration,
         var sièges: List<Siège>?
 )
 
