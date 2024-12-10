@@ -17,12 +17,20 @@ import java.time.LocalDateTime
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
 import dti.crosemont.reservationvol.Domaine.Modele.VolStatut
 import dti.crosemont.reservationvol.Domaine.OTD.VolOTD
+import java.time.LocalDate
+import java.time.chrono.ChronoLocalDateTime
 
 @Service
 class VolService(private val volsDAO: VolsDAO) {
 
     fun obtenirVolParParam(dateDebut: LocalDateTime, aeroportDebut: String, aeroportFin: String): List<Vol> {
-        return volsDAO.obtenirVolParParam(dateDebut, aeroportDebut, aeroportFin)
+        val chronoLocalDateTime: ChronoLocalDateTime<*> = LocalDateTime.now()
+        if(dateDebut.isBefore(chronoLocalDateTime)){
+            return volsDAO.obtenirVolParParam(dateDebut, aeroportDebut, aeroportFin)
+        }
+        else {
+            throw RequêteMalFormuléeException("La date d'aller $dateDebut ne peut pas être avant la date d'aujourd'hui $chronoLocalDateTime.")
+        }
     }
 
     @PreAuthorize("hasAuthority('créer:vols')")
