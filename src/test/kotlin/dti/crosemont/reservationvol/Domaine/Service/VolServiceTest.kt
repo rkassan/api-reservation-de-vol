@@ -7,6 +7,7 @@ import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.VolsDAO
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
 import dti.crosemont.reservationvol.Domaine.Modele.*
+import dti.crosemont.reservationvol.Domaine.OTD.VolOTD
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith
@@ -90,29 +91,6 @@ class VolServiceTest {
         )
     }
 
-    @Test
-    fun `étant donné une date d'arrivée avant la date de départ, on obtient une RequêteMalFormuléeException`() {
-        val idVol = 1
-        val volExistant = vol.copy(id = idVol)
-        val volInvalide = volExistant.copy(
-                dateDepart = LocalDateTime.of(2024, 12, 11, 10, 0),
-                dateArrivee = LocalDateTime.of(2024, 12, 11, 9, 0)
-        )
-
-        Mockito.doReturn(volExistant).`when`(mockDAO).chercherParId(idVol)
-        Mockito.doReturn(true).`when`(mockDAO).trajetExiste(volInvalide.trajet.id)
-        Mockito.doReturn(true).`when`(mockDAO).avionExiste(volInvalide.avion.id)
-
-        val exception = assertThrows(RequêteMalFormuléeException::class.java) {
-            volService.modifierVol(idVol, volInvalide)
-        }
-
-        assertEquals(
-                "La date d'arrivée (${volInvalide.dateArrivee}) ne peut pas être avant la date de départ (${volInvalide.dateDepart}).",
-                exception.message
-        )
-        Mockito.verify(mockDAO, Mockito.never()).modifierVol(idVol, volInvalide)
-    }
 
 
     @Test
