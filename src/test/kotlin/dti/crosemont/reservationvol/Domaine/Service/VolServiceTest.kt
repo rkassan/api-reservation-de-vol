@@ -173,7 +173,7 @@ class VolServiceTest {
     }
 
     @Test
-    fun `étant donné un VolService, lorsque la methode ChercherParId, le vol 1 est obtenue`(){
+    fun `étant donné un VolService, lorsque la methode ChercherParId avec l'id 1, le vol 1 est obtenue`(){
 
         Mockito.`when`( mockDAO.chercherParId( 1 ) ).thenReturn( listeVol[0] )
         val cobaye = VolService( mockDAO )
@@ -183,9 +183,4 @@ class VolServiceTest {
 
         assertEquals(résultat_attendu, résultat_obtenue)
     }
-
-
-
-
-
 }
