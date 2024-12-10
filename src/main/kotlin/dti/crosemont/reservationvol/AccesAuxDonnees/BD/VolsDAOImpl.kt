@@ -1,6 +1,7 @@
 package dti.crosemont.reservationvol.AccesAuxDonnees.BD
 
 import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.VolsDAO
+import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
 import dti.crosemont.reservationvol.Domaine.Modele.Aeroport
 import dti.crosemont.reservationvol.Domaine.Modele.Avion
 import dti.crosemont.reservationvol.Domaine.Modele.Trajet
@@ -252,7 +253,7 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
             ajouterStatutVol(id, statut)
         }
 
-        return modifieVol.copy(id = id)
+        return chercherParId(id) ?: throw RessourceInexistanteException("Le vol avec l'ID $id n'existe pas.")
     }
 
 

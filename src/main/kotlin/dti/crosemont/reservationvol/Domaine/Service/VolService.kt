@@ -100,9 +100,26 @@ class VolService(private val volsDAO: VolsDAO) {
             throw RequêteMalFormuléeException("Le statut fait référence à un ID de vol incorrect")
         }
 
+        if (modifieVol.prixParClasse != null) {
+            val prixActuels = volExistant.prixParClasse.toMutableMap()
+            modifieVol.prixParClasse.forEach { (classe, prix) -> prixActuels[classe] = prix }
 
+            val economique = prixActuels["économique"] ?: throw RequêteMalFormuléeException("Le prix pour la classe économique est requis.")
+            val affaire = prixActuels["affaire"] ?: throw RequêteMalFormuléeException("Le prix pour la classe affaire est requis.")
+            val premiere = prixActuels["première"] ?: throw RequêteMalFormuléeException("Le prix pour la classe première est requis.")
 
+            if (affaire - economique < 200) {
+                throw RequêteMalFormuléeException("La différence entre les prix des classes économique et affaire doit être d'au moins 200$.")
+            }
+            if (premiere - economique < 500) {
+                throw RequêteMalFormuléeException("La différence entre les prix des classes économique et première doit être d'au moins 500$.")
+            }
+            if (premiere - affaire < 300) {
+                throw RequêteMalFormuléeException("La différence entre les prix des classes affaire et première doit être d'au moins 300$.")
+            }
 
+            volExistant.prixParClasse = prixActuels
+        }
         return volsDAO.modifierVol(id, volExistant)
     }
 
