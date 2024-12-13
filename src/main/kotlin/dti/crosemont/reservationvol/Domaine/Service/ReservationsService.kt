@@ -28,8 +28,10 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
     
     val typeClasse = arrayListOf<String>("économique","business","première")
 
+    @PreAuthorize("hasAnyAuthority('consulter:réservations')")
     fun obtenirToutesLesReservations(): List<Reservation> = reservationsDAO.chercherTous()
-
+    
+    @PreAuthorize("hasAnyAuthority('créer:réservations')")
     fun ajouterReservation(reservationOTD: PostReservationOTD): Reservation {
         // Vérification de l'email du client
         val emailClient = reservationOTD.clientEmail
@@ -76,7 +78,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         return nouvelleRéservation
     }
 
-
+    @PreAuthorize("hasAnyAuthority('consulter:réservations')")
     fun obtenirReservationParId(id: Int): Reservation {
 
         val réservationObtenue = reservationsDAO.chercherParId(id)
@@ -88,6 +90,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         }
     }
     
+    @PreAuthorize("hasAnyAuthority('modifier:réservations')")
     fun modifierRéservation( id: Int, réservationOTD: ReservationOTD ): Reservation {
         
         val réservation = this.obtenirReservationParId(id)
@@ -105,6 +108,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         return reservationsDAO.modifierRéservation(id, réservation)
     }
 
+    @PreAuthorize("hasAnyAuthority('supprimer:réservations')")
     fun supprimerRéservation(id: Int) {
         this.obtenirReservationParId(id)
         
