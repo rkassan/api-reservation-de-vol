@@ -47,7 +47,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
             ?: throw RessourceInexistanteException("Vol avec l'ID $idVol introuvable.")
 
         val siègeSélectionné = volService.chercherSiegeParVolId(idVol)
-            .find { it.numéroSiège == reservationOTD.siège?.numéroSiège }
+            .find { it.numéroSiège == reservationOTD.siège?.numéroSiège && it.classe == reservationOTD.classe }
             ?: throw RequêteMalFormuléeException("Le siège ${reservationOTD.siège?.numéroSiège} n'est pas disponible.")
 
         if (siègeSélectionné.statut == "occupé") {

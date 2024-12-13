@@ -75,9 +75,9 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
 
 
         // Récupérer l'ID du siège à partir du numéro de siège (numéroSiège)
-        private fun getSiègeIdByNuméro(numéroSiège: String): Int {
-            val query = "SELECT id FROM sièges WHERE numéro_siège = ?"
-            return bd.queryForObject(query, arrayOf(numéroSiège), Int::class.java)
+        private fun getSiègeIdByNuméro(numéroSiège: String, classeSiège: String): Int {
+            val query = "SELECT id FROM sièges WHERE numéro_siège = ? AND classe = ?"
+            return bd.queryForObject(query, arrayOf(numéroSiège, classeSiège), Int::class.java)
             ?: throw IllegalArgumentException("Siège non trouvé avec le numéro $numéroSiège")
         }
 
@@ -95,7 +95,7 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
                 (numéro_réservation, id_vol, classe, id_sièges, id_client, bagages) 
                 VALUES (?, ?, ?, ?, ?, ?)
                 """
-            val siegeId = getSiègeIdByNuméro(reservation.siège.numéroSiège)
+            val siegeId = getSiègeIdByNuméro(reservation.siège.numéroSiège, reservation.classe)
 
             bd.update(
                 query,
@@ -122,7 +122,7 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
                 id = reponse.getInt("id"),
                 numéroRéservation = reponse.getString("numéro_réservation"),
                 idVol = reponse.getInt("id_vol"),
-                client = obtenirClientPourRéservation(reponse.getInt("id")), 
+                client = obtenirClientPourRéservation(reponse.getInt("id_client")), 
                 siège = obtenirSiègePourRéservation(reponse.getInt("id")), 
                 classe = reponse.getString("classe"),
                 bagages = reponse.getInt("bagages")
