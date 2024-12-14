@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import dti.crosemont.reservationvol.ReservationsService
 import dti.crosemont.reservationvol.Domaine.Modele.Reservation
 import dti.crosemont.reservationvol.Domaine.OTD.ReservationOTD
@@ -30,8 +32,10 @@ import dti.crosemont.reservationvol.Controleurs.Exceptions.MessageErreur
 class ReservationControleur(val reservationsService: ReservationsService, val clientsService: ClientsService) {
 
     @GetMapping
-        fun obtenirToutesLesReservations(): ResponseEntity<List<Reservation>> =
-            ResponseEntity.ok(reservationsService.obtenirToutesLesReservations())
+        fun obtenirToutesLesReservations(@AuthenticationPrincipal principal : Jwt): ResponseEntity<List<Reservation>> {
+
+            return ResponseEntity.ok(reservationsService.obtenirToutesLesReservations(principal))
+        }
 
 
     @GetMapping("/{id}")

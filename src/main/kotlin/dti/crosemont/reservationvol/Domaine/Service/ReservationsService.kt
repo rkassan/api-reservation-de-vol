@@ -2,6 +2,7 @@ package dti.crosemont.reservationvol
 
 import org.springframework.stereotype.Service
 import dti.crosemont.reservationvol.Domaine.Modele.Reservation
+import dti.crosemont.reservationvol.Domaine.Modele.Client
 import dti.crosemont.reservationvol.Domaine.Modele.Siège
 import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.ReservationsDAO
 import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.SiègeDAO
@@ -14,7 +15,9 @@ import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteE
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RéservationInexistanteException
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.oauth2.jwt.Jwt
 import dti.crosemont.reservationvol.Controleurs.Exceptions.ModificationException
+import dti.crosemont.reservationvol.Controleurs.Exceptions.AccèsRefuséException
 import kotlin.enums.enumEntries
 import org.springframework.http.ResponseEntity
 
@@ -30,8 +33,20 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
     val typeClasse = arrayListOf<String>("économique","business","première")
     val typeStatut = arrayListOf<String>("disponible","occupé")
 
-    @PreAuthorize("hasAnyAuthority('consulter:réservations')")
-    fun obtenirToutesLesReservations(): List<Reservation> = reservationsDAO.chercherTous()
+    fun obtenirToutesLesReservations(principal: Jwt): List<Reservation> {
+
+        val permission = principal.claims["permissions"] as? List<String>
+
+        if ( permission != null ) {
+            if ( permission.contains("consulter:réservations")) {
+                return reservationsDAO.chercherTous()
+            }
+        }
+
+        val courrielAuthentification = principal.claims["courriel"] as String? ?: ""
+        val client = clientService.obtenirClientParEmail(courrielAuthentification)
+        return reservationsDAO.chercherTous(client.id)
+    }
     
     @PreAuthorize("hasAnyAuthority('créer:réservations')")
     fun ajouterReservation(reservationOTD: PostReservationOTD): Reservation {
