@@ -2,6 +2,7 @@ package dti.crosemont.reservationvol
 
 import org.springframework.stereotype.Service
 import dti.crosemont.reservationvol.Domaine.Modele.Reservation
+import dti.crosemont.reservationvol.Domaine.Modele.Siège
 import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.ReservationsDAO
 import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.SiègeDAO
 import dti.crosemont.reservationvol.Domaine.Service.VolService
@@ -27,6 +28,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
 
     
     val typeClasse = arrayListOf<String>("économique","business","première")
+    val typeStatut = arrayListOf<String>("disponible","occupé")
 
     @PreAuthorize("hasAnyAuthority('consulter:réservations')")
     fun obtenirToutesLesReservations(): List<Reservation> = reservationsDAO.chercherTous()
@@ -110,7 +112,9 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
 
     @PreAuthorize("hasAnyAuthority('supprimer:réservations')")
     fun supprimerRéservation(id: Int) {
-        this.obtenirReservationParId(id)
+        val réservation = this.obtenirReservationParId(id)
+
+        this.modifierSiègeVol( réservation )
         
         reservationsDAO.effacer(id)
     }
@@ -119,5 +123,12 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         if ( !(réservationOTD.classe != null && typeClasse.contains( réservationOTD.classe ) ) ) {
             throw ModificationException("Classe saisit non valide.")
         }         
+    }
+
+    private fun modifierSiègeVol( réservation: Reservation ) {
+        
+        réservation.siège.statut = typeStatut[0]
+        reservationsDAO.modifierSiègeVol( réservation )
+
     }
 }

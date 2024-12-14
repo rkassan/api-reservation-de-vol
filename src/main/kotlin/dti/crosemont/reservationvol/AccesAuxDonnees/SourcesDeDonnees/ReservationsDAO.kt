@@ -5,5 +5,6 @@ import dti.crosemont.reservationvol.Domaine.Modele.Reservation
 interface ReservationsDAO: DAO<Reservation>{
         fun ajouterReservation(reservation: Reservation): Reservation
         fun modifierRéservation(id: Int, réservation: Reservation): Reservation
-        override fun effacer(id: Int)   
+        override fun effacer(id: Int)
+        fun modifierSiègeVol( réservation: Reservation )
 }

@@ -156,4 +156,19 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
     override fun effacer(id: Int) {
         bd.update("DELETE FROM réservations WHERE id = ?", id)
     }
+
+    override fun modifierSiègeVol( réservation: Reservation ) {
+        bd.update(
+            """
+            UPDATE vols_sièges SET
+            statut_siege = ?
+            WHERE vol_id = ?
+            AND
+            siège_id = ?
+            """,
+            réservation.siège.statut,
+            réservation.idVol,
+            réservation.siège.id
+        )
+    }
 }
