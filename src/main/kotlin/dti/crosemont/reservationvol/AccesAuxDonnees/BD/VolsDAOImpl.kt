@@ -88,6 +88,35 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                    AND trajet_id = ?
                    """
 
+            private const val QUERY_VOLS_POUR_DEPART = """
+               SELECT * FROM vols 
+                        JOIN trajets ON vols.trajet_id = trajets.id 
+                        JOIN aéroports AS ap_deb ON trajets.id_aéroport_debut = ap_deb.id 
+                        JOIN aéroports AS ap_fin ON trajets.id_aéroport_fin = ap_fin.id 
+                        JOIN villes AS ville_debut ON ap_deb.ville_id = ville_debut.id 
+                        JOIN villes AS ville_fin ON ap_fin.ville_id = ville_fin.id 
+                        JOIN prix_par_classe ON vols.id = prix_par_classe.id_vol 
+                        JOIN avions ON vols.avion_id = avions.id
+                WHERE vols.date_départ <= ?
+                  AND vols.id NOT IN (SELECT id_vol FROM vol_statut WHERE statut = 'depart')
+                ORDER BY vols.date_départ;
+            """
+
+            private const val QUERY_VOLS_POUR_ARRIVEE = """
+               SELECT * FROM vols 
+                        JOIN trajets ON vols.trajet_id = trajets.id 
+                        JOIN aéroports AS ap_deb ON trajets.id_aéroport_debut = ap_deb.id 
+                        JOIN aéroports AS ap_fin ON trajets.id_aéroport_fin = ap_fin.id 
+                        JOIN villes AS ville_debut ON ap_deb.ville_id = ville_debut.id 
+                        JOIN villes AS ville_fin ON ap_fin.ville_id = ville_fin.id 
+                        JOIN prix_par_classe ON vols.id = prix_par_classe.id_vol 
+                        JOIN avions ON vols.avion_id = avions.id
+                WHERE vols.date_arrivée <= ?
+                          AND vols.id NOT IN (SELECT id_vol FROM vol_statut WHERE statut = 'arrivé')
+                        ORDER BY vols.date_arrivée;
+            """
+
+
 
         }
         private fun mapVol(réponse: ResultSet): Vol {
@@ -198,7 +227,18 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
         }
         return vol.copy(id = nouvelId)
 }
-    
+
+    override fun chercherVolsPourDepart(dateActuelle: LocalDateTime): List<Vol> {
+
+        return bd.query(QUERY_VOLS_POUR_DEPART, { rs, _ -> mapVol(rs) }, dateActuelle)
+
+    }
+
+    override fun chercherVolsPourArrive(dateActuelle: LocalDateTime): List<Vol> {
+
+        return bd.query(QUERY_VOLS_POUR_ARRIVEE, { rs, _ -> mapVol(rs) }, dateActuelle)
+
+    }
 
     override fun ajouterStatutVol(volId: Int, statut: VolStatut) {
         val sql = "INSERT INTO vol_statut (id_vol, statut, heure) VALUES (?, ?, ?)"
@@ -290,5 +330,8 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         réponseSiège.getString("vols_sièges.statut_siege")
                 )
             }
+
+
+
 }
 
