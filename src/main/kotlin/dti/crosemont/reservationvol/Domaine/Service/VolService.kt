@@ -17,7 +17,7 @@ import java.time.LocalDateTime
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
 import dti.crosemont.reservationvol.Domaine.Modele.VolStatut
 import dti.crosemont.reservationvol.Domaine.OTD.VolOTD
-import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import java.time.chrono.ChronoLocalDateTime
 
 @Service
@@ -58,15 +58,22 @@ class VolService(private val volsDAO: VolsDAO) {
         }
 
         val nouveauVol = volsDAO.ajouterVol(vol)
-    
-        val statutsMisAJour = vol.vol_statut.map { statut ->
-            statut.copy(idVol = nouveauVol.id)
+
+        val statuts = if (vol.vol_statut.isNullOrEmpty()) {
+            listOf(VolStatut(idVol = nouveauVol.id, statut = "en attente", heure = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
+        } else {
+            vol.vol_statut.map { statut ->
+                statut.copy(idVol = nouveauVol.id)
+            }
         }
-        
-        statutsMisAJour.forEach { statut -> volsDAO.ajouterStatutVol(nouveauVol.id, statut) }
+
+        statuts.forEach { statut ->
+            volsDAO.ajouterStatutVol(nouveauVol.id, statut)
+        }
+
         volsDAO.ajouterPrixParClasse(nouveauVol.id, vol.prixParClasse)
-    
-        return nouveauVol.copy(vol_statut = statutsMisAJour)
+
+        return nouveauVol.copy(vol_statut = statuts)
     }
     @PreAuthorize("hasAuthority('modifier:vols')")
     fun modifierVol(id: Int, modifieVol: VolOTD): Vol {
