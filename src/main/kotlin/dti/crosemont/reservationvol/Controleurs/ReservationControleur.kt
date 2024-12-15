@@ -32,27 +32,22 @@ import dti.crosemont.reservationvol.Controleurs.Exceptions.MessageErreur
 class ReservationControleur(val reservationsService: ReservationsService, val clientsService: ClientsService) {
 
     @GetMapping
-        fun obtenirToutesLesReservations(@AuthenticationPrincipal principal : Jwt): ResponseEntity<List<Reservation>> {
-            val listePermissions = principal.claims["permissions"] as? List<String>
-            val courrielAuthentification = principal.claims["courriel"] as String? ?: ""
+    fun obtenirToutesLesReservations(@AuthenticationPrincipal principal : Jwt): ResponseEntity<List<Reservation>> {
+        val listePermissions = principal.claims["permissions"] as? List<String>
+        val courrielAuthentification = principal.claims["courriel"] as String? ?: ""
 
-            return ResponseEntity.ok(reservationsService.obtenirToutesLesReservations(listePermissions, courrielAuthentification))
-        }
+        return ResponseEntity.ok(reservationsService.obtenirToutesLesReservations(listePermissions, courrielAuthentification))
+    }
 
 
     @GetMapping("/{id}")
-        fun obtenirReservationParId(@PathVariable id: Int): ResponseEntity<Any> {
-            val reservation = reservationsService.obtenirReservationParId(id)
-            return if (reservation != null) {
-                ResponseEntity.ok(reservation)  
-            } else {
-                ResponseEntity.status(HttpStatus.NOT_FOUND).build()  
-            }
-        }
+    fun obtenirReservationParId(@PathVariable id: Int): ResponseEntity<Any> {
+        return ResponseEntity.ok(reservationsService.obtenirReservationParId(id))  
+    }
 
     @PostMapping
-        fun ajouterReservation(@RequestBody reservationOTD: PostReservationOTD): ResponseEntity<Reservation> {
-            val nouvelleReservation = reservationsService.ajouterReservation(reservationOTD)
+    fun ajouterReservation(@RequestBody reservationOTD: PostReservationOTD): ResponseEntity<Reservation> {
+        val nouvelleReservation = reservationsService.ajouterReservation(reservationOTD)
         return ResponseEntity.ok(nouvelleReservation)
     }
 
