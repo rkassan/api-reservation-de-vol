@@ -44,6 +44,11 @@ class ReservationsServiceTest {
             Reservation(2, "AB124", 102, Client(2, "Marie", "Suh", "B1223", "456 rue", "marie.suh@example.com", "1011121314"), Siège(2, "B2", "affaire"), "affaire", 1)
     )
 
+    private val listeRéservationsClient = listOf(
+        Reservation(1, "AB123", 101, Client(1, "Jean", "Lee", "X123456", "127 rue", "jean.lee@example.com", "0123456789"), Siège(1, "A1", "économique"), "économique", 2),
+        Reservation(1, "AB147", 109, Client(1, "Jean", "Lee", "X123456", "127 rue", "jean.lee@example.com", "0123456789"), Siège(1, "A1", "économique"), "économique", 4),
+)
+
 
     @Test
     fun `Étant donné un service ReservationsService et la permissions consulterClient d'un compte valide, lorsque la méthode obtenirToutesLesReservations est appelée, la liste complètes des réservations est obtenue`() {
@@ -51,12 +56,28 @@ class ReservationsServiceTest {
         Mockito.`when`(mockDAO.chercherTous()).thenReturn(listeReservations)
         
         val courriel = "courriel.à.test@email.com"
-        val listePermissions = listOf<String>("consulter:clients") 
+        val listePermissions = listOf<String>("consulter:réservations") 
 
         val résultat_obtenu = service.obtenirToutesLesReservations(listePermissions, courriel)
         val résultat_attendu = listeReservations
 
         assertEquals(résultat_attendu, résultat_obtenu)
+    }
+
+    @Test
+    fun `Étant donné un service ReservationsService sans permissions avec un courriel client, lorsqu'on appel la méthode obtenirToutesLesReservations, la liste complètes des reservations du client seulement est retourné`() {
+        val service = ReservationsService(mockDAO, mockDAOSiege, mockDAOVols, mockClientService)
+        Mockito.`when`(mockDAO.chercherTous(1)).thenReturn(listeRéservationsClient)
+        Mockito.`when`(mockClientService.obtenirClientParEmail("jean.lee@example.com")).thenReturn(Client(1, "Jean", "Lee", "X123456", "127 rue", "jean.lee@example.com", "0123456789"))
+
+        val courriel = "jean.lee@example.com"
+        val listePermissions = listOf<String>() 
+
+        val résultat_obtenu = service.obtenirToutesLesReservations(listePermissions, courriel)
+        val résultat_attendu = listeRéservationsClient
+
+        assertEquals(résultat_attendu, résultat_obtenu)
+
     }
 
     @Test
