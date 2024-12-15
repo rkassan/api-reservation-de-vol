@@ -46,14 +46,17 @@ class ReservationsServiceTest {
 
 
     @Test
-    fun `Étant donné un ReservationsService, lorsque la méthode obtenirToutesLesReservations est appelée, la liste des réservations est obtenue`() {
-
+    fun `Étant donné un service ReservationsService et la permissions consulterClient d'un compte valide, lorsque la méthode obtenirToutesLesReservations est appelée, la liste complètes des réservations est obtenue`() {
+        val service = ReservationsService(mockDAO, mockDAOSiege, mockDAOVols, mockClientService)
         Mockito.`when`(mockDAO.chercherTous()).thenReturn(listeReservations)
-        val service = ReservationsService(mockDAO, mockDAOSiege, mockDAOVols,mockClientService)
+        
+        val courriel = "courriel.à.test@email.com"
+        val listePermissions = listOf<String>("consulter:clients") 
 
-        val résultat_obtenu = service.obtenirToutesLesReservations()
+        val résultat_obtenu = service.obtenirToutesLesReservations(listePermissions, courriel)
+        val résultat_attendu = listeReservations
 
-        assertEquals(listeReservations, résultat_obtenu)
+        assertEquals(résultat_attendu, résultat_obtenu)
     }
 
     @Test

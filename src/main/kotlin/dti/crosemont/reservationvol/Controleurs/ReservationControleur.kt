@@ -33,8 +33,10 @@ class ReservationControleur(val reservationsService: ReservationsService, val cl
 
     @GetMapping
         fun obtenirToutesLesReservations(@AuthenticationPrincipal principal : Jwt): ResponseEntity<List<Reservation>> {
+            val listePermissions = principal.claims["permissions"] as? List<String>
+            val courrielAuthentification = principal.claims["courriel"] as String? ?: ""
 
-            return ResponseEntity.ok(reservationsService.obtenirToutesLesReservations(principal))
+            return ResponseEntity.ok(reservationsService.obtenirToutesLesReservations(listePermissions, courrielAuthentification))
         }
 
 

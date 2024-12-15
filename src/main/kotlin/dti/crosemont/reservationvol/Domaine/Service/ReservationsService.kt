@@ -33,17 +33,14 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
     val typeClasse = arrayListOf<String>("économique","business","première")
     val typeStatut = arrayListOf<String>("disponible","occupé")
 
-    fun obtenirToutesLesReservations(principal: Jwt): List<Reservation> {
+    fun obtenirToutesLesReservations(listePermissions: List<String>?, courrielAuthentification: String): List<Reservation> {
 
-        val permission = principal.claims["permissions"] as? List<String>
-
-        if ( permission != null ) {
-            if ( permission.contains("consulter:réservations")) {
+        if ( listePermissions != null ) {
+            if ( listePermissions.contains("consulter:réservations")) {
                 return reservationsDAO.chercherTous()
             }
         }
-
-        val courrielAuthentification = principal.claims["courriel"] as String? ?: ""
+   
         val client = clientService.obtenirClientParEmail(courrielAuthentification)
         return reservationsDAO.chercherTous(client.id)
     }
