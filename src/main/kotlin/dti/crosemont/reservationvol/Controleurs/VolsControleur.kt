@@ -48,8 +48,9 @@ class VolsControleur(private val volService: VolService) {
             ResponseEntity(volService.chercherSiegeParVolId(id), HttpStatus.OK)
 
     @PostMapping
-    fun ajoutervol(@RequestBody vol: Vol): ResponseEntity<Vol> {
-        return ResponseEntity.ok(volService.ajouterVol(vol))
+    fun ajouterVol(@RequestBody vol: Vol): ResponseEntity<Vol> {
+        val nouveauVol = volService.ajouterVol(vol)
+        return ResponseEntity(nouveauVol, HttpStatus.CREATED)
     }
 
 

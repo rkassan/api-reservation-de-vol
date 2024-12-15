@@ -14,6 +14,6 @@ data class Vol(
         var trajet: Trajet,
         var vol_statut: List<VolStatut>,
         var duree: Duration,
-        var sièges: List<Siège>?
+        var sièges: List<Siège> = emptyList()
 )
 

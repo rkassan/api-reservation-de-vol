@@ -35,7 +35,8 @@ class VolService(private val volsDAO: VolsDAO) {
     }
 
     @PreAuthorize("hasAuthority('créer:vols')")
-    fun ajouterVol(vol: Vol): Vol {       
+    fun ajouterVol(vol: Vol): Vol {
+        val chronoLocalDateTime: ChronoLocalDateTime<*> = LocalDateTime.now()
         if (!volsDAO.trajetExiste(vol.trajet.id)) {
             throw RessourceInexistanteException("Le trajet avec l'ID ${vol.trajet.id} n'existe pas.")
         }
@@ -44,8 +45,16 @@ class VolService(private val volsDAO: VolsDAO) {
             throw RessourceInexistanteException("L'avion avec l'ID ${vol.avion.id} n'existe pas.")
         }
 
+        if (volsDAO.volExiste(vol)) {
+            throw RequêteMalFormuléeException("Un vol avec les mêmes informations existe déjà.")
+        }
+
         if (vol.dateArrivee.isBefore(vol.dateDepart)) {
         throw RequêteMalFormuléeException("La date d'arrivée (${vol.dateArrivee}) ne peut pas être avant la date de départ (${vol.dateDepart}).")      
+        }
+
+        if (vol.dateArrivee.isBefore(chronoLocalDateTime)) {
+            throw RequêteMalFormuléeException("\"La date d'aller ${vol.dateDepart} ne peut pas être avant la date d'aujourd'hui $chronoLocalDateTime.")
         }
 
         val nouveauVol = volsDAO.ajouterVol(vol)

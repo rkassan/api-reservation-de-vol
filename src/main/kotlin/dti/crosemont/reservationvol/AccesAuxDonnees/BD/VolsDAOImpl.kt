@@ -79,8 +79,16 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                     INSERT INTO vols_sièges (vol_id, siège_id, statut_siege) VALUES
                     (?,?,'disponible');
                     """
-           
-     
+
+               private const val QUERY_VOL_EXISTANT = """
+                   SELECT COUNT(*) FROM vols 
+                   WHERE date_départ = ? 
+                   AND date_arrivée = ? 
+                   AND avion_id = ? 
+                   AND trajet_id = ?
+                   """
+
+
         }
         private fun mapVol(réponse: ResultSet): Vol {
                 var ville_debut =
@@ -177,17 +185,18 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
 
     override fun ajouterVol(vol: Vol): Vol {
         val sql = """
-            INSERT INTO vols (date_départ, date_arrivée, avion_id, trajet_id, poids_max_bag, durée)
+            INSERT INTO vols (date_départ, date_arrivée, avion_id,trajet_id, poids_max_bag, durée)
             VALUES (?, ?, ?, ?, ?, ?)
         """
-        bd.update(sql, vol.dateDepart, vol.dateArrivee, vol.avion.id, vol.trajet.id, vol.poidsMaxBag, vol.duree.toMinutes())
-        
+        bd.update(sql, vol.dateDepart, vol.dateArrivee, vol.avion.id,vol.trajet.id, vol.poidsMaxBag, vol.duree.toMinutes())
+
         val nouvelId = bd.queryForObject("SELECT LAST_INSERT_ID()", Int::class.java) ?: throw Exception("Erreur lors de l'ajout du vol")
         for(i in 1..72){
             bd.update(INSERT_DANS_VOLS_SIEGES, nouvelId, i)
         }
         return vol.copy(id = nouvelId)
-    }
+}
+    
 
     override fun ajouterStatutVol(volId: Int, statut: VolStatut) {
         val sql = "INSERT INTO vol_statut (id_vol, statut, heure) VALUES (?, ?, ?)"
@@ -215,6 +224,14 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
         return bd.queryForObject(sql, arrayOf(id), Int::class.java) ?: 0 > 0
     }
 
+    override fun volExiste(vol: Vol): Boolean {
+        val count = bd.queryForObject(
+                QUERY_VOL_EXISTANT,
+                arrayOf(vol.dateDepart, vol.dateArrivee, vol.avion.id, vol.trajet.id),
+                Int::class.java
+        )
+        return count != null && count > 0
+    }
 
 
     override fun modifierVol(id: Int, modifieVol: Vol): Vol {
