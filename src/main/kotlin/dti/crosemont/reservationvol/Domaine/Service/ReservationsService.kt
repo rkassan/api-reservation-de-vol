@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.oauth2.jwt.Jwt
 import dti.crosemont.reservationvol.Controleurs.Exceptions.ModificationException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.AccèsRefuséException
+import dti.crosemont.reservationvol.Controleurs.Exceptions.NombreDeBagageInvalide
 import kotlin.enums.enumEntries
 import org.springframework.http.ResponseEntity
 
@@ -31,7 +32,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
 
     
     val typeClasse = arrayListOf<String>("économique","business","première")
-    val typeStatut = arrayListOf<String>("disponible","occupé")
+    val statutSiège = arrayListOf<String>("disponible","occupé")
 
     fun obtenirToutesLesReservations(listePermissions: List<String>?, courrielAuthentification: String): List<Reservation> {
 
@@ -46,50 +47,37 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
     }
     
     @PreAuthorize("hasAnyAuthority('créer:réservations')")
-    fun ajouterReservation(reservationOTD: PostReservationOTD): Reservation {
-        // Vérification de l'email du client
-        val emailClient = reservationOTD.clientEmail
-            ?: throw RequêteMalFormuléeException("L'email du client est requis.")
+    fun ajouterReservation(réservationOTD: PostReservationOTD): Reservation {
+    
+        val client = clientService.obtenirClientParEmail(réservationOTD.clientCourriel) 
 
-        // Récupérer le client via l'email
-        val client = clientService.obtenirClientParEmail(emailClient)
-            ?: throw RessourceInexistanteException("Client avec l'email $emailClient introuvable.")
+        val siègeSélectionné = volService.chercherSiegeParVolId(réservationOTD.idVol)
+            .find { it.numéroSiège == réservationOTD.siège.numéroSiège && it.classe == réservationOTD.classe }
+            ?: throw RequêteMalFormuléeException("Le siège ${réservationOTD.siège.numéroSiège} n'est pas disponible.")
 
-        val idVol = reservationOTD.idVol ?: throw RequêteMalFormuléeException("L'ID du vol est requis.")
 
-        val vol = volService.chercherParId(idVol)
-            ?: throw RessourceInexistanteException("Vol avec l'ID $idVol introuvable.")
-
-        val siègeSélectionné = volService.chercherSiegeParVolId(idVol)
-            .find { it.numéroSiège == reservationOTD.siège?.numéroSiège && it.classe == reservationOTD.classe }
-            ?: throw RequêteMalFormuléeException("Le siège ${reservationOTD.siège?.numéroSiège} n'est pas disponible.")
-
-        if (siègeSélectionné.statut == "occupé") {
-            throw RequêteMalFormuléeException("Le siège ${reservationOTD.siège?.numéroSiège} est déjà réservé.")
+        volService.chercherParId(réservationOTD.idVol)
+        
+        if (siègeSélectionné.statut == statutSiège[1]) {
+            throw RequêteMalFormuléeException("Le siège ${réservationOTD.siège.numéroSiège} est déjà réservé.")
         }
-
-        val classe = reservationOTD.classe ?: throw RequêteMalFormuléeException("La classe est requise.")
-        val bagages = reservationOTD.bagages ?: 0
-
-         //Générer le numéroRéservation 
-        val numéroRéservation = generateNuméroRéservation()
+        
+        if (réservationOTD.bagages < 0 ) throw NombreDeBagageInvalide("Le nombre de bagage doit être un numéro supérieur ou égal à 0.")
 
         val reservation = Reservation(
             id = 0, 
             client = client,
-            idVol = idVol,
+            idVol = réservationOTD.idVol, 
             siège = siègeSélectionné,
-            classe = classe,
-            bagages = bagages,
-            numéroRéservation = numéroRéservation
+            classe = réservationOTD.classe,
+            bagages = réservationOTD.bagages,
+            numéroRéservation = generateNuméroRéservation()
         )
 
-        val nouvelleRéservation = reservationsDAO.ajouterReservation(reservation)
-
-        siègeSélectionné.statut = "occupé"
+        reservation.siège.statut = "occupé"
         siegeDAO.save(siègeSélectionné)
+        return reservationsDAO.ajouterReservation(reservation)
 
-        return nouvelleRéservation
     }
 
     @PreAuthorize("hasAnyAuthority('consulter:réservations')")
@@ -139,7 +127,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
 
     private fun modifierSiègeVol( réservation: Reservation ) {
         
-        réservation.siège.statut = typeStatut[0]
+        réservation.siège.statut = statutSiège[0]
         reservationsDAO.modifierSiègeVol( réservation )
 
     }

@@ -48,13 +48,6 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
         return bd.queryForObject(query, arrayOf(idVol, idSiège), String::class.java) == "disponible"
     }
 
-
-    fun mettreÀJourStatutSiège(idVol: Int, idSiège: Int, statut: String) {
-        val query = "UPDATE vols_sièges SET statut_siege = ? WHERE vol_id = ? AND siège_id = ?"
-        bd.update(query, statut, idVol, idSiège)
-    }
-
-
     // Récupérer le client pour une réservation (utile pour modifier/post, on peut obtenir un client par id)
     fun obtenirClientPourRéservation(idClient: Int): Client {
         val query = "SELECT * FROM clients WHERE id = ?"
@@ -98,28 +91,29 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
 
 
 
-    override fun ajouterReservation(reservation: Reservation): Reservation {
+    override fun ajouterReservation(réservation: Reservation): Reservation {
         
-        if (!verifierSiègeDisponible(reservation.idVol, reservation.siège.id)) {
+        if (!verifierSiègeDisponible(réservation.idVol, réservation.siège.id)) {
             throw IllegalArgumentException("Le siège sélectionné n'est pas disponible.")
         }
-        mettreÀJourStatutSiège(reservation.idVol, reservation.siège.id, "occupé")
+
+        modifierSiègeVol(réservation)
 
         val query = """
             INSERT INTO réservations 
             (numéro_réservation, id_vol, classe, id_sièges, id_client, bagages) 
             VALUES (?, ?, ?, ?, ?, ?)
             """
-        val siegeId = getSiègeIdByNuméro(reservation.siège.numéroSiège, reservation.classe)
+        val siegeId = getSiègeIdByNuméro(réservation.siège.numéroSiège, réservation.classe)
 
         bd.update(
             query,
-            reservation.numéroRéservation,
-            reservation.idVol,
-            reservation.classe,
+            réservation.numéroRéservation,
+            réservation.idVol,
+            réservation.classe,
             siegeId,
-            reservation.client.id,
-            reservation.bagages
+            réservation.client.id,
+            réservation.bagages
         )
 
         val reservationId = bd.queryForObject("SELECT LAST_INSERT_ID()", Int::class.java)

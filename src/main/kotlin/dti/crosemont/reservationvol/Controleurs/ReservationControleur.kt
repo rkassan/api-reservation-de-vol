@@ -47,8 +47,7 @@ class ReservationControleur(val reservationsService: ReservationsService, val cl
 
     @PostMapping
     fun ajouterReservation(@RequestBody reservationOTD: PostReservationOTD): ResponseEntity<Reservation> {
-        val nouvelleReservation = reservationsService.ajouterReservation(reservationOTD)
-        return ResponseEntity.ok(nouvelleReservation)
+        return ResponseEntity.ok(reservationsService.ajouterReservation(reservationOTD))
     }
 
     @PutMapping("/{id}")
