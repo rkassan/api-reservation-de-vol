@@ -71,8 +71,8 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         val classe = reservationOTD.classe ?: throw RequêteMalFormuléeException("La classe est requise.")
         val bagages = reservationOTD.bagages ?: 0
 
-        val numéroRéservation = reservationOTD.numéroRéservation
-            ?: throw RequêteMalFormuléeException("Le numéro de réservation est requis.")
+         //Générer le numéroRéservation 
+        val numéroRéservation = generateNuméroRéservation()
 
         val reservation = Reservation(
             id = 0, 
@@ -143,4 +143,9 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         reservationsDAO.modifierSiègeVol( réservation )
 
     }
+
+    private fun generateNuméroRéservation(): String {
+        return "R" + java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 10).uppercase()
+    }
+
 }

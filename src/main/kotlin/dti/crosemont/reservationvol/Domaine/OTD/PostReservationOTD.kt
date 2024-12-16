@@ -8,5 +8,4 @@ class PostReservationOTD (
     val siège: Siège?,
     val classe: String?,
     val bagages: Int?,
-    val numéroRéservation:String?
 )
