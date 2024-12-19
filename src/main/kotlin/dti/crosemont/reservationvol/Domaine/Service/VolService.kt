@@ -3,6 +3,8 @@ package dti.crosemont.reservationvol.Domaine.Service
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
 import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.VolsDAO
+import dti.crosemont.reservationvol.Controleurs.Exceptions.AccèsNonAutoriséException
+import dti.crosemont.reservationvol.Controleurs.Exceptions.AccèsRefuséException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
 import org.springframework.stereotype.Service
 import dti.crosemont.reservationvol.Domaine.Modele.Vol
@@ -20,16 +22,16 @@ class VolService(private val volsDAO: VolsDAO) {
 
     fun obtenirVolParParam(dateDebut: LocalDateTime, aeroportDebut: String, aeroportFin: String): List<Vol> {
         val authentication = SecurityContextHolder.getContext().authentication
-        val chronoLocalDateTime: ChronoLocalDateTime<*> = LocalDateTime.now()
+        val dateAujrd: ChronoLocalDateTime<*> = LocalDateTime.now()
 
-        if(authentication.authorities.any { it.authority == "consulter:vols" }) {
+        if(authentication.authorities.any { it.authority == "consulter:vols"}) {
             return volsDAO.obtenirVolParParam(dateDebut, aeroportDebut, aeroportFin)
         }
-        else if(dateDebut.isAfter(chronoLocalDateTime)){
+        else if(dateDebut.isAfter(dateAujrd)){
             return volsDAO.obtenirVolParParam(dateDebut, aeroportDebut, aeroportFin)
         }
         else {
-            throw RequêteMalFormuléeException("La date d'aller $dateDebut ne peut pas être avant la date d'aujourd'hui $chronoLocalDateTime.")
+            throw RequêteMalFormuléeException("La date d'aller $dateDebut ne peut pas être avant la date d'aujourd'hui $dateAujrd.")
         }
     }
 
@@ -162,9 +164,19 @@ class VolService(private val volsDAO: VolsDAO) {
 
   fun chercherParId(id: Int): Vol? {
       val vol = volsDAO.chercherParId(id)
+      val dateAujrd: ChronoLocalDateTime<*> = LocalDateTime.now()
+      val authentication = SecurityContextHolder.getContext().authentication
 
       if(vol == null){
           throw RessourceInexistanteException("Le vol $id n'existe pas.")
+      }
+      else if(vol.dateDepart.isBefore(dateAujrd)){
+          if(authentication.authorities.any { it.authority == "consulter:vols"}) {
+              return vol;
+          }
+          else{
+              throw AccèsRefuséException("Le vol que vous avez sélectionné est a déjà quitté")
+          }
       }
       return vol;
   }
