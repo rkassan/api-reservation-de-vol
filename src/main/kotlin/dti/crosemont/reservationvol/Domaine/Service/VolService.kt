@@ -31,7 +31,7 @@ class VolService(private val volsDAO: VolsDAO) {
             return volsDAO.obtenirVolParParam(dateDebut, aeroportDebut, aeroportFin)
         }
         else {
-            throw RequêteMalFormuléeException("La date d'aller $dateDebut ne peut pas être avant la date d'aujourd'hui $dateAujrd.")
+            throw AccèsRefuséException("La date d'aller $dateDebut ne peut pas être avant la date d'aujourd'hui $dateAujrd.")
         }
     }
 
