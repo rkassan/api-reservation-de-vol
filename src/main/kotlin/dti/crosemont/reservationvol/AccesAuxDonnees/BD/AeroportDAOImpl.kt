@@ -85,7 +85,7 @@ class AeroportDAOImpl(private val bd: JdbcTemplate) : AeroportDAO {
         }
 
         override fun ajouter(aeroport: Aeroport): Aeroport? {
-                var insertedAeroport: Aeroport? = null
+                var AeroportInséré: Aeroport? = null
 
                 val resultat =
                         bd.update(
@@ -97,7 +97,7 @@ class AeroportDAOImpl(private val bd: JdbcTemplate) : AeroportDAO {
                         )
 
                 if (resultat != 0) {
-                        insertedAeroport =
+                        AeroportInséré =
                                 bd
                                         .query(sql = OBTENIR_DERNIER_AEROPORT_INSÉRER) { réponse, _
                                                 ->
@@ -105,7 +105,7 @@ class AeroportDAOImpl(private val bd: JdbcTemplate) : AeroportDAO {
                                         }
                                         .singleOrNull()
                 }
-                return insertedAeroport
+                return AeroportInséré
         }
 
         private fun convertirRésultatEnAeroport(réponse: ResultSet): Aeroport {
