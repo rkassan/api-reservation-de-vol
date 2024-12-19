@@ -1,32 +1,28 @@
 package dti.crosemont.reservationvol.Domaine.Service
 
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
 import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.VolsDAO
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
 import org.springframework.stereotype.Service
-import org.springframework.http.ResponseEntity
-import org.springframework.http.HttpStatus
-import org.springframework.web.servlet.resource.NoResourceFoundException
 import dti.crosemont.reservationvol.Domaine.Modele.Vol
-import dti.crosemont.reservationvol.Domaine.Modele.Classe
 import dti.crosemont.reservationvol.Domaine.Modele.`Siège`
-import org.springframework.http.HttpMethod
 import java.time.LocalDateTime
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
-import dti.crosemont.reservationvol.Domaine.Modele.VolStatut
 import dti.crosemont.reservationvol.Domaine.OTD.VolOTD
-import java.time.LocalDate
 import java.time.chrono.ChronoLocalDateTime
 
 @Service
 class VolService(private val volsDAO: VolsDAO) {
 
-
     fun obtenirVolParParam(dateDebut: LocalDateTime, aeroportDebut: String, aeroportFin: String): List<Vol> {
+        val authentication = SecurityContextHolder.getContext().authentication
         val chronoLocalDateTime: ChronoLocalDateTime<*> = LocalDateTime.now()
-        if(dateDebut.isAfter(chronoLocalDateTime)){
+
+        if(authentication.authorities.any { it.authority == "consulter:vols" }) {
+            return volsDAO.obtenirVolParParam(dateDebut, aeroportDebut, aeroportFin)
+        }
+        else if(dateDebut.isAfter(chronoLocalDateTime)){
             return volsDAO.obtenirVolParParam(dateDebut, aeroportDebut, aeroportFin)
         }
         else {
