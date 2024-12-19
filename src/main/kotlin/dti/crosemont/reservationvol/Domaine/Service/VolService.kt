@@ -181,6 +181,7 @@ class VolService(private val volsDAO: VolsDAO) {
       return vol;
   }
 
+  @PreAuthorize("hasAuthority('supprimer:vols')")
   fun effacer(id: Int) {
       val vol = volsDAO.chercherParId(id)
 
