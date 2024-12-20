@@ -5,6 +5,7 @@ import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeE
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
 import dti.crosemont.reservationvol.Domaine.Modele.Aeroport
 import dti.crosemont.reservationvol.Domaine.OTD.AeroportOTD
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 
 @Service
@@ -37,7 +38,7 @@ class AeroportService(private val dao: AeroportDAO) {
         return dao.chercherParId(id)
                 ?: throw RessourceInexistanteException("Aéroport avec l'id $id introuvable.")
     }
-
+    @PreAuthorize("hasAuthority('supprimer:aéroport')")
     fun supprimerUnAeroport(id: Int) {
         val aeroportExistant = dao.chercherParId(id)
         if (aeroportExistant == null) {
@@ -47,7 +48,7 @@ class AeroportService(private val dao: AeroportDAO) {
         }
         dao.effacer(id)
     }
-
+    @PreAuthorize("hasAuthority('créer:aéroport')")
     fun ajouterAeroport(aeroport: Aeroport): Aeroport {
         val aeroportExistant = dao.chercherParCode(aeroport.code)
         if (aeroportExistant != null) {
@@ -69,7 +70,7 @@ class AeroportService(private val dao: AeroportDAO) {
         }
         throw RequêteMalFormuléeException("L'ajout de l'aéroport a échoué")
     }
-
+    @PreAuthorize("hasAuthority('modifier:aéroport')")
     fun modifierAeroport(aeroportOTD: AeroportOTD, id: Int, aeroportExistant: Aeroport): Aeroport {
         aeroportOTD.apply {
             code?.let { aeroportExistant.code = it }
