@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpStatus
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import dti.crosemont.reservationvol.ReservationsService
 import dti.crosemont.reservationvol.Domaine.Modele.Reservation
 import dti.crosemont.reservationvol.Domaine.OTD.ReservationOTD
@@ -27,39 +29,38 @@ import dti.crosemont.reservationvol.Controleurs.Exceptions.MessageErreur
 
 @RestController
 @RequestMapping("/reservations")
-class ReservationControleur(val reservationsService: ReservationsService, val clientsService: ClientsService) {
+class ReservationControleur(val réservationsService: ReservationsService, val clientsService: ClientsService) {
 
     @GetMapping
-        fun obtenirToutesLesReservations(): ResponseEntity<List<Reservation>> =
-            ResponseEntity.ok(reservationsService.obtenirToutesLesReservations())
+    fun obtenirToutesLesReservations(@AuthenticationPrincipal principal : Jwt): ResponseEntity<List<Reservation>> {
+        val listePermissions = principal.claims["permissions"] as? List<String>
+        val courrielAuthentification = principal.claims["courriel"] as String? ?: ""
+
+        return ResponseEntity.ok(réservationsService.obtenirToutesLesReservations(listePermissions, courrielAuthentification))
+    }
 
 
     @GetMapping("/{id}")
-        fun obtenirReservationParId(@PathVariable id: Int): ResponseEntity<Any> {
-            val reservation = reservationsService.obtenirReservationParId(id)
-            return if (reservation != null) {
-                ResponseEntity.ok(reservation)  
-            } else {
-                ResponseEntity.status(HttpStatus.NOT_FOUND).build()  
-            }
-        }
+    fun obtenirReservationParId(@PathVariable id: Int, @AuthenticationPrincipal principal : Jwt): ResponseEntity<Any> {
+        val listePermissions = principal.claims["permissions"] as? List<String>
+        val courrielAuthentification = principal.claims["courriel"] as String? ?: ""
+        return ResponseEntity.ok(réservationsService.obtenirReservationParId(id, courrielAuthentification,listePermissions))  
+    }
 
     @PostMapping
-        fun ajouterReservation(@RequestBody reservationOTD: PostReservationOTD): ResponseEntity<Reservation> {
-            val nouvelleReservation = reservationsService.ajouterReservation(reservationOTD)
-        return ResponseEntity.ok(nouvelleReservation)
+    fun ajouterReservation(@RequestBody réservationOTD: PostReservationOTD): ResponseEntity<Reservation> {
+        return ResponseEntity.ok(réservationsService.ajouterReservation(réservationOTD))
     }
 
     @PutMapping("/{id}")
     fun modifierReservation(@PathVariable id: Int, @RequestBody réservationOTD: ReservationOTD): ResponseEntity<Reservation> {
-
-        return ResponseEntity.ok( reservationsService.modifierRéservation( id, réservationOTD ) )
+        return ResponseEntity.ok( réservationsService.modifierRéservation( id, réservationOTD) )
     }
 
     @DeleteMapping("/{id}")
     fun supprimerReservation(@PathVariable id: Int): ResponseEntity<HttpStatus> {
-            reservationsService.supprimerRéservation(id)    
-            return ResponseEntity(HttpStatus.OK)
+        réservationsService.supprimerRéservation(id)
+        return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 }
 

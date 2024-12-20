@@ -18,7 +18,7 @@ class ConfigurationAccès {
     fun configurerChaineAccès(http: HttpSecurity): SecurityFilterChain {
         return http
             .authorizeHttpRequests {
-                it.requestMatchers("/").permitAll()
+                it.requestMatchers("/","/v3/api-docs/**","/swagger-ui/**").permitAll()
                     .requestMatchers( HttpMethod.GET, "/aeroports" ).permitAll()
                     .requestMatchers( HttpMethod.GET, "/vols/**" ).permitAll()
                     .anyRequest().authenticated()

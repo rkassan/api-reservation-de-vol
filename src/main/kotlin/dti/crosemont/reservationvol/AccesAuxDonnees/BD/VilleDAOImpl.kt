@@ -60,4 +60,16 @@ class VilleDAOImpl(private val bd: JdbcTemplate): VillesDAO {
         bd.update("DELETE FROM villes WHERE id = ?", id)
     }
     
+    override fun chercherParNomEtPays(nom: String, pays:String): Ville? {
+    val query = "SELECT * FROM villes WHERE nom = ? AND pays = ?"
+        return bd.query(query,nom,pays) { reponse, _ ->
+        Ville(
+            id = reponse.getInt("id"),
+            nom = reponse.getString("nom"),
+            pays = reponse.getString("pays"),
+            url_photo = reponse.getString("url_photo")
+        )
+        }.firstOrNull()
+    }
+
  }
