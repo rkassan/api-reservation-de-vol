@@ -55,7 +55,7 @@ class ClientDAOImpl( private val bd : JdbcTemplate ) : ClientDAO {
     }
 
     override fun ajouter( client : Client ) : Client?{
-        var insertedClient : Client? = null
+        var clientInseré : Client? = null
 
         val result = bd.update( AJOUTER_CLIENT,
                 client.nom,
@@ -66,11 +66,11 @@ class ClientDAOImpl( private val bd : JdbcTemplate ) : ClientDAO {
                 client.numéroTéléphone )
 
         if( result != 0 ){
-            insertedClient = bd.query( sql = OBTENIR_DERNIER_CLIENT_INSÉRER )
+            clientInseré = bd.query( sql = OBTENIR_DERNIER_CLIENT_INSÉRER )
                 { réponse, _ -> convertirRésultatEnClient( réponse ) }.singleOrNull()
         }
 
-        return insertedClient
+        return clientInseré
     }
 
     override fun modifier( client: Client ): Client? {
