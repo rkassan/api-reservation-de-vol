@@ -31,7 +31,7 @@ class VolService(private val volsDAO: VolsDAO) {
             return volsDAO.obtenirVolParParam(dateDebut, aeroportDebut, aeroportFin)
         }
         else {
-            throw AccèsRefuséException("La date d'aller $dateDebut ne peut pas être avant la date d'aujourd'hui $dateAujrd.")
+            throw AccèsRefuséException("Vous n'avez pas le droit de consulter ces vols")
         }
     }
 
@@ -175,7 +175,7 @@ class VolService(private val volsDAO: VolsDAO) {
               return vol;
           }
           else{
-              throw AccèsRefuséException("Le vol que vous avez sélectionné est a déjà quitté")
+              throw AccèsRefuséException("Vous n'avez pas le droit de consulter ce vol")
           }
       }
       return vol;
