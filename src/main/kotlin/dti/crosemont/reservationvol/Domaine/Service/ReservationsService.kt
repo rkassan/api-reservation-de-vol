@@ -92,22 +92,25 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         return réservationObtenue
     }
 
-    @PreAuthorize("hasAnyAuthority('modifier:réservations')")
-    fun modifierRéservation( id: Int, réservationOTD: ReservationOTD): Reservation {
+    fun modifierRéservation( id: Int, réservationOTD: ReservationOTD, listePermissions: List<String>?, courrielAuthentification: String): Reservation {
         
-        val réservation = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
+        val réservationÀModifier = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
+
+        if ( !(listePermissions != null && listePermissions.contains("modifier:réservations"))) throw AccèsNonAutoriséException("Permissions insuffisantes modifier la réservation.")
+
+        if ( !(réservationÀModifier.client.email == courrielAuthentification) ) throw AccèsRefuséException( "Cette réservation ne vous appartient pas." )
 
         this.vérifierParamètre(réservationOTD)
 
         réservationOTD.apply {
-            idVol?.let { réservation.idVol = it }
-            client?.let { réservation.client = it }
-            siège?.let { réservation.siège = it }
-            classe?.let { réservation.classe = it }
-            bagages?.let { réservation.bagages = it }
+            idVol?.let { réservationÀModifier.idVol = it }
+            client?.let { réservationÀModifier.client = it }
+            siège?.let { réservationÀModifier.siège = it }
+            classe?.let { réservationÀModifier.classe = it }
+            bagages?.let { réservationÀModifier.bagages = it }
         }
         
-        return reservationsDAO.modifierRéservation(id, réservation)
+        return reservationsDAO.modifierRéservation(id, réservationÀModifier)
     }
 
     fun supprimerRéservation(id: Int, listePermissions: List<String>?, courrielAuthentification: String) {

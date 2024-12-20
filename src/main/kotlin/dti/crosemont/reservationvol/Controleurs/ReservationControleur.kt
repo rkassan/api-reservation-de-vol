@@ -53,9 +53,10 @@ class ReservationControleur(val réservationsService: ReservationsService, val c
     }
 
     @PutMapping("/{id}")
-    fun modifierReservation(@PathVariable id: Int, @RequestBody réservationOTD: ReservationOTD): ResponseEntity<Reservation> {
-
-        return ResponseEntity.ok( réservationsService.modifierRéservation( id, réservationOTD ) )
+    fun modifierReservation(@PathVariable id: Int, @RequestBody réservationOTD: ReservationOTD, @AuthenticationPrincipal principal : Jwt): ResponseEntity<Reservation> {
+        val listePermissions = principal.claims["permissions"] as? List<String>
+        val courrielAuthentification = principal.claims["courriel"] as String? ?: ""
+        return ResponseEntity.ok( réservationsService.modifierRéservation( id, réservationOTD, listePermissions, courrielAuthentification ) )
     }
 
     @DeleteMapping("/{id}")
