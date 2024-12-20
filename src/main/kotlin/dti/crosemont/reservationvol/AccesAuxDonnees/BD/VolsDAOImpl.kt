@@ -79,8 +79,45 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                     INSERT INTO vols_sièges (vol_id, siège_id, statut_siege) VALUES
                     (?,?,'disponible');
                     """
-           
-     
+
+               private const val QUERY_VOL_EXISTANT = """
+                   SELECT COUNT(*) FROM vols 
+                   WHERE date_départ = ? 
+                   AND date_arrivée = ? 
+                   AND avion_id = ? 
+                   AND trajet_id = ?
+                   """
+
+            private const val QUERY_VOLS_POUR_DEPART = """
+               SELECT * FROM vols 
+                        JOIN trajets ON vols.trajet_id = trajets.id 
+                        JOIN aéroports AS ap_deb ON trajets.id_aéroport_debut = ap_deb.id 
+                        JOIN aéroports AS ap_fin ON trajets.id_aéroport_fin = ap_fin.id 
+                        JOIN villes AS ville_debut ON ap_deb.ville_id = ville_debut.id 
+                        JOIN villes AS ville_fin ON ap_fin.ville_id = ville_fin.id 
+                        JOIN prix_par_classe ON vols.id = prix_par_classe.id_vol 
+                        JOIN avions ON vols.avion_id = avions.id
+                WHERE vols.date_départ <= ?
+                  AND vols.id NOT IN (SELECT id_vol FROM vol_statut WHERE statut = 'depart')
+                ORDER BY vols.date_départ;
+            """
+
+            private const val QUERY_VOLS_POUR_ARRIVEE = """
+               SELECT * FROM vols 
+                        JOIN trajets ON vols.trajet_id = trajets.id 
+                        JOIN aéroports AS ap_deb ON trajets.id_aéroport_debut = ap_deb.id 
+                        JOIN aéroports AS ap_fin ON trajets.id_aéroport_fin = ap_fin.id 
+                        JOIN villes AS ville_debut ON ap_deb.ville_id = ville_debut.id 
+                        JOIN villes AS ville_fin ON ap_fin.ville_id = ville_fin.id 
+                        JOIN prix_par_classe ON vols.id = prix_par_classe.id_vol 
+                        JOIN avions ON vols.avion_id = avions.id
+                WHERE vols.date_arrivée <= ?
+                          AND vols.id NOT IN (SELECT id_vol FROM vol_statut WHERE statut = 'arrivé')
+                        ORDER BY vols.date_arrivée;
+            """
+
+
+
         }
         private fun mapVol(réponse: ResultSet): Vol {
                 var ville_debut =
@@ -177,16 +214,30 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
 
     override fun ajouterVol(vol: Vol): Vol {
         val sql = """
-            INSERT INTO vols (date_départ, date_arrivée, avion_id, trajet_id, poids_max_bag, durée)
+            INSERT INTO vols (date_départ, date_arrivée, avion_id,trajet_id, poids_max_bag, durée)
             VALUES (?, ?, ?, ?, ?, ?)
         """
-        bd.update(sql, vol.dateDepart, vol.dateArrivee, vol.avion.id, vol.trajet.id, vol.poidsMaxBag, vol.duree.toMinutes())
-        
+        bd.update(sql, vol.dateDepart, vol.dateArrivee, vol.avion.id,vol.trajet.id, vol.poidsMaxBag, vol.duree.toMinutes())
+
         val nouvelId = bd.queryForObject("SELECT LAST_INSERT_ID()", Int::class.java) ?: throw Exception("Erreur lors de l'ajout du vol")
+
+
         for(i in 1..72){
             bd.update(INSERT_DANS_VOLS_SIEGES, nouvelId, i)
         }
         return vol.copy(id = nouvelId)
+}
+
+    override fun chercherVolsPourDepart(dateActuelle: LocalDateTime): List<Vol> {
+
+        return bd.query(QUERY_VOLS_POUR_DEPART, { rs, _ -> mapVol(rs) }, dateActuelle)
+
+    }
+
+    override fun chercherVolsPourArrive(dateActuelle: LocalDateTime): List<Vol> {
+
+        return bd.query(QUERY_VOLS_POUR_ARRIVEE, { rs, _ -> mapVol(rs) }, dateActuelle)
+
     }
 
     override fun ajouterStatutVol(volId: Int, statut: VolStatut) {
@@ -215,6 +266,14 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
         return bd.queryForObject(sql, arrayOf(id), Int::class.java) ?: 0 > 0
     }
 
+    override fun volExiste(vol: Vol): Boolean {
+        val count = bd.queryForObject(
+                QUERY_VOL_EXISTANT,
+                arrayOf(vol.dateDepart, vol.dateArrivee, vol.avion.id, vol.trajet.id),
+                Int::class.java
+        )
+        return count != null && count > 0
+    }
 
 
     override fun modifierVol(id: Int, modifieVol: Vol): Vol {
@@ -271,5 +330,8 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
                         réponseSiège.getString("vols_sièges.statut_siege")
                 )
             }
+
+
+
 }
 

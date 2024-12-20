@@ -17,5 +17,5 @@ class VolOTD(
         val trajet: Trajet?,
         val vol_statut: List<VolStatut>?,
         val duree: Duration?,
-        var sièges: List<Siège>?
+
 )
