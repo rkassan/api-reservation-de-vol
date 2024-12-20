@@ -46,7 +46,6 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         return reservationsDAO.chercherTous(client.id)
     }
     
-    @PreAuthorize("hasAnyAuthority('créer:réservations')")
     fun ajouterReservation(réservationOTD: PostReservationOTD): Reservation {
     
         val client = clientService.obtenirClientParEmail(réservationOTD.clientCourriel) 
@@ -80,16 +79,24 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
 
     }
 
-    @PreAuthorize("hasAnyAuthority('consulter:réservations')")
-    fun obtenirReservationParId(id: Int, courrielAuthentification: String): Reservation {
+    fun obtenirReservationParId(id: Int, courrielAuthentification: String, listePermissions: List<String>?): Reservation {
 
-        val réservationObtenue = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
-
-        if (réservationObtenue.client.email == courrielAuthentification) return réservationObtenue else throw RéservationInexistanteException("Cette réservation n'est pas à vous.")
+    if (listePermissions != null && listePermissions.contains("consulter:réservations")) {
+        val réservationObtenue = reservationsDAO.chercherParId(id) 
+            ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
+        
+        if (réservationObtenue.client.email == courrielAuthentification) {
+            return réservationObtenue
+        } else {
+            throw RéservationInexistanteException("Cette réservation n'est pas à vous.")
+            }
+        }
+        throw RéservationInexistanteException("Permissions insuffisantes pour consulter la réservation.")
     }
     
+    
     @PreAuthorize("hasAnyAuthority('modifier:réservations')")
-    fun modifierRéservation( id: Int, réservationOTD: ReservationOTD ): Reservation {
+    fun modifierRéservation( id: Int, réservationOTD: ReservationOTD): Reservation {
         
         val réservation = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
 
