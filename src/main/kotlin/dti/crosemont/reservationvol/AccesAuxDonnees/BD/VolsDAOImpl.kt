@@ -23,7 +23,7 @@ import org.springframework.stereotype.Repository
 class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
 
         companion object {
-                private const val QUERY_TOUT_LES_VOLS =
+                private const val QUERY_TOUS_LES_VOLS =
                         """
                         SELECT * FROM vols 
                         JOIN trajets ON vols.trajet_id = trajets.id 

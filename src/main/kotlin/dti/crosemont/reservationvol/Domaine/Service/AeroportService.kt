@@ -5,6 +5,7 @@ import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeE
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
 import dti.crosemont.reservationvol.Domaine.Modele.Aeroport
 import dti.crosemont.reservationvol.Domaine.OTD.AeroportOTD
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 
 @Service
@@ -12,10 +13,11 @@ class AeroportService(private val dao: AeroportDAO) {
 
     fun obtenirTousLesAeroports(): List<Aeroport> {
         val aeroports = dao.chercherTous()
-        if (aeroports.isEmpty()) {
-            throw RessourceInexistanteException("Aucun aéroport trouvé.")
+        return if (aeroports.isNotEmpty()) {
+            aeroports
+        } else {
+            emptyList()
         }
-        return aeroports
     }
 
     fun obtenirAeroportParCode(code: String): Aeroport {
@@ -25,17 +27,18 @@ class AeroportService(private val dao: AeroportDAO) {
 
     fun obtenirAeroportsParNom(nom: String): List<Aeroport> {
         val aeroports = dao.chercherParNom(nom)
-        if (aeroports.isEmpty()) {
-            throw RessourceInexistanteException("Aucun aéroport trouvé avec le nom $nom.")
+        return if (aeroports.isNotEmpty()) {
+            aeroports
+        } else {
+            emptyList()
         }
-        return aeroports
     }
 
     fun obtenirAeroportParId(id: Int): Aeroport {
         return dao.chercherParId(id)
                 ?: throw RessourceInexistanteException("Aéroport avec l'id $id introuvable.")
     }
-
+    @PreAuthorize("hasAuthority('supprimer:aéroport')")
     fun supprimerUnAeroport(id: Int) {
         val aeroportExistant = dao.chercherParId(id)
         if (aeroportExistant == null) {
@@ -45,15 +48,29 @@ class AeroportService(private val dao: AeroportDAO) {
         }
         dao.effacer(id)
     }
-
+    @PreAuthorize("hasAuthority('créer:aéroport')")
     fun ajouterAeroport(aeroport: Aeroport): Aeroport {
+        val aeroportExistant = dao.chercherParCode(aeroport.code)
+        if (aeroportExistant != null) {
+            throw RequêteMalFormuléeException(
+                    "L'aéroport avec le code ${aeroport.code} existe déjà."
+            )
+        }
+
+        val aeroportParNom = dao.chercherParNom(aeroport.nom)
+        if (aeroportParNom.isNotEmpty()) {
+            throw RequêteMalFormuléeException(
+                    "Un aéroport avec le nom ${aeroport.nom} existe déjà."
+            )
+        }
+
         val resultat = dao.ajouter(aeroport)
         if (resultat != null) {
             return resultat
         }
         throw RequêteMalFormuléeException("L'ajout de l'aéroport a échoué")
     }
-
+    @PreAuthorize("hasAuthority('modifier:aéroport')")
     fun modifierAeroport(aeroportOTD: AeroportOTD, id: Int, aeroportExistant: Aeroport): Aeroport {
         aeroportOTD.apply {
             code?.let { aeroportExistant.code = it }
