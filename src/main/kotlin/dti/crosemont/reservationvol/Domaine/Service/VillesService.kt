@@ -8,6 +8,8 @@ import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeE
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceEexistanteException
 import org.springframework.http.HttpStatus 
+import org.springframework.security.access.prepost.PostAuthorize
+import org.springframework.security.access.prepost.PreAuthorize
 
 
 
@@ -20,6 +22,7 @@ class VillesService(private val villesDAO : VilleDAOImpl) {
        return villesDAO.chercherParId(id)?: throw RessourceInexistanteException( "La ville n'existe pas" )
     }
 
+    @PreAuthorize("hasAnyAuthority('créer:villes')")
      fun ajouterVille(ville: Ville ): Ville {
          if (existeVille(ville.nom, ville.pays)) {
             throw RessourceEexistanteException("La ville avec le nom ${ville.nom} existe déjà.")
@@ -27,6 +30,7 @@ class VillesService(private val villesDAO : VilleDAOImpl) {
        return villesDAO.ajouterVille(ville)
     }
 
+    @PreAuthorize("hasAnyAuthority('modifier:villes')")
     fun modifierVille(id: Int, modifieVille: Ville): ResponseEntity<Ville> {
         val updatedVille = villesDAO.modifierVille(id, modifieVille)
 
@@ -37,6 +41,7 @@ class VillesService(private val villesDAO : VilleDAOImpl) {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('supprimer:villes')")
     fun effacerVille(id: Int) {
         val ville = villesDAO.chercherParId(id)
 
