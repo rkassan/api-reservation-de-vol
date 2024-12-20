@@ -103,7 +103,7 @@ CREATE TABLE réservations (
     id_vol INT NOT NULL,
     id_client INT NOT NULL,
     id_sièges INT NOT NULL,
-    classe SET('économique', 'business', 'première') NOT NULL,
+    classe SET('économique', 'affaire', 'première') NOT NULL,
     bagages INT,
     FOREIGN KEY (id_vol) REFERENCES vols(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (id_client) REFERENCES clients(id) ON DELETE CASCADE ON UPDATE CASCADE,
