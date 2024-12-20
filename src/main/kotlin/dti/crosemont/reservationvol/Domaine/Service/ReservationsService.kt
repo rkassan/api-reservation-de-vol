@@ -96,7 +96,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         return réservationObtenue
     }
 
-    @PreAuthorize("hasAnyAuthority('modifier:réservation')")
+    @PreAuthorize("hasAnyAuthority('modifier:réservations')")
     fun modifierRéservation( id: Int, réservationOTD: ReservationOTD): Reservation {
         
         val réservationÀModifier = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
@@ -114,7 +114,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         return reservationsDAO.modifierRéservation(id, réservationÀModifier)
     }
 
-    @PreAuthorize("hasAnyAuthority('supprimer:réservation')")
+    @PreAuthorize("hasAnyAuthority('supprimer:réservations')")
     fun supprimerRéservation(id: Int) {
 
         val réservationÀSupprimer = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
