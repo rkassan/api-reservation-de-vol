@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus
 
 
 
-
 @Service
 class VillesService(private val villesDAO : VilleDAOImpl) {
 
@@ -20,7 +19,10 @@ class VillesService(private val villesDAO : VilleDAOImpl) {
        return villesDAO.chercherParId(id)?: throw RessourceInexistanteException( "La ville n'existe pas" )
     }
 
-     fun ajouterVille(ville: Ville): Ville {
+     fun ajouterVille(ville: Ville ): Ville {
+         if (existeVille(ville.nom, ville.pays)) {
+            throw RequêteMalFormuléeException("La ville avec le nom ${ville.nom} existe déjà.")
+        }
        return villesDAO.ajouterVille(ville)
     }
 
@@ -44,4 +46,9 @@ class VillesService(private val villesDAO : VilleDAOImpl) {
     }
 
 
+    fun existeVille(nom: String, pays:String): Boolean {
+        return villesDAO.chercherParNomEtPays(nom, pays) != null
+    }
+
 }
+
