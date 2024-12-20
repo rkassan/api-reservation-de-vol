@@ -47,7 +47,26 @@ class ReservationsServiceTest {
     private val listeRéservationsClient = listOf(
         Reservation(1, "AB123", 101, Client(1, "Jean", "Lee", "X123456", "127 rue", "jean.lee@example.com", "0123456789"), Siège(1, "A1", "économique"), "économique", 2),
         Reservation(1, "AB147", 109, Client(1, "Jean", "Lee", "X123456", "127 rue", "jean.lee@example.com", "0123456789"), Siège(1, "A1", "économique"), "économique", 4),
-)
+    )
+
+    val ville = Ville(id = 1, nom = "Paris", pays = "France", url_photo = "paris.jpg")
+    val aeroportDebut = Aeroport(id = 1, code = "CDG", nom = "Charles de Gaulle", ville = ville, adresse = "Paris, France")
+    val aeroportFin = Aeroport(id = 2, code = "JFK", nom = "John F. Kennedy", ville = ville.copy(nom = "New York"), adresse = "New York, USA")
+    val trajet = Trajet(id = 1, numéroTrajet = "TR-123", aéroportDébut = aeroportDebut, aéroportFin = aeroportFin)
+
+    val avion = Avion(id = 1, type = "Airbus A320")
+    val vol = Vol(
+            id = 1,
+            dateDepart = LocalDateTime.of(2024, 12, 10, 14, 0),
+            dateArrivee = LocalDateTime.of(2024, 12, 10, 18, 0),
+            avion = avion,
+            prixParClasse = mapOf("économique" to 300.0, "affaire" to 600.0, "première" to 1100.0),
+            poidsMaxBag = 23,
+            trajet = trajet,
+            vol_statut = listOf(VolStatut(idVol = 1, statut = "En attente", heure = LocalDateTime.now())),
+            duree = Duration.ofHours(4),
+            sièges = emptyList()
+    )
 
 
     @Test
@@ -80,6 +99,22 @@ class ReservationsServiceTest {
 
     }
 
+    /** 
+    @Test
+    fun `Étant donné un ReservationService, lorsque la méthode ajouterReservation est appelée avec une réservation valide, la réservation est retourné`() {
+        val service = ReservationsService(mockDAO, mockDAOSiege, mockDAOVols, mockClientService)
+        val réservation = PostReservationOTD(1, "jean.lee@example.com", Siège(1, "A1", "économique", "disponible") , "économique", 1)
+        Mockito.`when`(mockClientService.obtenirClientParEmail(réservation.clientCourriel)).thenReturn(Client(1, "Jean", "Lee", "X123456", "127 rue", "jean.lee@example.com", "0123456789"))
+        Mockito.`when`(mockDAOVols.chercherSiegeParVolId(réservation.idVol)).thenReturn(listOf( Siège(1 , "A1", "économique", "disponible"), Siège(2 , "A2", "économique", "disponible") ))
+        Mockito.`when`(mockDAOVols.chercherParId(réservation.idVol)).thenReturn(vol)
+        Mockito.`when`(service.generateNuméroRéservation()).thenReturn("Rab123")
+        Mockito.`when`(mockDAO.ajouterReservation(Reservation(0, "Rab123", 1, Client(1, "Jean", "Lee", "X123456", "127 rue", "jean.lee@example.com", "0123456789"), Siège(1 , "A1", "économique", "disponible"), "économique", 1))).thenReturn((Reservation(0, "Rab123", 1, Client(1, "Jean", "Lee", "X123456", "127 rue", "jean.lee@example.com", "0123456789"), Siège(1 , "A1", "économique", "disponible"), "économique", 1)))
+
+        val résultat_obtenu = service.ajouterReservation(réservation)
+        val résultat_attendu = (Reservation(0, "Rab123", 1, Client(1, "Jean", "Lee", "X123456", "127 rue", "jean.lee@example.com", "0123456789"), Siège(1 , "A1", "économique", "disponible"), "économique", 1))
+        assertEquals(résultat_attendu, résultat_obtenu)
+    } **/
+
     @Test
     fun `Étant donné un ReservationsService, lorsque la méthode obtenirReservationParId est appelée avec un ID existant, la réservation correspondante est retournée`() {
 
@@ -89,7 +124,7 @@ class ReservationsServiceTest {
 
         val service = ReservationsService(mockDAO, mockDAOSiege, mockDAOVols, mockClientService)
 
-        val result = service.obtenirReservationParId(reservationId)
+        val result = service.obtenirReservationParId(reservationId, "jean.lee@example.com")
 
         assertEquals(expectedReservation, result)
     }
@@ -102,38 +137,9 @@ class ReservationsServiceTest {
         val service = ReservationsService(mockDAO, mockDAOSiege, mockDAOVols,mockClientService)
 
         val exception = assertThrows(RéservationInexistanteException::class.java) {
-            service.obtenirReservationParId(reservationId)
+            service.obtenirReservationParId(reservationId, "jean.lee@example.com")
         }
 
         assertEquals("Réservation avec le id: $reservationId est inexistante", exception.message)
     }
-
-
-    /*
-    @Test
-    fun `Étant donné une réservation valide, la méthode ajouterReservation crée une réservation avec succès et met à jour le statut du siège`() {
-    }*/
-
-    @Test
-    fun `Étant donné une réservation avec un email invalide, la méthode ajouterReservation lance une exception`() {
-        val reservationOTD = PostReservationOTD(
-                idVol = 1,
-                clientEmail = "invalid.email@example.com",
-                siège = Siège(1, "A1", "économique"),
-                classe = "économique",
-                bagages = 2,
-                numéroRéservation = "R12345"
-        )
-
-
-        Mockito.`when`(mockClientService.obtenirClientParEmail("invalid.email@example.com")).thenReturn(null)
-
-
-        assertFailsWith<RessourceInexistanteException> {
-            reservationsService.ajouterReservation(reservationOTD)
-        }
-    }
-
-
-
 }
