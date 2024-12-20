@@ -12,8 +12,8 @@ data class Vol(
         var prixParClasse: Map<String, Double>,
         var poidsMaxBag: Int,
         var trajet: Trajet,
-        var vol_statut: List<VolStatut>,
+        var vol_statut: List<VolStatut> = listOf() ,
         var duree: Duration,
-        var sièges: List<Siège>?
+        var sièges: List<Siège> = emptyList()
 )
 

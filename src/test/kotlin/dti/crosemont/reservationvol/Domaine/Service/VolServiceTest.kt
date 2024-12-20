@@ -7,7 +7,6 @@ import dti.crosemont.reservationvol.AccesAuxDonnees.SourcesDeDonnees.VolsDAO
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
 import dti.crosemont.reservationvol.Domaine.Modele.*
-import dti.crosemont.reservationvol.Domaine.OTD.VolOTD
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith
@@ -15,7 +14,10 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
-import java.io.Console
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
 import java.time.Duration
 import java.time.LocalDateTime
 
@@ -38,8 +40,8 @@ class VolServiceTest {
     val avion = Avion(id = 1, type = "Airbus A320")
     val vol = Vol(
             id = 1,
-            dateDepart = LocalDateTime.of(2024, 12, 10, 14, 0),
-            dateArrivee = LocalDateTime.of(2024, 12, 10, 18, 0),
+            dateDepart = LocalDateTime.of(2025, 12, 10, 14, 0),
+            dateArrivee = LocalDateTime.of(2025, 12, 10, 18, 0),
             avion = avion,
             prixParClasse = mapOf("économique" to 300.0, "affaire" to 600.0, "première" to 1100.0),
             poidsMaxBag = 23,
@@ -50,8 +52,8 @@ class VolServiceTest {
     )
     val vol2 = Vol(
             id = 2,
-            dateDepart = LocalDateTime.of(2024, 12, 12, 10, 30),
-            dateArrivee = LocalDateTime.of(2024, 12, 12, 14, 45),
+            dateDepart = LocalDateTime.of(2025, 12, 12, 10, 30),
+            dateArrivee = LocalDateTime.of(2025, 12, 12, 14, 45),
             avion = avion,
             prixParClasse = mapOf("économique" to 350.0, "affaire" to 650.0, "première" to 1200.0),
             poidsMaxBag = 25,
@@ -107,8 +109,15 @@ class VolServiceTest {
 
 
     @Test
-    fun `étant donné des paramètres valides, lorsqu'on cherche des vols par parametre, on obtient une liste de vols`() {
-        val dateDebut = LocalDateTime.of(2024, 12, 10, 14, 0)
+    fun `étant donné des paramètres et authetication valides, lorsqu'on cherche des vols par parametre, on obtient une liste de vols`() {
+
+        val authentication: Authentication = Mockito.mock(Authentication::class.java)
+        Mockito.`when`(authentication.authorities).thenReturn(listOf(SimpleGrantedAuthority("consulter:vols")))
+        val contexteSecurite: SecurityContext = Mockito.mock(SecurityContext::class.java)
+        Mockito.`when`(contexteSecurite.authentication).thenReturn(authentication)
+        SecurityContextHolder.setContext(contexteSecurite)
+
+        val dateDebut = LocalDateTime.of(2025, 12, 10, 14, 0)
         val aeroportDebut = "CDG"
         val aeroportFin = "JFK"
 
@@ -125,7 +134,13 @@ class VolServiceTest {
     }
 
     @Test
-    fun `étant donné des paramètres valides mais aucun vol disponible, lorsqu'on cherche des vols par parametre, on obtient une liste vide`() {
+    fun `étant donné des paramètres et authetication valides mais aucun vol disponible, lorsqu'on cherche des vols par parametre, on obtient une liste vide`() {
+        val authentication: Authentication = Mockito.mock(Authentication::class.java)
+        Mockito.`when`(authentication.authorities).thenReturn(listOf(SimpleGrantedAuthority("consulter:vols")))
+        val contexteSecurite: SecurityContext = Mockito.mock(SecurityContext::class.java)
+        Mockito.`when`(contexteSecurite.authentication).thenReturn(authentication)
+        SecurityContextHolder.setContext(contexteSecurite)
+
         val dateDebut = LocalDateTime.of(2023, 12, 10, 14, 0)
         val aeroportDebut = "CDG"
         val aeroportFin = "JFK"
