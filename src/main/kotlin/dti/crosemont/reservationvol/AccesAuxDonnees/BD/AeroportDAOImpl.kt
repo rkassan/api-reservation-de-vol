@@ -17,20 +17,28 @@ class AeroportDAOImpl(private val bd: JdbcTemplate) : AeroportDAO {
         private const val OBTENIR_AEROPORT_PAR_CODE =
             "SELECT * FROM aéroports INNER JOIN villes ON aéroports.ville_id = villes.id WHERE code = ?;"
         private const val OBTENIR_AEROPORT_PAR_NOM =
-            "SELECT * FROM aéroports INNER JOIN villes ON aéroports.ville_id = villes.id WHERE nom LIKE ?;"
-        private const val AJOUTER_AEROPORT =
+            "SELECT * FROM aéroports INNER JOIN villes ON aéroports.ville_id = villes.id WHERE nom = ?;"
+        private const val AJOUTER_AEROPORT: String =
             """
-            INSERT INTO aeroports (code, nom, ville_id, adresse)
-            VALUES (?, ?, ?, ?);
+                INSERT INTO aéroports ( code, nom, ville, adresse )
+                VALUES ( ?, ?, ?, ?);
+                """
+        private const val OBTENIR_DERNIER_AEROPORT_INSÉRER =
             """
-        private const val OBTENIR_DERNIER_AEROPORT_INSERE =
-            "SELECT * FROM aéroports WHERE id = LAST_INSERT_ID();"
-        private const val MODIFIER_AEROPORT =
+                    SELECT * FROM aéroports 
+                    WHERE id = LAST_INSERT_ID();
+                """
+        private const val OBTENIR_DERNIER_CLIENT_INSÉRER =
             """
-            UPDATE aéroports
-            SET code = ?, nom = ?, ville_id = ?, adresse = ?
-            WHERE id = ?;
+                    SELECT * FROM clients 
+                    WHERE id = ( SELECT MAX( id ) from clients  );
+                """
+        private const val MODIFIER_AEROPORT: String =
             """
+                    UPDATE aéroports
+                    SET code = ?, nom = ?, ville = ?, adresse = ?
+                    WHERE id = ?;
+                """
     }
 
     override fun chercherTous(): List<Aeroport> =
@@ -62,32 +70,42 @@ class AeroportDAOImpl(private val bd: JdbcTemplate) : AeroportDAO {
     }
 
     override fun modifier(aeroport: Aeroport): Aeroport? {
-        val resultat =
+
+        val résultat =
             bd.update(
                 MODIFIER_AEROPORT,
                 aeroport.code,
                 aeroport.nom,
-                aeroport.ville.id,
+                aeroport.ville,
                 aeroport.adresse,
                 aeroport.id
             )
-        return if (resultat != 0) aeroport else null
+
+        return if (résultat != 0) aeroport else null
     }
 
     override fun ajouter(aeroport: Aeroport): Aeroport? {
+        var aeroportInséré: Aeroport? = null
+
         val resultat =
             bd.update(
                 AJOUTER_AEROPORT,
                 aeroport.code,
                 aeroport.nom,
-                aeroport.ville.id,
+                aeroport.ville,
                 aeroport.adresse
             )
-        return if (resultat != 0) {
-            bd.query(OBTENIR_DERNIER_AEROPORT_INSERE) { réponse, _ ->
-                convertirRésultatEnAeroport(réponse)
-            }.singleOrNull()
-        } else null
+
+        if (resultat != 0) {
+            aeroportInséré =
+                bd
+                    .query(sql = OBTENIR_DERNIER_AEROPORT_INSÉRER) { réponse, _
+                        ->
+                        convertirRésultatEnAeroport(réponse)
+                    }
+                    .singleOrNull()
+        }
+        return aeroportInséré
     }
 
     private fun convertirRésultatEnAeroport(réponse: ResultSet): Aeroport {
@@ -95,13 +113,14 @@ class AeroportDAOImpl(private val bd: JdbcTemplate) : AeroportDAO {
             id = réponse.getInt("id"),
             code = réponse.getString("code"),
             nom = réponse.getString("nom"),
-            ville = Ville(
-                id = réponse.getInt("ville_id"),
+            ville =
+            Ville(
+                id = réponse.getInt("villes.id"),
                 nom = réponse.getString("villes.nom"),
                 pays = réponse.getString("villes.pays"),
                 url_photo = réponse.getString("villes.url_photo")
             ),
-            adresse = réponse.getString("adresse")
+            adresse = réponse.getString("addresse")
         )
     }
 }
