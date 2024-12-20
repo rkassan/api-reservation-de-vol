@@ -31,7 +31,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
                           private val clientService: ClientsService) {
 
     
-    val typeClasse = arrayListOf<String>("économique","business","première")
+    val typeClasse = arrayListOf<String>("économique","affaire","première")
     val statutSiège = arrayListOf<String>("disponible","occupé")
 
     fun obtenirToutesLesReservations(listePermissions: List<String>?, courrielAuthentification: String): List<Reservation> {
@@ -75,7 +75,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         )
 
         reservation.siège.statut = "occupé"
-        siegeDAO.save(siègeSélectionné)
+        siegeDAO.sauvegarder(siègeSélectionné)
         return reservationsDAO.ajouterReservation(reservation)
 
     }
