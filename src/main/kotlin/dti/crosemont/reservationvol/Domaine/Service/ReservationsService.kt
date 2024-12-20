@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.oauth2.jwt.Jwt
 import dti.crosemont.reservationvol.Controleurs.Exceptions.ModificationException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.AccèsRefuséException
+import dti.crosemont.reservationvol.Controleurs.Exceptions.AccèsNonAutoriséException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.NombreDeBagageInvalide
 import kotlin.enums.enumEntries
 import org.springframework.http.ResponseEntity
@@ -81,49 +82,50 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
 
     fun obtenirReservationParId(id: Int, courrielAuthentification: String, listePermissions: List<String>?): Reservation {
 
-    if (listePermissions != null && listePermissions.contains("consulter:réservations")) {
         val réservationObtenue = reservationsDAO.chercherParId(id) 
             ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
-        
-        if (réservationObtenue.client.email == courrielAuthentification) {
-            return réservationObtenue
-        } else {
-            throw RéservationInexistanteException("Cette réservation n'est pas à vous.")
+
+        if( listePermissions != null ) {
+            if ( listePermissions.contains("consulter:réservations")) {
+                return réservationObtenue
             }
         }
-        throw RéservationInexistanteException("Permissions insuffisantes pour consulter la réservation.")
+
+        if (réservationObtenue.client.email != courrielAuthentification) throw AccèsRefuséException( "Cette réservation ne vous appartient pas." )
+        
+        return réservationObtenue
     }
-    
-    
-    @PreAuthorize("hasAnyAuthority('modifier:réservations')")
+
+    @PreAuthorize("hasAnyAuthority('modifier:réservation')")
     fun modifierRéservation( id: Int, réservationOTD: ReservationOTD): Reservation {
         
-        val réservation = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
+        val réservationÀModifier = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
 
         this.vérifierParamètre(réservationOTD)
 
         réservationOTD.apply {
-            idVol?.let { réservation.idVol = it }
-            client?.let { réservation.client = it }
-            siège?.let { réservation.siège = it }
-            classe?.let { réservation.classe = it }
-            bagages?.let { réservation.bagages = it }
+            idVol?.let { réservationÀModifier.idVol = it }
+            client?.let { réservationÀModifier.client = it }
+            siège?.let { réservationÀModifier.siège = it }
+            classe?.let { réservationÀModifier.classe = it }
+            bagages?.let { réservationÀModifier.bagages = it }
         }
         
-        return reservationsDAO.modifierRéservation(id, réservation)
+        return reservationsDAO.modifierRéservation(id, réservationÀModifier)
     }
 
-    @PreAuthorize("hasAnyAuthority('supprimer:réservations')")
+    @PreAuthorize("hasAnyAuthority('supprimer:réservation')")
     fun supprimerRéservation(id: Int) {
-        val réservation = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
 
-        this.modifierSiègeVol( réservation )
+        val réservationÀSupprimer = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
+
+        this.modifierSiègeVol( réservationÀSupprimer )
         
         reservationsDAO.effacer(id)
     }
 
     private fun vérifierParamètre( réservationOTD: ReservationOTD ) {
-        if ( !(réservationOTD.classe != null && typeClasse.contains( réservationOTD.classe ) ) ) {
+        if ( réservationOTD.classe != null && typeClasse.contains( réservationOTD.classe )  ) {
             throw ModificationException("Classe saisit non valide.")
         }         
     }
