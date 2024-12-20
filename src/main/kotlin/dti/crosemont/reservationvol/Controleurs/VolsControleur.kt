@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 
 @RestController
 @RequestMapping("/vols")
@@ -50,7 +51,13 @@ class VolsControleur(private val volService: VolService) {
     @PostMapping
     fun ajouterVol(@RequestBody vol: Vol): ResponseEntity<Vol> {
         val nouveauVol = volService.ajouterVol(vol)
-        return ResponseEntity(nouveauVol, HttpStatus.CREATED)
+        val location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(nouveauVol.id)
+                .toUri()
+
+        return ResponseEntity.created(location).body(nouveauVol)
     }
 
 

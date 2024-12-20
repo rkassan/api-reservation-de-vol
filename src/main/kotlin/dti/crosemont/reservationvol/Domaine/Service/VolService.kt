@@ -55,7 +55,7 @@ class VolService(private val volsDAO: VolsDAO) {
         }
 
         if (vol.dateArrivee.isBefore(chronoLocalDateTime)) {
-            throw RequêteMalFormuléeException("\"La date d'aller ${vol.dateDepart} ne peut pas être avant la date d'aujourd'hui $chronoLocalDateTime.")
+            throw RequêteMalFormuléeException("\"La date de départ ${vol.dateDepart} ne peut pas être avant la date d'aujourd'hui $chronoLocalDateTime.")
         }
 
         val nouveauVol = volsDAO.ajouterVol(vol)
