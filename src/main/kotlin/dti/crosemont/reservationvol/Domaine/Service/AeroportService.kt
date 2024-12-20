@@ -12,10 +12,11 @@ class AeroportService(private val dao: AeroportDAO) {
 
     fun obtenirTousLesAeroports(): List<Aeroport> {
         val aeroports = dao.chercherTous()
-        if (aeroports.isEmpty()) {
-            throw RessourceInexistanteException("Aucun aéroport trouvé.")
+        return if (aeroports.isNotEmpty()) {
+            aeroports
+        } else {
+            emptyList()
         }
-        return aeroports
     }
 
     fun obtenirAeroportParCode(code: String): Aeroport {
@@ -25,10 +26,11 @@ class AeroportService(private val dao: AeroportDAO) {
 
     fun obtenirAeroportsParNom(nom: String): List<Aeroport> {
         val aeroports = dao.chercherParNom(nom)
-        if (aeroports.isEmpty()) {
-            throw RessourceInexistanteException("Aucun aéroport trouvé avec le nom $nom.")
+        return if (aeroports.isNotEmpty()) {
+            aeroports
+        } else {
+            emptyList()
         }
-        return aeroports
     }
 
     fun obtenirAeroportParId(id: Int): Aeroport {
