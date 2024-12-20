@@ -31,7 +31,7 @@ class VolService(private val volsDAO: VolsDAO) {
             return volsDAO.obtenirVolParParam(dateDebut, aeroportDebut, aeroportFin)
         }
         else {
-            throw RequêteMalFormuléeException("Vous n'avez pas le droit de consulter ces vols")
+            throw AccèsRefuséException("Vous n'avez pas le droit de consulter ces vols")
         }
     }
 
