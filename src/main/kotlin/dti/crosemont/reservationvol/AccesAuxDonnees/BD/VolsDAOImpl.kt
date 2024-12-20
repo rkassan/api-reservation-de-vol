@@ -196,7 +196,7 @@ class VolsDAOImpl(private val bd: JdbcTemplate) : VolsDAO {
         }
 
         override fun chercherTous(): List<Vol> =
-                bd.query(QUERY_TOUT_LES_VOLS) { réponse, _ -> mapVol(réponse) }
+                bd.query(QUERY_TOUS_LES_VOLS) { réponse, _ -> mapVol(réponse) }
 
         override fun chercherParId(id: Int): Vol? =
                 bd.query(QUERY_VOL_PAR_ID, id) { réponse, _ -> mapVol(réponse) }.singleOrNull()
