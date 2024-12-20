@@ -85,7 +85,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
 
         val réservationObtenue = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
 
-        if (réservationObtenue.client.email != courrielAuthentification) return réservationObtenue else throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
+        if (réservationObtenue.client.email == courrielAuthentification) return réservationObtenue else throw RéservationInexistanteException("Cette réservation n'est pas à vous.")
     }
     
     @PreAuthorize("hasAnyAuthority('modifier:réservations')")
