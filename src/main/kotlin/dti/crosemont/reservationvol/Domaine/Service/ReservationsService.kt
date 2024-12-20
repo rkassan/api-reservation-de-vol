@@ -75,7 +75,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
 
         reservation.siège.statut = "occupé"
         siegeDAO.sauvegarder(siègeSélectionné)
-        return reservationsDAO.ajouterReservation(reservation)
+        return reservationsDAO.ajouterRéservation(reservation)
 
     }
 

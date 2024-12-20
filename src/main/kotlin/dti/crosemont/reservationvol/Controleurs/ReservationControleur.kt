@@ -29,14 +29,14 @@ import dti.crosemont.reservationvol.Controleurs.Exceptions.MessageErreur
 
 @RestController
 @RequestMapping("/reservations")
-class ReservationControleur(val reservationsService: ReservationsService, val clientsService: ClientsService) {
+class ReservationControleur(val réservationsService: ReservationsService, val clientsService: ClientsService) {
 
     @GetMapping
     fun obtenirToutesLesReservations(@AuthenticationPrincipal principal : Jwt): ResponseEntity<List<Reservation>> {
         val listePermissions = principal.claims["permissions"] as? List<String>
         val courrielAuthentification = principal.claims["courriel"] as String? ?: ""
 
-        return ResponseEntity.ok(reservationsService.obtenirToutesLesReservations(listePermissions, courrielAuthentification))
+        return ResponseEntity.ok(réservationsService.obtenirToutesLesReservations(listePermissions, courrielAuthentification))
     }
 
 
@@ -44,23 +44,23 @@ class ReservationControleur(val reservationsService: ReservationsService, val cl
     fun obtenirReservationParId(@PathVariable id: Int, @AuthenticationPrincipal principal : Jwt): ResponseEntity<Any> {
         val listePermissions = principal.claims["permissions"] as? List<String>
         val courrielAuthentification = principal.claims["courriel"] as String? ?: ""
-        return ResponseEntity.ok(reservationsService.obtenirReservationParId(id, courrielAuthentification,listePermissions))  
+        return ResponseEntity.ok(réservationsService.obtenirReservationParId(id, courrielAuthentification,listePermissions))  
     }
 
     @PostMapping
-    fun ajouterReservation(@RequestBody reservationOTD: PostReservationOTD): ResponseEntity<Reservation> {
-        return ResponseEntity.ok(reservationsService.ajouterReservation(reservationOTD))
+    fun ajouterReservation(@RequestBody réservationOTD: PostReservationOTD): ResponseEntity<Reservation> {
+        return ResponseEntity.ok(réservationsService.ajouterReservation(réservationOTD))
     }
 
     @PutMapping("/{id}")
     fun modifierReservation(@PathVariable id: Int, @RequestBody réservationOTD: ReservationOTD): ResponseEntity<Reservation> {
 
-        return ResponseEntity.ok( reservationsService.modifierRéservation( id, réservationOTD ) )
+        return ResponseEntity.ok( réservationsService.modifierRéservation( id, réservationOTD ) )
     }
 
     @DeleteMapping("/{id}")
     fun supprimerReservation(@PathVariable id: Int): ResponseEntity<HttpStatus> {
-            reservationsService.supprimerRéservation(id)    
+            réservationsService.supprimerRéservation(id)    
             return ResponseEntity(HttpStatus.OK)
     }
 }
