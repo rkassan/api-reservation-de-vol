@@ -13,21 +13,21 @@ class AeroportDAOImpl(private val bd: JdbcTemplate) : AeroportDAO {
 
     companion object {
         private const val OBTENIR_TOUT_LES_AEROPORTS =
-            "SELECT * FROM aeroports INNER JOIN villes ON aeroports.ville_id = villes.id;"
+            "SELECT * FROM aéroports INNER JOIN villes ON aéroports.ville_id = villes.id;"
         private const val OBTENIR_AEROPORT_PAR_CODE =
-            "SELECT * FROM aeroports INNER JOIN villes ON aeroports.ville_id = villes.id WHERE code = ?;"
+            "SELECT * FROM aéroports INNER JOIN villes ON aéroports.ville_id = villes.id WHERE code = ?;"
         private const val OBTENIR_AEROPORT_PAR_NOM =
-            "SELECT * FROM aeroports INNER JOIN villes ON aeroports.ville_id = villes.id WHERE nom LIKE ?;"
+            "SELECT * FROM aéroports INNER JOIN villes ON aéroports.ville_id = villes.id WHERE nom LIKE ?;"
         private const val AJOUTER_AEROPORT =
             """
             INSERT INTO aeroports (code, nom, ville_id, adresse)
             VALUES (?, ?, ?, ?);
             """
         private const val OBTENIR_DERNIER_AEROPORT_INSERE =
-            "SELECT * FROM aeroports WHERE id = LAST_INSERT_ID();"
+            "SELECT * FROM aéroports WHERE id = LAST_INSERT_ID();"
         private const val MODIFIER_AEROPORT =
             """
-            UPDATE aeroports
+            UPDATE aéroports
             SET code = ?, nom = ?, ville_id = ?, adresse = ?
             WHERE id = ?;
             """
