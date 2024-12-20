@@ -45,8 +45,7 @@ class SiègeDAOImpl(private val bd: JdbcTemplate): SiègeDAO {
             }.firstOrNull()
         }
 
-    // i will delete this... changer save pour sauvagrder... car save c'est en anglais
-        override fun save(siege: Siège): Siège {
+        override fun sauvegarder(siege: Siège): Siège {
             return if (siege.id == 0) {
                 val query = """
                     INSERT INTO sièges (numéro_siège, classe) 
@@ -55,7 +54,6 @@ class SiègeDAOImpl(private val bd: JdbcTemplate): SiègeDAO {
                 bd.update(query, siege.numéroSiège, siege.classe)
             siege
             } else {
-            // Update existant siege
             val query = """
                 UPDATE sièges
                 SET numéro_siège = ?, classe = ?

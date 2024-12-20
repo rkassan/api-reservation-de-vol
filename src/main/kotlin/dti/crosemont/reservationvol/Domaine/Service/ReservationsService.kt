@@ -31,7 +31,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
                           private val clientService: ClientsService) {
 
     
-    val typeClasse = arrayListOf<String>("économique","business","première")
+    val typeClasse = arrayListOf<String>("économique","affaire","première")
     val statutSiège = arrayListOf<String>("disponible","occupé")
 
     fun obtenirToutesLesReservations(listePermissions: List<String>?, courrielAuthentification: String): List<Reservation> {
@@ -46,7 +46,6 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         return reservationsDAO.chercherTous(client.id)
     }
     
-    @PreAuthorize("hasAnyAuthority('créer:réservations')")
     fun ajouterReservation(réservationOTD: PostReservationOTD): Reservation {
     
         val client = clientService.obtenirClientParEmail(réservationOTD.clientCourriel) 
@@ -64,7 +63,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         
         if (réservationOTD.bagages < 0 ) throw NombreDeBagageInvalide("Le nombre de bagage doit être un numéro supérieur ou égal à 0.")
 
-        val reservation = Reservation(
+        val réservation = Reservation(
             id = 0, 
             client = client,
             idVol = réservationOTD.idVol, 
@@ -74,22 +73,30 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
             numéroRéservation = generateNuméroRéservation()
         )
 
-        reservation.siège.statut = "occupé"
-        siegeDAO.save(siègeSélectionné)
-        return reservationsDAO.ajouterReservation(reservation)
+        réservation.siège.statut = "occupé"
+        siegeDAO.sauvegarder(siègeSélectionné)
+        return reservationsDAO.ajouterRéservation(réservation)
 
     }
 
-    @PreAuthorize("hasAnyAuthority('consulter:réservations')")
-    fun obtenirReservationParId(id: Int, courrielAuthentification: String): Reservation {
+    fun obtenirReservationParId(id: Int, courrielAuthentification: String, listePermissions: List<String>?): Reservation {
 
-        val réservationObtenue = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
-
-        if (réservationObtenue.client.email == courrielAuthentification) return réservationObtenue else throw RéservationInexistanteException("Cette réservation n'est pas à vous.")
+    if (listePermissions != null && listePermissions.contains("consulter:réservations")) {
+        val réservationObtenue = reservationsDAO.chercherParId(id) 
+            ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
+        
+        if (réservationObtenue.client.email == courrielAuthentification) {
+            return réservationObtenue
+        } else {
+            throw RéservationInexistanteException("Cette réservation n'est pas à vous.")
+            }
+        }
+        throw RéservationInexistanteException("Permissions insuffisantes pour consulter la réservation.")
     }
     
+    
     @PreAuthorize("hasAnyAuthority('modifier:réservations')")
-    fun modifierRéservation( id: Int, réservationOTD: ReservationOTD ): Reservation {
+    fun modifierRéservation( id: Int, réservationOTD: ReservationOTD): Reservation {
         
         val réservation = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
 

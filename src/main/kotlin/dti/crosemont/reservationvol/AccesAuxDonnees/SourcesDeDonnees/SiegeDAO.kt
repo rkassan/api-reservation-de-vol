@@ -5,5 +5,5 @@ import dti.crosemont.reservationvol.Domaine.Modele.Siège
 
 
 interface SiègeDAO : DAO<Siège> {
-    fun save(siege: Siège): Siège
+    fun sauvegarder(siege: Siège): Siège
 }
