@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 
 @RestController
 @RequestMapping("/clients")
@@ -42,10 +43,17 @@ class ClientsControleur( private val service : ClientsService) {
                 return ResponseEntity.ok( service.obtenirClientParEmail( email ) )
         }
 
-
         @PostMapping
-        fun ajouterClient(@RequestBody client: Client): ResponseEntity<Client> =
-                ResponseEntity.ok( service.ajouterClient( client ) )
+        fun ajouterClient(@RequestBody client: Client): ResponseEntity<Client> {
+                val nouveauJoueur = service.ajouterClient( client )
+                val uri = ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(nouveauJoueur.id)
+                        .toUri()
+
+                return ResponseEntity.created(uri).body(nouveauJoueur)
+        }
 
         @PutMapping("/{id}")
         fun modifierClient(
