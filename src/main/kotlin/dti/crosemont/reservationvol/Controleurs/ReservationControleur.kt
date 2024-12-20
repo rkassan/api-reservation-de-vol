@@ -41,8 +41,10 @@ class ReservationControleur(val reservationsService: ReservationsService, val cl
 
 
     @GetMapping("/{id}")
-    fun obtenirReservationParId(@PathVariable id: Int): ResponseEntity<Any> {
-        return ResponseEntity.ok(reservationsService.obtenirReservationParId(id))  
+    fun obtenirReservationParId(@PathVariable id: Int, @AuthenticationPrincipal principal : Jwt): ResponseEntity<Any> {
+        
+        val courrielAuthentification = principal.claims["courriel"] as String? ?: ""
+        return ResponseEntity.ok(reservationsService.obtenirReservationParId(id, courrielAuthentification))  
     }
 
     @PostMapping

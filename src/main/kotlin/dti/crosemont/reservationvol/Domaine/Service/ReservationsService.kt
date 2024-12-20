@@ -81,21 +81,17 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
     }
 
     @PreAuthorize("hasAnyAuthority('consulter:réservations')")
-    fun obtenirReservationParId(id: Int): Reservation {
+    fun obtenirReservationParId(id: Int, courrielAuthentification: String): Reservation {
 
-        val réservationObtenue = reservationsDAO.chercherParId(id)
+        val réservationObtenue = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
 
-        if ( réservationObtenue != null ) { 
-            return réservationObtenue
-        } else {
-            throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
-        }
+        if (réservationObtenue.client.email != courrielAuthentification) return réservationObtenue else throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
     }
     
     @PreAuthorize("hasAnyAuthority('modifier:réservations')")
     fun modifierRéservation( id: Int, réservationOTD: ReservationOTD ): Reservation {
         
-        val réservation = this.obtenirReservationParId(id)
+        val réservation = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
 
         this.vérifierParamètre(réservationOTD)
 
@@ -112,7 +108,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
 
     @PreAuthorize("hasAnyAuthority('supprimer:réservations')")
     fun supprimerRéservation(id: Int) {
-        val réservation = this.obtenirReservationParId(id)
+        val réservation = reservationsDAO.chercherParId(id) ?: throw RéservationInexistanteException("Réservation avec le id: $id est inexistante")
 
         this.modifierSiègeVol( réservation )
         
