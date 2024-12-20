@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/aeroports")
 class AeroportControleur(private val service: AeroportService) {
 
-    @GetMapping
+    @GetMapping("/{nom}")
     fun obtenirAeroportParNom(
         @RequestParam(name = "nom", required = false) nom: String?
     ): ResponseEntity<List<Aeroport>> {
@@ -27,6 +27,15 @@ class AeroportControleur(private val service: AeroportService) {
             ResponseEntity.ok(service.obtenirAeroportsParNom(nom))
         } else {
             ResponseEntity.ok(service.obtenirTousLesAeroports())
+        }
+    }
+    @GetMapping
+    fun obtenirTousLesAeroports(): ResponseEntity<List<Aeroport>> {
+        val aeroports = service.obtenirTousLesAeroports()
+        return if (aeroports.isNotEmpty()) {
+            ResponseEntity.ok(aeroports)
+        } else {
+            ResponseEntity.noContent().build()
         }
     }
     
