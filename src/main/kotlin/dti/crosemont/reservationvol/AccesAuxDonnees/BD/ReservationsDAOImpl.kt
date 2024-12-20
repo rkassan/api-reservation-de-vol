@@ -88,7 +88,7 @@ class ReservationsDAOImpl(private val bd: JdbcTemplate): ReservationsDAO {
 
 
 
-    override fun ajouterReservation(réservation: Reservation): Reservation {
+    override fun ajouterRéservation(réservation: Reservation): Reservation {
         
         if (!verifierSiègeDisponible(réservation.idVol, réservation.siège.id)) {
             throw IllegalArgumentException("Le siège sélectionné n'est pas disponible.")
