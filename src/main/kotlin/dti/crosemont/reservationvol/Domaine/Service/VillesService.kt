@@ -6,6 +6,7 @@ import dti.crosemont.reservationvol.Domaine.Modele.Ville
 import org.springframework.http.ResponseEntity
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RequêteMalFormuléeException
 import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceInexistanteException
+import dti.crosemont.reservationvol.Controleurs.Exceptions.RessourceEexistanteException
 import org.springframework.http.HttpStatus 
 
 
@@ -21,7 +22,7 @@ class VillesService(private val villesDAO : VilleDAOImpl) {
 
      fun ajouterVille(ville: Ville ): Ville {
          if (existeVille(ville.nom, ville.pays)) {
-            throw RequêteMalFormuléeException("La ville avec le nom ${ville.nom} existe déjà.")
+            throw RessourceEexistanteException("La ville avec le nom ${ville.nom} existe déjà.")
         }
        return villesDAO.ajouterVille(ville)
     }

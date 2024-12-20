@@ -45,4 +45,9 @@ class GestionnaireExceptionsControleur{
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     fun gérerNombreDeBagageInvalide(exception: NombreDeBagageInvalide, requête: WebRequest): MessageErreur =
         MessageErreur(HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))
+
+    @ExceptionHandler(RessourceEexistanteException::class) 
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    fun gérerRessourceEexistanteException(exception: RessourceEexistanteException, requête: WebRequest): MessageErreur =
+        MessageErreur(HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(), exception.message, requête.getDescription(false))
 }
