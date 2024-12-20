@@ -24,7 +24,7 @@ class ClientDAOImpl( private val bd : JdbcTemplate ) : ClientDAO {
         private const val OBTENIR_DERNIER_CLIENT_INSÉRER =
                 """
                     SELECT * FROM clients 
-                    WHERE id = ( SELECT MAX( id ) from clients  );
+                    WHERE id = LAST_INSERT_ID();
                 """
         private const val MODIFIER_CLIENT : String =
                 """
