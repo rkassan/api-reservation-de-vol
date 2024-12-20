@@ -63,7 +63,7 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
         
         if (réservationOTD.bagages < 0 ) throw NombreDeBagageInvalide("Le nombre de bagage doit être un numéro supérieur ou égal à 0.")
 
-        val reservation = Reservation(
+        val réservation = Reservation(
             id = 0, 
             client = client,
             idVol = réservationOTD.idVol, 
@@ -73,9 +73,9 @@ class ReservationsService(private val reservationsDAO: ReservationsDAO,
             numéroRéservation = generateNuméroRéservation()
         )
 
-        reservation.siège.statut = "occupé"
+        réservation.siège.statut = "occupé"
         siegeDAO.sauvegarder(siègeSélectionné)
-        return reservationsDAO.ajouterRéservation(reservation)
+        return reservationsDAO.ajouterRéservation(réservation)
 
     }
 
