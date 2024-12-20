@@ -1,0 +1,2522 @@
+{
+	"info": {
+		"_postman_id": "7fa70a05-e69f-48dd-8017-37eb03bd6401",
+		"name": "Service d'avion",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "33996456",
+		"_collection_link": "https://service-dchange.postman.co/workspace/Service-d'avion~60ce7367-aeae-49c1-b3dd-f1a9178b5ea5/collection/31344124-7fa70a05-e69f-48dd-8017-37eb03bd6401?action=share&source=collection_link&creator=33996456"
+	},
+	"item": [
+		{
+			"name": "Simulation des requêtes - Sprint 1",
+			"item": [
+				{
+					"name": "Utilisateur",
+					"item": [
+						{
+							"name": "Publique",
+							"item": [
+								{
+									"name": "GET clients",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "{{url}}/clients"
+									},
+									"response": [
+										{
+											"name": "GET client admin et employé",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"url": "{{url}}/clients"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "[\n    {\n        \"id\":1,\n        \"nom\": \"Durand\",\n        \"prénom\": \"Marie\",\n        \"email\": \"marie.durand@gmail.com\",\n        \"numéroTéléphone\": \"514-555-1234\",\n        \"addresse\": \"123 rue Sainte-Catherine\",\n        \"numéroPassport\": \"M12345678\",\n        \"préférencesRepas\": [\n            \"végétarien\", \"sans gluten\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"Paris\", \"Rome\"\n        ]\n    },\n    {\n        \"id\":2,\n        \"nom\": \"Martin\",\n        \"prénom\": \"Jean\",\n        \"email\": \"jean.martin@yahoo.com\",\n        \"numéroTéléphone\": \"514-777-9876\",\n        \"addresse\": \"456 avenue Mont-Royal\",\n        \"numéroPassport\": \"J98765432\",\n        \"préférencesRepas\": [\n            \"carnivore\", \"halal\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"New York\", \"Tokyo\"\n        ]\n    },\n    {\n        \"id\":3,\n        \"nom\": \"Lefebvre\",\n        \"prénom\": \"Sophie\",\n        \"email\": \"sophie.lefebvre@hotmail.com\",\n        \"numéroTéléphone\": \"438-888-4567\",\n        \"addresse\": \"789 boulevard René-Lévesque\",\n        \"numéroPassport\": \"S23456789\",\n        \"préférencesRepas\": [\n            \"végétalien\", \"cacher\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"Barcelone\", \"Sydney\"\n        ]\n    }\n]\n"
+										},
+										{
+											"name": "GET clients publique",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"url": "{{url}}/clients"
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\r\n    \"error\":\"401 UNAUTHORIZED\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "GET un client",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "{{url}}/clients/1"
+									},
+									"response": [
+										{
+											"name": "GET un client admin et employé",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{url}}/clients/1"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"id\": 1,\n    \"nom\": \"Durand\",\n    \"prénom\": \"Marie\",\n    \"email\": \"marie.durand@gmail.com\",\n    \"numéroTéléphone\": \"514-555-1234\",\n    \"addresse\": \"123 rue Sainte-Catherine\",\n    \"numéroPassport\": \"M12345678\",\n    \"préférencesRepas\": [\n        \"végétarien\",\n        \"sans gluten\"\n    ],\n    \"préférenceDeDestinantion\": [\n        \"Paris\",\n        \"Rome\"\n    ]\n}"
+										},
+										{
+											"name": "GET un client publique",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{url}}/clients/1"
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"error\":\"401 UNAUTHORIZED\"\n}"
+										},
+										{
+											"name": "GET un client innexistant",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{url}}/clients/9999"
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"error\": \"404 NOT FOUND\"\n}"
+										}
+									]
+								},
+								{
+									"name": "GET clients search",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"keyword\":\"mar\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{url}}/clients"
+									},
+									"response": [
+										{
+											"name": "GET clients search admin et employé",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"keyword\":\"mar\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "[\n    {\n        \"id\": 1,\n        \"nom\": \"Durand\",\n        \"prénom\": \"Marie\",\n        \"email\": \"marie.durand@gmail.com\",\n        \"numéroTéléphone\": \"514-555-1234\",\n        \"addresse\": \"123 rue Sainte-Catherine\",\n        \"numéroPassport\": \"M12345678\",\n        \"préférencesRepas\": [\n            \"végétarien\",\n            \"sans gluten\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"Paris\",\n            \"Rome\"\n        ]\n    },\n    {\n        \"id\": 2,\n        \"nom\": \"Martin\",\n        \"prénom\": \"Jean\",\n        \"email\": \"jean.martin@yahoo.com\",\n        \"numéroTéléphone\": \"514-777-9876\",\n        \"addresse\": \"456 avenue Mont-Royal\",\n        \"numéroPassport\": \"J98765432\",\n        \"préférencesRepas\": [\n            \"carnivore\",\n            \"halal\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"New York\",\n            \"Tokyo\"\n        ]\n    }\n]"
+										},
+										{
+											"name": "GET clients search public",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"keyword\":\"rob\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients"
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"error\": \"401 UNAUTHORIZED\"\n}"
+										},
+										{
+											"name": "GET clients search aucun résultat admin employé",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"keyword\":\"bo\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": null,
+											"header": null,
+											"cookie": [],
+											"body": "[]"
+										}
+									]
+								},
+								{
+									"name": "POST clients",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": "{{url}}/clients"
+									},
+									"response": [
+										{
+											"name": "POST clients",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"nom\": \"Cabrel\",\r\n    \"prénom\": \"Teddy\",\r\n    \"email\": \"teddybear@gmail.com\",\r\n    \"numéroTéléphone\": \"514-888-1264\",\r\n    \"addresse\": \"123 rue Sainte-Catherine\",\r\n    \"numéroPassport\": \"N123HHl2\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients"
+											},
+											"status": "Created",
+											"code": 201,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"id\": 4,\n    \"nom\": \"Cabrel\",\n    \"prénom\": \"Teddy\",\n    \"email\": \"teddybear@gmail.com\",\n    \"numéroTéléphone\": \"514-888-1264\",\n    \"addresse\": \"123 rue Sainte-Catherine\",\n    \"numéroPassport\": \"N123HHl2\",\n    \"préférencesRepas\": [],\n    \"préférenceDeDestinantion\": []\n}"
+										}
+									]
+								},
+								{
+									"name": "PUT client",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"url": "{{url}}/clients/1"
+									},
+									"response": [
+										{
+											"name": "PUT client",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"nom\": \"Cabrel Ekeu\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients/4"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\r\n    \"id\": 4,\r\n    \"nom\": \"Cabrel Ekeu\",\r\n    \"prénom\": \"Teddy\",\r\n    \"email\": \"teddybear@gmail.com\",\r\n    \"numéroTéléphone\": \"514-888-1264\",\r\n    \"addresse\": \"123 rue Sainte-Catherine\",\r\n    \"numéroPassport\": \"N123HHl2\",\r\n    \"préférencesRepas\": [],\r\n    \"préférenceDeDestinantion\": []\r\n}"
+										}
+									]
+								},
+								{
+									"name": "DELETE client",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": "{{url}}/clients/1"
+									},
+									"response": [
+										{
+											"name": "DELETE client admin",
+											"originalRequest": {
+												"method": "DELETE",
+												"header": [],
+												"url": "{{url}}/clients/1"
+											},
+											"status": "No Content",
+											"code": 204,
+											"_postman_previewlanguage": null,
+											"header": null,
+											"cookie": [],
+											"body": null
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Client",
+							"item": [
+								{
+									"name": "GET clients",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "http://idefix.dti.crosemont.quebec:9039/clients/profile"
+									},
+									"response": [
+										{
+											"name": "GET client admin et employé",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"url": "{{url}}/clients"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "[\n    {\n        \"id\":1,\n        \"nom\": \"Durand\",\n        \"prénom\": \"Marie\",\n        \"email\": \"marie.durand@gmail.com\",\n        \"numéroTéléphone\": \"514-555-1234\",\n        \"addresse\": \"123 rue Sainte-Catherine\",\n        \"numéroPassport\": \"M12345678\",\n        \"préférencesRepas\": [\n            \"végétarien\", \"sans gluten\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"Paris\", \"Rome\"\n        ]\n    },\n    {\n        \"id\":2,\n        \"nom\": \"Martin\",\n        \"prénom\": \"Jean\",\n        \"email\": \"jean.martin@yahoo.com\",\n        \"numéroTéléphone\": \"514-777-9876\",\n        \"addresse\": \"456 avenue Mont-Royal\",\n        \"numéroPassport\": \"J98765432\",\n        \"préférencesRepas\": [\n            \"carnivore\", \"halal\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"New York\", \"Tokyo\"\n        ]\n    },\n    {\n        \"id\":3,\n        \"nom\": \"Lefebvre\",\n        \"prénom\": \"Sophie\",\n        \"email\": \"sophie.lefebvre@hotmail.com\",\n        \"numéroTéléphone\": \"438-888-4567\",\n        \"addresse\": \"789 boulevard René-Lévesque\",\n        \"numéroPassport\": \"S23456789\",\n        \"préférencesRepas\": [\n            \"végétalien\", \"cacher\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"Barcelone\", \"Sydney\"\n        ]\n    }\n]\n"
+										},
+										{
+											"name": "GET clients publique",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"url": "{{url}}/clients"
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\r\n    \"error\":\"401 UNAUTHORIZED\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "GET profile",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "http://idefix.dti.crosemont.quebec:9039/clients/profile"
+									},
+									"response": [
+										{
+											"name": "GET client admin et employé",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"url": "{{url}}/clients"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "[\n    {\n        \"id\":1,\n        \"nom\": \"Durand\",\n        \"prénom\": \"Marie\",\n        \"email\": \"marie.durand@gmail.com\",\n        \"numéroTéléphone\": \"514-555-1234\",\n        \"addresse\": \"123 rue Sainte-Catherine\",\n        \"numéroPassport\": \"M12345678\",\n        \"préférencesRepas\": [\n            \"végétarien\", \"sans gluten\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"Paris\", \"Rome\"\n        ]\n    },\n    {\n        \"id\":2,\n        \"nom\": \"Martin\",\n        \"prénom\": \"Jean\",\n        \"email\": \"jean.martin@yahoo.com\",\n        \"numéroTéléphone\": \"514-777-9876\",\n        \"addresse\": \"456 avenue Mont-Royal\",\n        \"numéroPassport\": \"J98765432\",\n        \"préférencesRepas\": [\n            \"carnivore\", \"halal\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"New York\", \"Tokyo\"\n        ]\n    },\n    {\n        \"id\":3,\n        \"nom\": \"Lefebvre\",\n        \"prénom\": \"Sophie\",\n        \"email\": \"sophie.lefebvre@hotmail.com\",\n        \"numéroTéléphone\": \"438-888-4567\",\n        \"addresse\": \"789 boulevard René-Lévesque\",\n        \"numéroPassport\": \"S23456789\",\n        \"préférencesRepas\": [\n            \"végétalien\", \"cacher\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"Barcelone\", \"Sydney\"\n        ]\n    }\n]\n"
+										},
+										{
+											"name": "GET clients publique",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"url": "{{url}}/clients"
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\r\n    \"error\":\"401 UNAUTHORIZED\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "GET un client par id son nom",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "{{url}}/clients/1"
+									},
+									"response": [
+										{
+											"name": "GET un client admin et employé",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{url}}/clients/1"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"id\": 1,\n    \"nom\": \"Durand\",\n    \"prénom\": \"Marie\",\n    \"email\": \"marie.durand@gmail.com\",\n    \"numéroTéléphone\": \"514-555-1234\",\n    \"addresse\": \"123 rue Sainte-Catherine\",\n    \"numéroPassport\": \"M12345678\",\n    \"préférencesRepas\": [\n        \"végétarien\",\n        \"sans gluten\"\n    ],\n    \"préférenceDeDestinantion\": [\n        \"Paris\",\n        \"Rome\"\n    ]\n}"
+										},
+										{
+											"name": "GET un client publique",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{url}}/clients/1"
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"error\":\"401 UNAUTHORIZED\"\n}"
+										},
+										{
+											"name": "GET un client innexistant",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{url}}/clients/9999"
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"error\": \"404 NOT FOUND\"\n}"
+										}
+									]
+								},
+								{
+									"name": "GET clients par motCle",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"keyword\":\"mar\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}/clients?motCle=ma",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"clients"
+											],
+											"query": [
+												{
+													"key": "motCle",
+													"value": "ma"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "GET clients search admin et employé",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"keyword\":\"mar\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "[\n    {\n        \"id\": 1,\n        \"nom\": \"Durand\",\n        \"prénom\": \"Marie\",\n        \"email\": \"marie.durand@gmail.com\",\n        \"numéroTéléphone\": \"514-555-1234\",\n        \"addresse\": \"123 rue Sainte-Catherine\",\n        \"numéroPassport\": \"M12345678\",\n        \"préférencesRepas\": [\n            \"végétarien\",\n            \"sans gluten\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"Paris\",\n            \"Rome\"\n        ]\n    },\n    {\n        \"id\": 2,\n        \"nom\": \"Martin\",\n        \"prénom\": \"Jean\",\n        \"email\": \"jean.martin@yahoo.com\",\n        \"numéroTéléphone\": \"514-777-9876\",\n        \"addresse\": \"456 avenue Mont-Royal\",\n        \"numéroPassport\": \"J98765432\",\n        \"préférencesRepas\": [\n            \"carnivore\",\n            \"halal\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"New York\",\n            \"Tokyo\"\n        ]\n    }\n]"
+										},
+										{
+											"name": "GET clients search public",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"keyword\":\"rob\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients"
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"error\": \"401 UNAUTHORIZED\"\n}"
+										},
+										{
+											"name": "GET clients search aucun résultat admin employé",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"keyword\":\"bo\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": null,
+											"header": null,
+											"cookie": [],
+											"body": "[]"
+										}
+									]
+								},
+								{
+									"name": "POST clients",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": "{{url}}/clients"
+									},
+									"response": [
+										{
+											"name": "POST clients",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"nom\": \"Cabrel\",\r\n    \"prénom\": \"Teddy\",\r\n    \"email\": \"teddybear@gmail.com\",\r\n    \"numéroTéléphone\": \"514-888-1264\",\r\n    \"addresse\": \"123 rue Sainte-Catherine\",\r\n    \"numéroPassport\": \"N123HHl2\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients"
+											},
+											"status": "Created",
+											"code": 201,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"id\": 4,\n    \"nom\": \"Cabrel\",\n    \"prénom\": \"Teddy\",\n    \"email\": \"teddybear@gmail.com\",\n    \"numéroTéléphone\": \"514-888-1264\",\n    \"addresse\": \"123 rue Sainte-Catherine\",\n    \"numéroPassport\": \"N123HHl2\",\n    \"préférencesRepas\": [],\n    \"préférenceDeDestinantion\": []\n}"
+										}
+									]
+								},
+								{
+									"name": "PUT client Copy",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"nom\":\"Bob\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "http://idefix.dti.crosemont.quebec:9039/clients/12"
+									},
+									"response": [
+										{
+											"name": "PUT client",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"nom\": \"Cabrel Ekeu\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients/4"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\r\n    \"id\": 4,\r\n    \"nom\": \"Cabrel Ekeu\",\r\n    \"prénom\": \"Teddy\",\r\n    \"email\": \"teddybear@gmail.com\",\r\n    \"numéroTéléphone\": \"514-888-1264\",\r\n    \"addresse\": \"123 rue Sainte-Catherine\",\r\n    \"numéroPassport\": \"N123HHl2\",\r\n    \"préférencesRepas\": [],\r\n    \"préférenceDeDestinantion\": []\r\n}"
+										}
+									]
+								},
+								{
+									"name": "DELETE client Copy",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": "http://idefix.dti.crosemont.quebec:9039/clients/1"
+									},
+									"response": [
+										{
+											"name": "DELETE client admin",
+											"originalRequest": {
+												"method": "DELETE",
+												"header": [],
+												"url": "{{url}}/clients/1"
+											},
+											"status": "No Content",
+											"code": 204,
+											"_postman_previewlanguage": null,
+											"header": null,
+											"cookie": [],
+											"body": null
+										}
+									]
+								}
+							],
+							"auth": {
+								"type": "oauth2",
+								"oauth2": {
+									"tokenRequestParams": [
+										{
+											"key": "audience",
+											"value": "https://airres.crosemont/",
+											"enabled": true,
+											"send_as": "request_body"
+										}
+									],
+									"accessTokenUrl": "https://dev-7ld81pbss3pk7sic.us.auth0.com/oauth/token",
+									"clientSecret": "kVaF5YkIfk09OOyeSaYPNCg8gJy3jHXYKxTkTwAAx7ZmBbaXMiyu1DpMNgi6cais",
+									"clientId": "hNMkiqFnrPfF6ja7uHM19yhtGcOg9Wba",
+									"password": "Password123!",
+									"username": "mc.roy@email.com",
+									"grant_type": "password_credentials",
+									"scope": "openid profile",
+									"authUrl": "https://dev-04686zg08lwoz6jr.us.auth0.com/oauth/token",
+									"addTokenTo": "header"
+								}
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "Employé",
+							"item": [
+								{
+									"name": "GET clients",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "{{url}}/clients/profile"
+									},
+									"response": [
+										{
+											"name": "GET client admin et employé",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"url": "{{url}}/clients"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "[\n    {\n        \"id\":1,\n        \"nom\": \"Durand\",\n        \"prénom\": \"Marie\",\n        \"email\": \"marie.durand@gmail.com\",\n        \"numéroTéléphone\": \"514-555-1234\",\n        \"addresse\": \"123 rue Sainte-Catherine\",\n        \"numéroPassport\": \"M12345678\",\n        \"préférencesRepas\": [\n            \"végétarien\", \"sans gluten\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"Paris\", \"Rome\"\n        ]\n    },\n    {\n        \"id\":2,\n        \"nom\": \"Martin\",\n        \"prénom\": \"Jean\",\n        \"email\": \"jean.martin@yahoo.com\",\n        \"numéroTéléphone\": \"514-777-9876\",\n        \"addresse\": \"456 avenue Mont-Royal\",\n        \"numéroPassport\": \"J98765432\",\n        \"préférencesRepas\": [\n            \"carnivore\", \"halal\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"New York\", \"Tokyo\"\n        ]\n    },\n    {\n        \"id\":3,\n        \"nom\": \"Lefebvre\",\n        \"prénom\": \"Sophie\",\n        \"email\": \"sophie.lefebvre@hotmail.com\",\n        \"numéroTéléphone\": \"438-888-4567\",\n        \"addresse\": \"789 boulevard René-Lévesque\",\n        \"numéroPassport\": \"S23456789\",\n        \"préférencesRepas\": [\n            \"végétalien\", \"cacher\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"Barcelone\", \"Sydney\"\n        ]\n    }\n]\n"
+										},
+										{
+											"name": "GET clients publique",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"url": "{{url}}/clients"
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\r\n    \"error\":\"401 UNAUTHORIZED\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "GET un client par id son nom",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "{{url}}/clients/1"
+									},
+									"response": [
+										{
+											"name": "GET un client admin et employé",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{url}}/clients/1"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"id\": 1,\n    \"nom\": \"Durand\",\n    \"prénom\": \"Marie\",\n    \"email\": \"marie.durand@gmail.com\",\n    \"numéroTéléphone\": \"514-555-1234\",\n    \"addresse\": \"123 rue Sainte-Catherine\",\n    \"numéroPassport\": \"M12345678\",\n    \"préférencesRepas\": [\n        \"végétarien\",\n        \"sans gluten\"\n    ],\n    \"préférenceDeDestinantion\": [\n        \"Paris\",\n        \"Rome\"\n    ]\n}"
+										},
+										{
+											"name": "GET un client publique",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{url}}/clients/1"
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"error\":\"401 UNAUTHORIZED\"\n}"
+										},
+										{
+											"name": "GET un client innexistant",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{url}}/clients/9999"
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"error\": \"404 NOT FOUND\"\n}"
+										}
+									]
+								},
+								{
+									"name": "GET clients par motCle",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"keyword\":\"mar\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}/clients?motCle=ma",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"clients"
+											],
+											"query": [
+												{
+													"key": "motCle",
+													"value": "ma"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "GET clients search admin et employé",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"keyword\":\"mar\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "[\n    {\n        \"id\": 1,\n        \"nom\": \"Durand\",\n        \"prénom\": \"Marie\",\n        \"email\": \"marie.durand@gmail.com\",\n        \"numéroTéléphone\": \"514-555-1234\",\n        \"addresse\": \"123 rue Sainte-Catherine\",\n        \"numéroPassport\": \"M12345678\",\n        \"préférencesRepas\": [\n            \"végétarien\",\n            \"sans gluten\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"Paris\",\n            \"Rome\"\n        ]\n    },\n    {\n        \"id\": 2,\n        \"nom\": \"Martin\",\n        \"prénom\": \"Jean\",\n        \"email\": \"jean.martin@yahoo.com\",\n        \"numéroTéléphone\": \"514-777-9876\",\n        \"addresse\": \"456 avenue Mont-Royal\",\n        \"numéroPassport\": \"J98765432\",\n        \"préférencesRepas\": [\n            \"carnivore\",\n            \"halal\"\n        ],\n        \"préférenceDeDestinantion\": [\n            \"New York\",\n            \"Tokyo\"\n        ]\n    }\n]"
+										},
+										{
+											"name": "GET clients search public",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"keyword\":\"rob\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients"
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"error\": \"401 UNAUTHORIZED\"\n}"
+										},
+										{
+											"name": "GET clients search aucun résultat admin employé",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"keyword\":\"bo\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": null,
+											"header": null,
+											"cookie": [],
+											"body": "[]"
+										}
+									]
+								},
+								{
+									"name": "POST clients",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": "{{url}}/clients"
+									},
+									"response": [
+										{
+											"name": "POST clients",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"nom\": \"Cabrel\",\r\n    \"prénom\": \"Teddy\",\r\n    \"email\": \"teddybear@gmail.com\",\r\n    \"numéroTéléphone\": \"514-888-1264\",\r\n    \"addresse\": \"123 rue Sainte-Catherine\",\r\n    \"numéroPassport\": \"N123HHl2\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients"
+											},
+											"status": "Created",
+											"code": 201,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"id\": 4,\n    \"nom\": \"Cabrel\",\n    \"prénom\": \"Teddy\",\n    \"email\": \"teddybear@gmail.com\",\n    \"numéroTéléphone\": \"514-888-1264\",\n    \"addresse\": \"123 rue Sainte-Catherine\",\n    \"numéroPassport\": \"N123HHl2\",\n    \"préférencesRepas\": [],\n    \"préférenceDeDestinantion\": []\n}"
+										}
+									]
+								},
+								{
+									"name": "PUT client Copy",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"nom\":\"Bob\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{url}}/clients/12"
+									},
+									"response": [
+										{
+											"name": "PUT client",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"nom\": \"Cabrel Ekeu\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{url}}/clients/4"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\r\n    \"id\": 4,\r\n    \"nom\": \"Cabrel Ekeu\",\r\n    \"prénom\": \"Teddy\",\r\n    \"email\": \"teddybear@gmail.com\",\r\n    \"numéroTéléphone\": \"514-888-1264\",\r\n    \"addresse\": \"123 rue Sainte-Catherine\",\r\n    \"numéroPassport\": \"N123HHl2\",\r\n    \"préférencesRepas\": [],\r\n    \"préférenceDeDestinantion\": []\r\n}"
+										}
+									]
+								},
+								{
+									"name": "DELETE client Copy",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": "{{url}}/clients/1"
+									},
+									"response": [
+										{
+											"name": "DELETE client admin",
+											"originalRequest": {
+												"method": "DELETE",
+												"header": [],
+												"url": "{{url}}/clients/1"
+											},
+											"status": "No Content",
+											"code": 204,
+											"_postman_previewlanguage": null,
+											"header": null,
+											"cookie": [],
+											"body": null
+										}
+									]
+								}
+							],
+							"auth": {
+								"type": "oauth2",
+								"oauth2": {
+									"username": "pierre.bernard@email.com",
+									"tokenRequestParams": [
+										{
+											"key": "audience",
+											"value": "https://airres.crosemont/",
+											"enabled": true,
+											"send_as": "request_body"
+										}
+									],
+									"accessTokenUrl": "https://dev-7ld81pbss3pk7sic.us.auth0.com/oauth/token",
+									"clientSecret": "kVaF5YkIfk09OOyeSaYPNCg8gJy3jHXYKxTkTwAAx7ZmBbaXMiyu1DpMNgi6cais",
+									"clientId": "hNMkiqFnrPfF6ja7uHM19yhtGcOg9Wba",
+									"password": "Password123!",
+									"grant_type": "password_credentials",
+									"scope": "openid profile",
+									"authUrl": "https://dev-04686zg08lwoz6jr.us.auth0.com/oauth/token",
+									"addTokenTo": "header"
+								}
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						}
+					],
+					"auth": {
+						"type": "noauth"
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Vol",
+					"item": [
+						{
+							"name": "Publique",
+							"item": [
+								{
+									"name": "get vols",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "{{url}}/vols"
+									},
+									"response": []
+								},
+								{
+									"name": "get vols/{id} date avant aujourd'hui",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "{{url}}/vols/1"
+									},
+									"response": []
+								},
+								{
+									"name": "get vols/{id} date apres aujourd'hui",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "{{url}}/vols/4649"
+									},
+									"response": []
+								},
+								{
+									"name": "get vols par parametre date avant ajourd'hui",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/vols?dateDebut=2024-12-04T10:00:00&aeroportDebut=CDG&aeroportFin=DXB",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"vols"
+											],
+											"query": [
+												{
+													"key": "dateDebut",
+													"value": "2024-12-04T10:00:00"
+												},
+												{
+													"key": "aeroportDebut",
+													"value": "CDG"
+												},
+												{
+													"key": "aeroportFin",
+													"value": "DXB"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get vols par parametre date apres ajourd'hui",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/vols?dateDebut=2024-12-22T13:00:00&aeroportDebut=AMS&aeroportFin=YUL",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"vols"
+											],
+											"query": [
+												{
+													"key": "dateDebut",
+													"value": "2024-12-22T13:00:00"
+												},
+												{
+													"key": "aeroportDebut",
+													"value": "AMS"
+												},
+												{
+													"key": "aeroportFin",
+													"value": "YUL"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "post vols",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"dateDepart\": \"2025-12-10T14:30:00\",\r\n  \"dateArrivee\": \"2025-12-10T18:45:00\",\r\n  \"avion\": {\r\n    \"id\": 3   \r\n  },\r\n  \"prixParClasse\": {\r\n    \"économique\": 250,\r\n    \"affaire\": 700,\r\n    \"première\": 1500\r\n  },\r\n  \"poidsMaxBag\": 25,\r\n  \"trajet\": {\r\n    \"id\": 5 \r\n  },\r\n  \r\n  \"duree\": \"PT12H\",\r\n  \"sièges\": []\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{url}}/vols"
+									},
+									"response": []
+								},
+								{
+									"name": "put vols/{id}",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"prixParClasse\": {\r\n    \"économique\": 250,\r\n    \"affaire\": 700,\r\n    \"première\": 1500\r\n  }\r\n   }",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols/1"
+									},
+									"response": []
+								},
+								{
+									"name": "delete vol",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols/1"
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "noauth"
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "Client",
+							"item": [
+								{
+									"name": "get vols",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "http://idefix.dti.crosemont.quebec:9039/vols"
+									},
+									"response": []
+								},
+								{
+									"name": "get vols/{id} date avant aujourd'hui",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols/1"
+									},
+									"response": []
+								},
+								{
+									"name": "get vols/{id} date apres aujourd'hui",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "http://idefix.dti.crosemont.quebec:9039/vols/4649"
+									},
+									"response": []
+								},
+								{
+									"name": "get vols par parametre date avant ajourd'hui",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://idefix.dti.crosemont.quebec:9051/vols?dateDebut=2024-12-04T10:00:00&aeroportDebut=CDG&aeroportFin=DXB",
+											"protocol": "http",
+											"host": [
+												"idefix",
+												"dti",
+												"crosemont",
+												"quebec"
+											],
+											"port": "9051",
+											"path": [
+												"vols"
+											],
+											"query": [
+												{
+													"key": "dateDebut",
+													"value": "2024-12-04T10:00:00"
+												},
+												{
+													"key": "aeroportDebut",
+													"value": "CDG"
+												},
+												{
+													"key": "aeroportFin",
+													"value": "DXB"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get vols par parametre date apres ajourd'hui",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://idefix.dti.crosemont.quebec:9039/vols?dateDebut=2024-12-22T13:00:00&aeroportDebut=AMS&aeroportFin=YUL",
+											"protocol": "http",
+											"host": [
+												"idefix",
+												"dti",
+												"crosemont",
+												"quebec"
+											],
+											"port": "9039",
+											"path": [
+												"vols"
+											],
+											"query": [
+												{
+													"key": "dateDebut",
+													"value": "2024-12-22T13:00:00"
+												},
+												{
+													"key": "aeroportDebut",
+													"value": "AMS"
+												},
+												{
+													"key": "aeroportFin",
+													"value": "YUL"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "post vols",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"dateDepart\": \"2025-12-10T14:30:00\",\r\n  \"dateArrivee\": \"2025-12-10T18:45:00\",\r\n  \"avion\": {\r\n    \"id\": 3   \r\n  },\r\n  \"prixParClasse\": {\r\n    \"économique\": 250,\r\n    \"affaire\": 700,\r\n    \"première\": 1500\r\n  },\r\n  \"poidsMaxBag\": 25,\r\n  \"trajet\": {\r\n    \"id\": 5 \r\n  },\r\n  \r\n  \"duree\": \"PT12H\",\r\n  \"sièges\": []\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "http://idefix.dti.crosemont.quebec:9039/vols"
+									},
+									"response": []
+								},
+								{
+									"name": "put vols/{id}",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"prixParClasse\": {\r\n    \"économique\": 250,\r\n    \"affaire\": 700,\r\n    \"première\": 1500\r\n  }\r\n   }",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols/1"
+									},
+									"response": []
+								},
+								{
+									"name": "delete vol",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols/1"
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "oauth2",
+								"oauth2": {
+									"tokenRequestParams": [
+										{
+											"key": "audience",
+											"value": "https://airres.crosemont/",
+											"enabled": true,
+											"send_as": "request_body"
+										}
+									],
+									"username": "mc.roy@email.com",
+									"password": "Password123!",
+									"clientSecret": "kVaF5YkIfk09OOyeSaYPNCg8gJy3jHXYKxTkTwAAx7ZmBbaXMiyu1DpMNgi6cais",
+									"clientId": "hNMkiqFnrPfF6ja7uHM19yhtGcOg9Wba",
+									"accessTokenUrl": "https://dev-7ld81pbss3pk7sic.us.auth0.com/oauth/token",
+									"grant_type": "password_credentials",
+									"tokenName": "Client",
+									"addTokenTo": "header"
+								}
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "Employé",
+							"item": [
+								{
+									"name": "get vols",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "http://idefix.dti.crosemont.quebec:9039/vols"
+									},
+									"response": []
+								},
+								{
+									"name": "get vols/{id} date avant aujourd'hui",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols/7"
+									},
+									"response": []
+								},
+								{
+									"name": "get vols/{id} date apres aujourd'hui",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols/4649"
+									},
+									"response": []
+								},
+								{
+									"name": "get vols par parametre date avant ajourd'hui",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://idefix.dti.crosemont.quebec:9051/vols?dateDebut=2024-12-04T10:00:00&aeroportDebut=CDG&aeroportFin=DXB",
+											"protocol": "http",
+											"host": [
+												"idefix",
+												"dti",
+												"crosemont",
+												"quebec"
+											],
+											"port": "9051",
+											"path": [
+												"vols"
+											],
+											"query": [
+												{
+													"key": "dateDebut",
+													"value": "2024-12-04T10:00:00"
+												},
+												{
+													"key": "aeroportDebut",
+													"value": "CDG"
+												},
+												{
+													"key": "aeroportFin",
+													"value": "DXB"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get vols par parametre date apres ajourd'hui",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://idefix.dti.crosemont.quebec:9051/vols?dateDebut=2025-12-04T10:00:00&aeroportDebut=CDG&aeroportFin=DXB",
+											"protocol": "http",
+											"host": [
+												"idefix",
+												"dti",
+												"crosemont",
+												"quebec"
+											],
+											"port": "9051",
+											"path": [
+												"vols"
+											],
+											"query": [
+												{
+													"key": "dateDebut",
+													"value": "2025-12-04T10:00:00"
+												},
+												{
+													"key": "aeroportDebut",
+													"value": "CDG"
+												},
+												{
+													"key": "aeroportFin",
+													"value": "DXB"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Ajouter un vol",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"dateDepart\": \"2024-12-28T05:10:00\",\r\n  \"dateArrivee\": \"2024-12-29T11:12:00\",\r\n  \"avion\": {\r\n    \"id\": 1,\r\n    \"type\": \"Airbus A320\"\r\n  },\r\n  \"prixParClasse\": {\r\n    \"économique\": 638.29,\r\n    \"affaire\": 1914.87,\r\n    \"première\": 3829.74\r\n  },\r\n  \"poidsMaxBag\": 23,\r\n  \"trajet\": {\r\n    \"id\": 51,\r\n    \"numéroTrajet\": \"DXB-CDG-051\",\r\n    \"aéroportDébut\": {\r\n      \"id\": 6,\r\n      \"code\": \"DXB\",\r\n      \"nom\": \"Dubai International\",\r\n      \"ville\": {\r\n        \"id\": 5,\r\n        \"nom\": \"Dubai\",\r\n        \"pays\": \"AE\",\r\n        \"url_photo\": \"https://images.unsplash.com/photo-1518684079-3c830dcef090?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D\"\r\n      },\r\n      \"adresse\": \"Dubai - Émirats arabes unis\"\r\n    },\r\n    \"aéroportFin\": {\r\n      \"id\": 1,\r\n      \"code\": \"CDG\",\r\n      \"nom\": \"Charles de Gaulle\",\r\n      \"ville\": {\r\n        \"id\": 1,\r\n        \"nom\": \"Paris\",\r\n        \"pays\": \"FR\",\r\n        \"url_photo\": \"https://plus.unsplash.com/premium_photo-1661919210043-fd847a58522d?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D\"\r\n      },\r\n      \"adresse\": \"Route de l'Aéroport, 95700 Roissy-en-France\"\r\n    }\r\n  },\r\n  \r\n  \"duree\": \"PT6H12M\",\r\n  \"sièges\": []\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols"
+									},
+									"response": []
+								},
+								{
+									"name": "Ajouter le meme vol",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"dateDepart\": \"2024-12-28T05:00:00\",\r\n  \"dateArrivee\": \"2024-12-29T11:12:00\",\r\n  \"avion\": {\r\n    \"id\": 1,\r\n    \"type\": \"Airbus A320\"\r\n  },\r\n  \"prixParClasse\": {\r\n    \"économique\": 638.29,\r\n    \"affaire\": 1914.87,\r\n    \"première\": 3829.74\r\n  },\r\n  \"poidsMaxBag\": 23,\r\n  \"trajet\": {\r\n    \"id\": 51,\r\n    \"numéroTrajet\": \"DXB-CDG-051\",\r\n    \"aéroportDébut\": {\r\n      \"id\": 6,\r\n      \"code\": \"DXB\",\r\n      \"nom\": \"Dubai International\",\r\n      \"ville\": {\r\n        \"id\": 5,\r\n        \"nom\": \"Dubai\",\r\n        \"pays\": \"AE\",\r\n        \"url_photo\": \"https://images.unsplash.com/photo-1518684079-3c830dcef090?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D\"\r\n      },\r\n      \"adresse\": \"Dubai - Émirats arabes unis\"\r\n    },\r\n    \"aéroportFin\": {\r\n      \"id\": 1,\r\n      \"code\": \"CDG\",\r\n      \"nom\": \"Charles de Gaulle\",\r\n      \"ville\": {\r\n        \"id\": 1,\r\n        \"nom\": \"Paris\",\r\n        \"pays\": \"FR\",\r\n        \"url_photo\": \"https://plus.unsplash.com/premium_photo-1661919210043-fd847a58522d?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D\"\r\n      },\r\n      \"adresse\": \"Route de l'Aéroport, 95700 Roissy-en-France\"\r\n    }\r\n  },\r\n  \r\n  \"duree\": \"PT6H12M\",\r\n  \"sièges\": []\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols"
+									},
+									"response": []
+								},
+								{
+									"name": "Get les Sieges du nouveau vol crée",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols/id/sièges"
+									},
+									"response": []
+								},
+								{
+									"name": "Ajouter vol avec date de depart avant aujourd'hui",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"dateDepart\": \"2024-11-12T05:00:00\",\r\n  \"dateArrivee\": \"2024-11-29T11:12:00\",\r\n  \"avion\": {\r\n    \"id\": 1,\r\n    \"type\": \"Airbus A320\"\r\n  },\r\n  \"prixParClasse\": {\r\n    \"économique\": 638.29,\r\n    \"affaire\": 1914.87,\r\n    \"première\": 3829.74\r\n  },\r\n  \"poidsMaxBag\": 23,\r\n  \"trajet\": {\r\n    \"id\": 51,\r\n    \"numéroTrajet\": \"DXB-CDG-051\",\r\n    \"aéroportDébut\": {\r\n      \"id\": 6,\r\n      \"code\": \"DXB\",\r\n      \"nom\": \"Dubai International\",\r\n      \"ville\": {\r\n        \"id\": 5,\r\n        \"nom\": \"Dubai\",\r\n        \"pays\": \"AE\",\r\n        \"url_photo\": \"https://images.unsplash.com/photo-1518684079-3c830dcef090?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D\"\r\n      },\r\n      \"adresse\": \"Dubai - Émirats arabes unis\"\r\n    },\r\n    \"aéroportFin\": {\r\n      \"id\": 1,\r\n      \"code\": \"CDG\",\r\n      \"nom\": \"Charles de Gaulle\",\r\n      \"ville\": {\r\n        \"id\": 1,\r\n        \"nom\": \"Paris\",\r\n        \"pays\": \"FR\",\r\n        \"url_photo\": \"https://plus.unsplash.com/premium_photo-1661919210043-fd847a58522d?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D\"\r\n      },\r\n      \"adresse\": \"Route de l'Aéroport, 95700 Roissy-en-France\"\r\n    }\r\n  },\r\n  \r\n  \"duree\": \"PT6H12M\",\r\n  \"sièges\": []\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols"
+									},
+									"response": []
+								},
+								{
+									"name": "Ajouter un vol avec une mise a jour de statut de vol",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"id\": 4649,\r\n  \"dateDepart\": \"2024-12-20T13:00:00\",\r\n  \"dateArrivee\": \"2024-12-20T13:35:00\",\r\n  \"avion\": {\r\n    \"id\": 6,\r\n    \"type\": \"Boeing 777\"\r\n  },\r\n  \"prixParClasse\": {\r\n    \"économique\": 639.19,\r\n    \"affaire\": 1917.57,\r\n    \"première\": 3835.14\r\n  },\r\n  \"poidsMaxBag\": 23,\r\n  \"trajet\": {\r\n    \"id\": 101,\r\n    \"numéroTrajet\": \"YUL-CDG-101\",\r\n    \"aéroportDébut\": {\r\n      \"id\": 11,\r\n      \"code\": \"YUL\",\r\n      \"nom\": \"Pierre-Elliott-Trudeau\",\r\n      \"ville\": {\r\n        \"id\": 11,\r\n        \"nom\": \"Montréal\",\r\n        \"pays\": \"CA\",\r\n        \"url_photo\": \"https://images.unsplash.com/photo-1715191307694-ee4e57b473d6?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D\"\r\n      },\r\n      \"adresse\": \"975 Romeo-Vachon Blvd N, Dorval, QC H4Y 1H1, Canada\"\r\n    },\r\n    \"aéroportFin\": {\r\n      \"id\": 1,\r\n      \"code\": \"CDG\",\r\n      \"nom\": \"Charles de Gaulle\",\r\n      \"ville\": {\r\n        \"id\": 1,\r\n        \"nom\": \"Paris\",\r\n        \"pays\": \"FR\",\r\n        \"url_photo\": \"https://plus.unsplash.com/premium_photo-1661919210043-fd847a58522d?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D\"\r\n      },\r\n      \"adresse\": \"Route de l'Aéroport, 95700 Roissy-en-France\"\r\n    }\r\n  },\r\n  \"duree\": \"PT7H35M\",\r\n  \"sièges\": []\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols"
+									},
+									"response": []
+								},
+								{
+									"name": "Modifie un vol",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \r\n  \"avion\": {\r\n    \"id\": 2\r\n  },\r\n   \"trajet\": {\r\n        \"id\": 98\r\n  }\r\n   }",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "http://idefix.dti.crosemont.quebec:9039/vols/4649"
+									},
+									"response": []
+								},
+								{
+									"name": "Modifie un vol avec un id de trajet inexistant",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \r\n   \"trajet\": {\r\n        \"id\": 200\r\n  }\r\n   }",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols/4649"
+									},
+									"response": []
+								},
+								{
+									"name": "Modifie un date de d'arivée avant date de départ",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"dateDepart\": \"2024-12-22T13:00:00\",\r\n  \"dateArrivee\": \"2024-12-21T20:35:00\"\r\n\r\n  }",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols/4649"
+									},
+									"response": []
+								},
+								{
+									"name": "Modifie les prix par classe pour avec un validation des écarts de prix",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"prixParClasse\": {\r\n    \"économique\": 2000.19,\r\n    \"affaire\": 1917.57,\r\n    \"première\": 3835.14\r\n\r\n  }\r\n    }",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "http://idefix.dti.crosemont.quebec:9051/vols/4649"
+									},
+									"response": []
+								},
+								{
+									"name": "Supprimer un vol",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": "http://idefix.dti.crosemont.quebec:9039/vols/6"
+									},
+									"response": []
+								},
+								{
+									"name": "Supprimer un vol inxesistant",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": "http://idefix.dti.crosemont.quebec:9039/vols/7000"
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "oauth2",
+								"oauth2": {
+									"scope": "openid profile",
+									"password": "Password123!",
+									"username": "pierre.bernard@email.com",
+									"clientSecret": "kVaF5YkIfk09OOyeSaYPNCg8gJy3jHXYKxTkTwAAx7ZmBbaXMiyu1DpMNgi6cais",
+									"clientId": "hNMkiqFnrPfF6ja7uHM19yhtGcOg9Wba",
+									"accessTokenUrl": "https://dev-7ld81pbss3pk7sic.us.auth0.com/oauth/token",
+									"tokenRequestParams": [
+										{
+											"key": "audience",
+											"value": "https://airres.crosemont/",
+											"enabled": true,
+											"send_as": "request_body"
+										}
+									],
+									"grant_type": "password_credentials",
+									"addTokenTo": "header"
+								}
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Réservation",
+					"item": [
+						{
+							"name": "Get/Réservations",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/réservations"
+							},
+							"response": [
+								{
+									"name": "Get/Réservations",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": "{{url}}/réservations"
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": null,
+									"header": null,
+									"cookie": [],
+									"body": null
+								},
+								{
+									"name": "Get/Réservations",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": "{{url}}/réservations"
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [],
+									"body": "[\r\n    {\r\n        \"numeroReservation\": \"1234\",\r\n        \"numeroVol\": \"RC23\",\r\n        \"passagerNom\": \"Miller\",\r\n        \"passagerPrenom\": \"Daniel\",\r\n        \"passagerPassport\": \"NR123\",\r\n        \"typeClasse\" : \"Premium\",\r\n        \"siegeSelectionne\": \"2B\",\r\n        \"bagages\": \r\n        [\r\n            {\r\n                \"type\": \"checked\",\r\n                \"poids\": 20,\r\n                \"dimensions\": \"50x40x20\"\r\n            },\r\n            {\r\n                \"type\": \"carry_on\",\r\n                \"poids\": 7,\r\n                \"dimensions\": \"30x20x10\"\r\n            }\r\n        ],\r\n        \"repas\": \"Vegetarian\",\r\n        \"email\": \"danny.C@gmail.com\"\r\n    },\r\n\r\n        {\r\n        \"numeroReservation\": \"934\",\r\n        \"numeroVol\": \"LS53\",\r\n        \"passagerNom\": \"Mister\",\r\n        \"passagerPrenom\": \"Jack\",\r\n        \"passagerPassport\": \"N013\",\r\n        \"typeClasse\" : \"Premium\",\r\n        \"siegeSelectionne\": \"2B\",\r\n        \"bagages\": \r\n        [\r\n            {\r\n                \"type\": \"checked\",\r\n                \"poids\": 20,\r\n                \"dimensions\": \"50x40x20\"\r\n            },\r\n            {\r\n                \"type\": \"carry_on\",\r\n                \"poids\": 7,\r\n                \"dimensions\": \"30x20x10\"\r\n            }\r\n        ],\r\n        \"repas\": \"Vegetarian\",\r\n        \"email\": \"Jack.M@gmail.com\"\r\n    }\r\n]\r\n"
+								}
+							]
+						},
+						{
+							"name": "Get/Réservation/numéroRéservation",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/réservation?numéroRéservation=934",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"réservation"
+									],
+									"query": [
+										{
+											"key": "numéroRéservation",
+											"value": "934"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get/Réservations/934",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": "{{url}}/Réservation/934"
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [],
+									"body": "{\r\n    \"numeroReservation\": \"934\",\r\n    \"numeroVol\": \"LS53\",\r\n    \"passagerNom\": \"Mister\",\r\n    \"passagerPrenom\": \"Jack\",\r\n    \"passagerPassport\": \"N013\",\r\n    \"typeClasse\" : \"Premium\",\r\n    \"siegeSelectionne\": \"2B\",\r\n    \"bagages\": \r\n    [\r\n        {\r\n            \"type\": \"checked\",\r\n            \"poids\": 20,\r\n            \"dimensions\": \"50x40x20\"\r\n        },\r\n        {\r\n            \"type\": \"carry_on\",\r\n            \"poids\": 7,\r\n            \"dimensions\": \"30x20x10\"\r\n        }\r\n    ],\r\n    \"repas\": \"Vegetarian\",\r\n    \"email\": \"Jack.M@gmail.com\"\r\n}"
+								}
+							]
+						},
+						{
+							"name": "Reservation Client Economique",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"numeroVol\": \"1234\",\r\n  \"passagerNom\": \"Johnson\",\r\n  \"passagerPrenom\": \"Alex\",\r\n  \"passagerPassport\": \"RC127RT56\",\r\n  \"typeClasse\" : \"Economique\",\r\n  \"siegeSelectionne\": \"12C\",\r\n   \"bagages\": [\r\n  {\r\n    \"type\": \"carry_on\",\r\n    \"poids\": 7,\r\n    \"dimensions\": \"30x20x10\"\r\n  }\r\n],\r\n   \"repas\": \"\",\r\n  \"email\": \"alexJ@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{url}}/réservations/1"
+							},
+							"response": [
+								{
+									"name": "POST Reservation Client Standard",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"numeroVol\": \"1234\",\r\n  \"passagerNom\": \"Alex\",\r\n  \"passagerPrenom\": \"Johnson\",\r\n  \"passagerPassport\": \"RC127RT56\",\r\n  \"typeClasse\" : \"Economique\",\r\n  \"siegeSelectionne\": \"12C\",\r\n   \"bagages\": [\r\n  {\r\n    \"type\": \"carry_on\",\r\n    \"poids\": 7,\r\n    \"dimensions\": \"30x20x10\"\r\n  }\r\n],\r\n   \"repas\":\"\",\r\n  \"email\": \"alexJ@gmail.com\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{url}}/réservations/1"
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [],
+									"body": "{\r\n  \"numeroVol\": \"1234\",\r\n  \"passagerNom\": \"Alex\",\r\n  \"passagerPrenom\": \"Johnson\",\r\n  \"passagerPassport\": \"RC127RT56\",\r\n  \"typeClasse\" : \"Economique\",\r\n  \"siegeSelectionne\": \"12C\",\r\n   \"bagages\": [\r\n  {\r\n    \"type\": \"carry_on\",\r\n    \"poids\": 7,\r\n    \"dimensions\": \"30x20x10\"\r\n  }\r\n],\r\n   \"repas\": \"\",\r\n  \"email\": \"alexJ@gmail.com\"\r\n}"
+								},
+								{
+									"name": "400 - Reservation Client Economique",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"numeroVol\": \"1234\",\r\n  \"passagerNom\": \"Alex\",\r\n  \"passagerPrenom\": \"Johnson\",\r\n  \"passagerPassport\": \"RC127RT56\",\r\n  \"typeClasse\" : \"Economique\",\r\n  \"siegeSelectionne\": \"12C\",\r\n   \"bagages\": [\r\n  {\r\n    \"type\": \"carry_on\",\r\n    \"poids\": 7,\r\n    \"dimensions\": \"30x20x10\"\r\n  }\r\n],\r\n   \"repas\": \"Collation\",\r\n  \"email\": \"alexJ@gmail.com\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{url}}/réservations/1"
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"error\": \"Le choix de repas n'est pas disponible pour la classe Economique.\"\n}"
+								},
+								{
+									"name": "Missing info Reservation Client Economique",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"numeroVol\": \"1234\",\r\n  \"passagerNom\": \"Alex\",\r\n  \"passagerPrenom\": \"Johnson\",\r\n  \"passagerPassport\": \"RC127RT56\",\r\n  \"typeClasse\" : \"Economique\",\r\n  \"siegeSelectionne\": \"12C\",\r\n   \"bagages\": [\r\n  {\r\n    \"type\": \"carry_on\",\r\n    \"poids\": 7,\r\n    \"dimensions\": \"30x20x10\"\r\n  }\r\n],\r\n   \"repas\": \"\",\r\n  \"email\": \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{url}}/réservations/1"
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"Le champ 'email' est requis.\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Reservation Premium",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"numeroReservation\": \"1234\",\r\n  \"numeroVol\": \"RC23\",\r\n  \"passagerNom\": \"Miller\",\r\n   \"passagerPrenom\": \"Daniel\",\r\n  \"passagerPassport\": \"NT123\",\r\n  \"typeClasse\" : \"Premium\",\r\n  \"siegeSelectionne\": \"2B\",\r\n  \"bagages\": [\r\n  {\r\n    \"type\": \"checked\",\r\n    \"poids\": 20,\r\n    \"dimensions\": \"50x40x20\"\r\n  },\r\n  {\r\n    \"type\": \"carry_on\",\r\n    \"poids\": 7,\r\n    \"dimensions\": \"30x20x10\"\r\n  }\r\n],\r\n  \"repas\": \"Vegetarian\",\r\n  \"email\": \"danny.C@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{url}}/réservations/12"
+							},
+							"response": [
+								{
+									"name": "Reservation High Class",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"numeroReservation\": \"1234\",\r\n  \"numeroVol\": \"RC23\",\r\n  \"passagerNom\": \"Miller\",\r\n   \"passagerPrenom\": \"Daniel\",\r\n  \"passagerPassport\": \"NT123\",\r\n  \"typeClasse\" : \"Premium\",\r\n  \"siegeSelectionne\": \"2B\",\r\n  \"bagages\": [\r\n  {\r\n    \"type\": \"checked\",\r\n    \"poids\": 20,\r\n    \"dimensions\": \"50x40x20\"\r\n  },\r\n  {\r\n    \"type\": \"carry_on\",\r\n    \"poids\": 7,\r\n    \"dimensions\": \"30x20x10\"\r\n  }\r\n],\r\n  \"repas\": \"Vegetarian\",\r\n  \"email\": \"danny.C@gmail.com\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{url}}/réservations/12"
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [],
+									"body": "{\r\n  \"numeroReservation\": \"1234\",\r\n  \"numeroVol\": \"RC23\",\r\n  \"passagerNom\": \"Miller\",\r\n   \"passagerPrenom\": \"Daniel\",\r\n  \"passagerPassport\": \"NR123\",\r\n  \"typeClasse\" : \"Premium\",\r\n  \"siegeSelectionne\": \"2B\",\r\n  \"bagages\": [\r\n  {\r\n    \"type\": \"checked\",\r\n    \"poids\": 20,\r\n    \"dimensions\": \"50x40x20\"\r\n  },\r\n  {\r\n    \"type\": \"carry_on\",\r\n    \"poids\": 7,\r\n    \"dimensions\": \"30x20x10\"\r\n  }\r\n],\r\n  \"repas\": \"Vegetarian\",\r\n  \"email\": \"danny.C@gmail.com\"\r\n}"
+								}
+							]
+						},
+						{
+							"name": "Modifier la reservation 1 client",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"numeroVol\": \"1234\",\r\n  \"passagerNom\": \"Alex\",\r\n  \"passagerPrenom\": \"Johnson\",\r\n  \"passagerPassport\": \"RC127RT56\",\r\n  \"typeClasse\" : \"Economique\",\r\n  \"siegeSelectionne\": \"12C\",\r\n   \"bagages\": [\r\n  {\r\n    \"type\": \"carry_on\",\r\n    \"poids\": 7,\r\n    \"dimensions\": \"30x20x10\"\r\n  }\r\n],\r\n   \"repas\": \"\",\r\n  \"email\": \"alexJ@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{url}}/réservations/1"
+							},
+							"response": [
+								{
+									"name": "Modifier la reservation 1 siege",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"numeroVol\": \"1234\",\r\n  \"passagerNom\": \"Johnson\",\r\n  \"passagerPrenom\": \"Alexandre\", //modifiation prenom\r\n  \"passagerPassport\": \"RC127RT56\",\r\n  \"classe\": \"Economique\",\r\n  \"siegeSelectionne\": \"12C\", \r\n   \"bagages\": [\r\n  {\r\n    \"type\": \"carry_on\",\r\n    \"poids\": 7,\r\n    \"dimensions\": \"30x20x10\"\r\n  }\r\n],\r\n   \"repas\": \"\",\r\n  \"email\": \"alexJ@gmail.com\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{url}}/réservations/1"
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"numeroVol\": \"1234\",\n  \"passagerNom\": \"Johnson\",\n  \"passagerPrenom\": \"Alexandre\", //modifiation prenom\n  \"passagerPassport\": \"RC127RT56\",\n  \"classe\": \"Economique\",\n  \"siegeSelectionne\": \"12C\", \n   \"bagages\": [\n  {\n    \"type\": \"carry_on\",\n    \"poids\": 7,\n    \"dimensions\": \"30x20x10\"\n  }\n],\n   \"repas\": \"\",\n  \"email\": \"alexJ@gmail.com\"\n}"
+								},
+								{
+									"name": "400 Modifier la reservation 1 client REPAS",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"numeroVol\": \"1234\",\r\n  \"passagerNom\": \"Alex J\",\r\n  \"passagerPassport\": \"RC127RT56\",\r\n  \"classe\": \"Economique\",\r\n  \"siegeSelectionne\": \"9C\",\r\n  \"bagages\": [\r\n  {\r\n    \"type\": \"carry_on\",\r\n    \"poids\": 7,\r\n    \"dimensions\": \"30x20x10\"\r\n  }\r\n],\r\n  \"repas\": \"Collation\", // Modification de repas\r\n  \"email\": \"alexJ@gmail.com\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{url}}/réservations/1"
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"error\": \"La modification du repas n'est pas autorisée pour la classe Economique.\"\n}\n"
+								}
+							]
+						},
+						{
+							"name": "Admin modif reservation 1",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"numeroVol\": \"1234\",\r\n  \"passagerNom\": \"Alex\",\r\n  \"passagerPrenom\": \"Johnson\",\r\n  \"passagerPassport\": \"RC127RT56\",\r\n  \"typeClasse\" : \"Economique\",\r\n  \"siegeSelectionne\": \"12C\",\r\n   \"bagages\": [\r\n  {\r\n    \"type\": \"carry_on\",\r\n    \"poids\": 7,\r\n    \"dimensions\": \"30x20x10\"\r\n  }\r\n],\r\n   \"repas\": \"\",\r\n  \"email\": \"alexJ@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{url}}/réservations/1"
+							},
+							"response": [
+								{
+									"name": "Admin modif reservation 1",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"numeroVol\": \"1234\",\r\n  \"passagerNom\": \"Alex J\",\r\n  \"passagerPassport\": \"RC127RT56\",\r\n  \"classe\": \"Economique\",\r\n  \"siegeSelectionne\": \"9C\",\r\n\"bagages\": [\r\n  {\r\n    \"type\": \"carry_on\",\r\n    \"poids\": 7,\r\n    \"dimensions\": \"30x20x10\"\r\n  }\r\n],\r\n  \"repas\": \"Collation\",\r\n  \"email\": \"alexJ@gmail.com\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{url}}/réservations/1"
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [],
+									"body": "{\r\n  \"message\": \"La modification du repas pour la classe Economique a ete fait.\"\r\n}\r\n"
+								}
+							]
+						},
+						{
+							"name": "Delete/Réservation/numéroRéservation",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/réservation?numéroRéservation=934",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"réservation"
+									],
+									"query": [
+										{
+											"key": "numéroRéservation",
+											"value": "934"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Delete/Réservation/934",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/réservation?numéroRéservation=934",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"réservation"
+											],
+											"query": [
+												{
+													"key": "numéroRéservation",
+													"value": "934"
+												}
+											]
+										}
+									},
+									"status": "No Content",
+									"code": 204,
+									"_postman_previewlanguage": null,
+									"header": null,
+									"cookie": [],
+									"body": null
+								},
+								{
+									"name": "Delete/Réservation/567",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/réservation?numéroRéservation=567",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"réservation"
+											],
+											"query": [
+												{
+													"key": "numéroRéservation",
+													"value": "567"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": null,
+									"header": null,
+									"cookie": [],
+									"body": null
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "equipes",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IndGeEE5TVY4MjlHMmx5MlhScjV2bCJ9.eyJpc3MiOiJodHRwczovL2Rldi0zbzJhNXRzeGxibnNsM3VwLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2NzVmMmEwOTdlZjUyMmU4ZDIxNzAwMzEiLCJhdWQiOlsiaHR0cHM6Ly9qZXUtYnJpc2UtZ2xhY2UuY3Jvc2Vtb250LnFjLmNhLyIsImh0dHBzOi8vZGV2LTNvMmE1dHN4bGJuc2wzdXAudXMuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTczNDMwMjYxOSwiZXhwIjoxNzM0Mzg5MDE5LCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIGFkZHJlc3MgcGhvbmUiLCJndHkiOiJwYXNzd29yZCIsImF6cCI6ImkyWndPMUhIV1loTzdQWThhcUxyN202RjM2UWhQNFdCIiwicGVybWlzc2lvbnMiOlsiY3JlYXRlOsOpcXVpcGVzIiwib2J0ZW5pcjpqb3VldXJzIl19.hyOryG4mIfbQo4NFgStyX0ToIFy6bS7_PHxiKKlyWPwzkSxFEp4z41WxFYE1bi00iYb8tSDI4_1emDa1YajX3wXBrC6JburUD-adSVfKFcbqXLa1BnC9Tz2PdnDXsRkJqcH_7AWAEW4XvP9Pq_sU-bPCLJ_dB-DsQKKXASt9n6O0Q0VaXenBfRJjgo40aLs3yD8yoip143W4xZ9sGEX0aufyd_7vyWveIdNhjNuQdxwU0rAlgjdG0odxDuI_0HxGdLosgA-FyoA4Yz-dFjtoztGNkmB-74lWNHiHtJZ8VJVQCbsBzZzHMI68Kv51Fs48nU8_4MuJ7mDVjbc9ti27yA"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nom\": \"Wolf\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url}}/equipes"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://idefix.dti.crosemont.quebec:9039",
+			"type": "string"
+		}
+	]
+}
