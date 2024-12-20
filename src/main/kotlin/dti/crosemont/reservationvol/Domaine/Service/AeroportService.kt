@@ -49,6 +49,20 @@ class AeroportService(private val dao: AeroportDAO) {
     }
 
     fun ajouterAeroport(aeroport: Aeroport): Aeroport {
+        val aeroportExistant = dao.chercherParCode(aeroport.code)
+        if (aeroportExistant != null) {
+            throw RequêteMalFormuléeException(
+                    "L'aéroport avec le code ${aeroport.code} existe déjà."
+            )
+        }
+
+        val aeroportParNom = dao.chercherParNom(aeroport.nom)
+        if (aeroportParNom.isNotEmpty()) {
+            throw RequêteMalFormuléeException(
+                    "Un aéroport avec le nom ${aeroport.nom} existe déjà."
+            )
+        }
+
         val resultat = dao.ajouter(aeroport)
         if (resultat != null) {
             return resultat
