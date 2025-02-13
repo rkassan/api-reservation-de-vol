@@ -63,7 +63,9 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_640F734A6E6045E5BB19C1825AB86A9D }}
 
       - name: Print the JAR path being deployed
-        run: echo "Deploying JAR: $(ls ${{ github.workspace }}/build/libs/*-SNAPSHOT.jar)"
+        run: |
+          echo "Deploying JAR: $(ls ${{ github.workspace }}/build/libs/*-SNAPSHOT.jar)"
+
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
