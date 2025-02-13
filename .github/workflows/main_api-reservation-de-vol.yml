@@ -51,6 +51,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: java-app
+
+      - name: List JAR files in the artifact directory
+        run: ls -l ${{ github.workspace }}/build/libs/
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -58,6 +61,9 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_199023A4313C47DF97211984F02A35B0 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_DACC37E178E14707AF8BD565B71F08AC }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_640F734A6E6045E5BB19C1825AB86A9D }}
+
+      - name: Print the JAR path being deployed
+        run: echo "Deploying JAR: $(ls ${{ github.workspace }}/build/libs/*-SNAPSHOT.jar)"
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
