@@ -65,5 +65,5 @@ jobs:
         with:
           app-name: 'api-reservation-de-vol'
           slot-name: 'Production'
-          package: '*.war'
+          package: '*.jar'
           
