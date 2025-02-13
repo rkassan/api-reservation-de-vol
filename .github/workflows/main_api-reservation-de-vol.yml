@@ -53,7 +53,7 @@ jobs:
           name: java-app
 
       - name: List JAR files in the artifact directory
-        run: ls -l ${{ github.workspace }}/build/libs/
+        run: ls -l ${{ github.workspace }}*-SNAPSHOT.jar
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -64,7 +64,7 @@ jobs:
 
       - name: Print the JAR path being deployed
         run: |
-          echo "Deploying JAR: $(ls ${{ github.workspace }}/build/libs/*-SNAPSHOT.jar)"
+          echo "Deploying JAR: $(ls ${{ github.workspace }}*-SNAPSHOT.jar)"
 
 
       - name: Deploy to Azure Web App
